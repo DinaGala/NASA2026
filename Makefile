@@ -5,7 +5,7 @@ VENV_PYTHON := $(VENV)/bin/python
 -include .env
 export
 
-.PHONY: setup install db-up schema import chunks load-chunks fixtures api test verify db-down
+.PHONY: setup install db-up schema import load-chunks fixtures api test verify db-down
 
 setup: install
 	docker compose up -d --wait postgres
@@ -27,9 +27,6 @@ schema:
 
 import:
 	$(VENV_PYTHON) scripts/import_psi_data.py
-
-chunks:
-	$(VENV_PYTHON) scripts/make_chunks.py
 
 load-chunks:
 	$(VENV_PYTHON) scripts/load_chunks.py

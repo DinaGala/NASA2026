@@ -39,7 +39,6 @@ This creates `.venv`, installs Python dependencies from `requirements.txt`, star
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
-| `make chunks` | Rebuild `data/processed/chunks.parquet`: split the PSI documents into page chunks and embed them with bge-small (10–15 min; only when the documents or chunking change) |
 | `make load-chunks` | Truncate and reload `psi_dashboard.chunks` from the committed parquet (seconds, no re-embedding) |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
@@ -57,7 +56,18 @@ python3 -m venv .venv
 docker compose up -d --wait postgres
 .venv/bin/python scripts/apply_schema.py
 .venv/bin/python scripts/import_psi_data.py
+.venv/bin/python scripts/load_chunks.py
 ```
+
+### Rebuilding the embedded chunks (maintainers only)
+
+`data/processed/chunks.parquet` is committed: it holds every chunk with its embedding, and `make load-chunks` loads it in seconds. Rebuild it only when the documents in `psi_data/`, the chunking, or the embedding model change:
+
+```bash
+.venv/bin/python scripts/make_chunks.py   # asks for confirmation; 10–15 min
+```
+
+It re-embeds everything and overwrites the parquet. Commit the new file, then everyone runs `make load-chunks`. To undo an accidental run: `git checkout data/processed/chunks.parquet`.
 
 ## Database schema and current data
 

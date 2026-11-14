@@ -4,6 +4,9 @@ Reads PDFs (page = PDF page), PowerPoint .pptx (page = slide number) and Word .d
 (page = null: Word files have no fixed pages). Chunks never cross a page, so every search
 hit can cite its page. Image-only pages have no text layer and are skipped (no OCR); old
 binary .doc / .ppt files are skipped too.
+
+MAINTAINERS ONLY. The result is committed: to fill the database, run `make load-chunks`.
+This script re-embeds everything (10-15 min) and overwrites the committed parquet.
 """
 
 import hashlib
@@ -112,7 +115,23 @@ def chunk_document(path: Path) -> list[dict]:
     return rows
 
 
+def confirm() -> bool:
+    print(
+        "WARNING: this re-embeds every PSI document (10-15 min) and overwrites\n"
+        f"  {OUTPUT.relative_to(ROOT)}\n"
+        "which is committed to git. To load the existing chunks into Postgres,\n"
+        "run `make load-chunks` instead (seconds, no re-embedding).\n"
+        "Undo an accidental run with: git checkout data/processed/chunks.parquet"
+    )
+    try:
+        return input("Type 'yes' to continue: ").strip().lower() == "yes"
+    except EOFError:
+        return False
+
+
 def main() -> None:
+    if not confirm():
+        raise SystemExit("Aborted: chunks.parquet left unchanged.")
     rows: list[dict] = []
     seen_files: set[tuple[str, str]] = set()
     skipped = []
