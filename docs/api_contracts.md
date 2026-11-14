@@ -119,7 +119,7 @@ Each response run includes `run_id`, `psi_id`, `label`, `burner_o2_frac`, `press
 
 - `status`: decided by code from the number of nearby runs, never by the model: `tested` (3 or more), `sparse` (1 or 2), `untested` (0).
 - `text`: the explanation shown to the user, written by the verdict agent. Every number in it comes from the runs data; an `untested` text starts with "Untested" and names the closest run.
-- `citations`: one `Citation` per source page: study, document title, page number in the PDF. Each one exists in `psi_dashboard.chunks`. Empty only when the paper search found nothing, or in the fallback verdict.
+- `citations`: one `Citation` per source page: study, document title, page number in the PDF. Each one is a page the paper search returned for this verdict (a row of `psi_dashboard.chunks`). Empty only when the paper search found nothing, or in the fallback verdict.
 
 ## Allowed values
 

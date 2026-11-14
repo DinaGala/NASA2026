@@ -47,23 +47,26 @@ answer(deps)
    │            ▼
    │     output validator: status, numbers, citations   ── fails → ModelRetry, model fixes it (max 2)
    │
-   └─ any failure (bad key, model down, retries or limits used up)
-         → fallback_verdict(): written by code from find_runs, no citations
+   └─ any agent failure (bad key, model down, retries or limits used up)
+         → fallback_verdict(): written by code from the runs already loaded, no citations
+
+   runs cannot be loaded (database down) → 503: nothing true can be said
 ```
 
 ## Inner mechanics: one request, step by step
 
 1. **FastAPI validates the body** as a `ScenarioQuery` (O₂ between 0 and 1, pressure above 0, a known flame type). Anything else is a 422; the agent never sees it.
-2. **The endpoint builds `Deps`** through the `verdict_deps` dependency: the database engine, the request's query, and three swappable functions (`find_scenario`, `search`, `citation_exists`). `Deps` also holds the run's state: the scenario once loaded, whether the papers were searched, and the hits returned.
-3. **`answer` starts the agent** with a one-line prompt (the scenario and the question), the model from `LLM_MODEL`, and `UsageLimits(request_limit=8)`.
-4. **PydanticAI sends the first request** to the model: the instructions (the rules in plain words), the prompt, and three tool schemas: `find_runs` (no arguments), `search_papers(question: str)`, and an output tool whose arguments are a `VerdictResponse`. Calling the output tool is how the model hands in its answer as structured data. Claude Opus 5.5 rejects *forcing* a tool call; PydanticAI knows this and leaves the choice open, so the default model works as is.
-5. **The model calls `find_runs`.** PydanticAI runs the Python function and sends its result back as JSON. `Deps.evidence()` loads the scenario on its first call (the same `get_scenario_data` as `GET /scenario`) and reuses it afterwards, so one request makes one runs query, however often the tools or the validator ask.
-6. **The model calls `search_papers`** with a question it words itself, such as "droplet flame extinction at elevated oxygen". The tool restricts the search to the studies of the nearby runs (here PSI-69), or of the closest runs when none is nearby; drops hits from Word files (no page to cite); keeps 5; and records them in `Deps.hits`. Behind it, [paper search](paper_search.md) runs meaning + BM25 keywords, then a re-ranker.
-7. **The model calls the output tool** with its verdict. Two checks follow:
+2. **The endpoint builds `Deps`** through the `verdict_deps` dependency: the database engine, the request's query, and two swappable functions (`find_scenario`, `search`). `Deps` also holds the run's state: the scenario once loaded, whether the papers were searched, and the hits returned.
+3. **`answer` loads the runs first**, once, in a worker thread (`asyncio.to_thread`) so the database query never blocks the event loop. If that fails, it raises `RunDataUnavailable` and the endpoint returns a 503: without the runs, not even the fallback can be written truthfully.
+4. **`answer` starts the agent** with a one-line prompt (the scenario and the question), the model from `LLM_MODEL` (read on every run, the only place it is set), and `UsageLimits(request_limit=8)`.
+5. **PydanticAI sends the first request** to the model: the instructions (the rules in plain words), the prompt, and three tool schemas: `find_runs` (no arguments), `search_papers(question: str)`, and an output tool whose arguments are a `VerdictResponse`. Calling the output tool is how the model hands in its answer as structured data. Claude Opus 5.5 rejects *forcing* a tool call; PydanticAI knows this and leaves the choice open, so the default model works as is.
+6. **The model calls `find_runs`.** PydanticAI runs the Python function and sends its result back as JSON. The function summarises the runs loaded in step 3 (the same `get_scenario_data` as `GET /scenario`); a lock keeps it to one query even when tools run in parallel threads.
+7. **The model calls `search_papers`** with a question it words itself, such as "droplet flame extinction at elevated oxygen". The tool restricts the search to the studies of the nearby runs (here PSI-69), or of the closest runs when none is nearby; drops hits from Word files (no page to cite); keeps 5; and records them in `Deps.hits`. Behind it, [paper search](paper_search.md) runs meaning + BM25 keywords, then a re-ranker.
+8. **The model calls the output tool** with its verdict. Two checks follow:
    - **Shape**, by Pydantic: `status` is one of the three values, every citation has a page ≥ 1, and so on.
    - **Content**, by `check_verdict` (below). A failure raises `ModelRetry("These numbers are not in the find_runs output: 23 …")`; PydanticAI sends that message back to the model as the result of its output call, and the model tries again, at most twice.
-8. **The verdict is returned** and FastAPI serialises it as a `VerdictResponse`. A run typically takes 3 to 5 model calls; the limit of 8 stops a model that loops.
-9. **If anything raises** on the way (authentication, network, a model error, retries or the request limit used up), `answer` logs it and returns `fallback_verdict(deps)` instead, from the runs already loaded in step 5, or loaded now.
+9. **The verdict is returned** and FastAPI serialises it as a `VerdictResponse`. A run typically takes 3 to 5 model calls; the limit of 8 stops a model that loops.
+10. **If the agent raises** (authentication, network, a model error, retries or the request limit used up), `answer` logs it and returns `fallback_verdict(deps)`, built from the runs loaded in step 3, with no new query.
 
 ## The rules, inside
 
@@ -96,9 +99,10 @@ Values are rounded (O₂ to 3 decimals, pressure and distance to 2), so the mode
 
 1. **Status** equals the rule's.
 2. **Untested:** the text starts with "Untested" and names the closest run (its label or run ID).
-3. **Every number in the text appears in the `find_runs` output** (next section).
-4. **Every citation exists** in `psi_dashboard.chunks`: same study, document title and page.
-5. **Zero citations** only when `search_papers` ran and found nothing. If it was never called, the model is told to call it; if it found passages, to cite them.
+3. **`search_papers` was called.** A verdict written without searching is sent back.
+4. **Every citation is a page `search_papers` returned** in this run (same study, title and page), so a row of `psi_dashboard.chunks` that was actually retrieved. A page the model remembers, even a real one, is rejected. Checked in memory, no database query.
+5. **Zero citations** only when the search found nothing.
+6. **Every number in the text appears in the `find_runs` output** (next section). Checked last, once the citations are known to be real, because their titles are removed from the text first.
 
 Each failure says what to fix, so the retry is a correction, not a reroll.
 
@@ -106,19 +110,19 @@ Each failure says what to fix, so the retry is a correction, not a reroll.
 
 `unsupported_numbers(text, evidence, citations)`:
 
-1. **Remove what is not a quantity:** the titles of the cited documents ("SRD 201306" is a title, not a figure), the closest runs' IDs (`PSI-69:flex:41`), page references (`p. 6`, `pages 17 and 20`), and identifiers mixing letters and digits (`PSI-69`, `CO2`, `FLEX-2`).
-2. **Extract the remaining numbers**, standalone only.
+1. **Remove what is not a quantity:** the titles of the cited documents, already checked to be search hits ("SRD 201306" is a title, not a figure); the closest runs' IDs (`PSI-69:flex:41`); page references, one page or one range only (`p. 6`, `pp. 17-20`), never the numbers after them; and identifiers with letters before digits (`PSI-69`, `CO2`, `FLEX-2`).
+2. **Extract the remaining numbers**, including those with a unit attached: "1500K", "45s" and "0.3atm" are checked as 1500, 45 and 0.3.
 3. **Collect every number in `RunEvidence`**, wherever it sits: the query, counts, ranges, each closest run's values.
 4. **Match each number at the precision it is written:** "0.70" matches 0.703 (2 decimals), "17" matches 17. A fraction may be written as a percent: "30%" matches 0.3.
 5. **Anything left unmatched is invented**, and the verdict goes back to the model.
 
-Example: *"Tested at 30% O2 and 0.69 atm: 17 FLEX runs (PSI-69), 15 ended in disruption; see FLEX Test Plan p. 6."* → after step 1: `30`, `0.69`, `17`, `15` → all found (0.3 as percent, the query, `n_nearby`, the disruption count) → accepted. Write "23 runs" and it is rejected.
+Example: *"Tested at 30% O2 and 0.69 atm: 17 FLEX runs (PSI-69), 15 ended in disruption; see FLEX Test Plan p. 6."* → after step 1: `30`, `0.69`, `17`, `15` → all found (0.3 as percent, the query, `n_nearby`, the disruption count) → accepted. Rejected: "23 runs", "reached 1500K", and "see page 6 and 99 runs ignited" (the 99).
 
-Known limits: numbers written as words ("seventeen") are not checked, and a wrong number that happens to equal another value in the evidence ("2 hours", when 2 runs completed) passes. The check catches invented figures, not every misuse of a real one.
+Known limits: numbers written as words ("seventeen") are not checked, and a wrong number that happens to equal another value in the evidence ("2 hours", when 2 runs completed) passes. The check catches invented figures, not every misuse of a real one. It errs the other way too: an ordinal such as "2nd" is checked as 2, so a harmless phrase can cost a retry.
 
 ### The fallback (`fallback_verdict`)
 
-Built from `RunEvidence` only: the status, then either the nearby count and outcomes ("Tested. 17 ISS runs sit near 0.3 O2 and 0.69 atm (PSI-69): 15 disruption, 2 completion.") or "Untested" with the closest run, then a sentence saying the written analysis is unavailable. No citations, since no model read the papers. It passes the same number check as the model's text. If the database is down, `find_runs` fails too and the request errors: there is nothing true left to say.
+Built from `RunEvidence` only: the status, then either the nearby count and outcomes ("Tested. 17 ISS runs sit near 0.3 O2 and 0.69 atm (PSI-69): 15 disruption, 2 completion.") or "Untested" with the closest run, then a sentence saying the written analysis is unavailable. No citations, since no model read the papers. It passes the same number check as the model's text, and it makes no query: the runs were loaded before the agent started. If they could not be loaded, `answer` never gets this far: the endpoint returns a 503.
 
 ## Why we built it this way
 
@@ -132,10 +136,13 @@ Built from `RunEvidence` only: the status, then either the nearby count and outc
 | **Paper search limited to the runs' studies** | Search all papers | The verdict is about those runs; FLEX's papers explain FLEX's results. It also avoids citing a study that has nothing to do with the scenario. |
 | **Word-file hits dropped** | Make `Citation.page` optional | A contract change touches the dashboard too. The cost is small: the PDFs carry most of the text. To revisit with the team. |
 | **An agent with tools** | One call with the runs and papers fetched in advance | The issue asks for an agent, and the model chooses what to search for in the papers. The flow is nearly fixed, though: a single call would work too, and would be a fair simplification later. |
-| **A fallback written by code, catching every exception** | Return an error | The demo must always answer. The fallback says less but is never wrong. |
+| **A fallback written by code, catching every agent exception** | Return an error | The demo must always answer. The fallback says less but is never wrong. |
+| **Runs loaded before the agent, off the event loop** | Load them lazily in the first tool | The fallback then has the runs without a new query, so it cannot fail on the database; the tools never race on the same query; and a slow database never blocks other requests. If the runs cannot be loaded, a 503 is honest: nothing true can be said. |
+| **Citations must be search hits** | Check the page exists anywhere in `chunks` | A page the model remembers may exist and still not support the claim. Only pages retrieved for this question were read; checking in memory also saves a query per citation. |
+| **Paper-search models imported on first use** | Import them with the module | `sentence_transformers` loads torch, which takes seconds; `/scenario` and `/inverse-flames` never search papers and should not pay for it. |
 | **`Deps` with swappable functions** | Call the database directly in the tools | Tests run the agent without a database or an LLM, and the scenario source can change without touching the agent. |
 | **Limits: 2 retries, 8 model calls** | Defaults | Bounds cost and latency; a model that cannot follow the rules in 2 tries falls back. |
-| **`LLM_MODEL`, default Claude Opus 5.5** | Hard-coded model | Opus 5.5 is the most careful with strict rules; a cheaper model (e.g. a Haiku) suits development and tests. One line in `.env`. |
+| **`LLM_MODEL`, default Claude Opus 5.5, set per run** | Hard-coded model; or set in the `Agent` constructor | Opus 5.5 is the most careful with strict rules; a cheaper model (e.g. a Haiku) suits development and tests. One line in `.env`. Read on every run, in one place, so a change to `.env` needs no code change. |
 | **Live tests behind `make test-live`** | Run them in `make test` | They cost money and need a key and the loaded database. `make test` stays free and offline. |
 
 ## Configuration
@@ -149,7 +156,7 @@ ANTHROPIC_API_KEY=sk-ant-...          # the key of that provider
 
 Without `LLM_MODEL`, the code uses Claude Opus 5.5. A cheaper model for development: set it in `.env`, or for one run, `make test-live LLM_MODEL=anthropic:claude-haiku-4-5`.
 
-Limits, in `src/agent/verdict_agent.py`: `retries={"output": 2}` (the issue's `output_retries=2`, as PydanticAI 2.x writes it), `USAGE_LIMITS = UsageLimits(request_limit=8)`, `PAPER_HITS = 5`, `TESTED_MIN_RUNS = 3`.
+`pydantic-ai-slim[anthropic]>=2.68`: older versions accept only an integer for `retries`, and the agent would fail to start (silently, into the fallback). Limits, in `src/agent/verdict_agent.py`: `retries={"output": 2}` (the issue's `output_retries=2`, as PydanticAI 2.x writes it), `USAGE_LIMITS = UsageLimits(request_limit=8)`, `PAPER_HITS = 5`, `TESTED_MIN_RUNS = 3`.
 
 ## Tests
 
@@ -158,16 +165,16 @@ Limits, in `src/agent/verdict_agent.py`: `retries={"output": 2}` (the issue's `o
 | Group | Model | What |
 | --- | --- | --- |
 | `StatusRuleTests` | none | 0 / 1-2 / 3+ |
-| `OutputValidatorTests` | none | Each check, including **an invented number is rejected** |
-| `AgentWiringTests` | `TestModel`, `FunctionModel` | Both tools are called; an invented number is sent back and corrected; a failing model falls back |
-| `VerdictEndpointTests` | `TestModel`, `FunctionModel` | `POST /verdict` returns the agent's verdict, or the fallback |
+| `OutputValidatorTests` | none | Each check, including **an invented number is rejected**, a number with a unit, a number hidden behind a page reference, a citation search did not return, a verdict written without searching |
+| `AgentWiringTests` | `TestModel`, `FunctionModel` | Both tools are called; an invented number is sent back and corrected; a failing model falls back; one runs query per request, parallel tools and fallback included; unavailable runs raise |
+| `VerdictEndpointTests` | `TestModel`, `FunctionModel` | `POST /verdict` returns the agent's verdict, the fallback, or a 503 when the runs cannot be loaded; importing the API does not load torch |
 | `LiveVerdictTests` | the real one | Moon droplet → tested, count in the text, ≥ 1 citation; Moon solid → untested, names the closest run, ≥ 1 citation; a broken API key → valid fallback |
 
 `TestModel` and `FunctionModel` are PydanticAI's stand-in models: the first calls the tools and returns a given output; the second is a Python function playing the model turn by turn (here: call `find_runs`, call `search_papers`, hand in a verdict with an invented number, then a correct one).
 
-`make test` runs everything except the live tests (no LLM cost, no network). `make test-live` runs all 16: it needs the database loaded (`make load-chunks` and the runs loaders) and a real API key in `.env`. The two smoke tests can only pass with a real model answer: they require a citation, and the fallback has none.
+`make test` runs everything except the live tests (no LLM cost, no network). `make test-live` runs them all: it needs the database loaded (`make load-chunks` and the runs loaders) and a real API key in `.env`. The two smoke tests can only pass with a real model answer: they require a citation, and the fallback has none.
 
-**Verified on 2026-11-14:** `make test-live` passed 16/16 with `LLM_MODEL=anthropic:claude-haiku-5-5`. Not yet run on the default Opus 5.5.
+**Verified on 2026-11-14:** `make test-live` passed 16/16 with `LLM_MODEL=anthropic:claude-haiku-5-5`, before and after merging #14. The code-review fixes (stricter citation and number checks) were verified offline; re-run `make test-live` to confirm them with the real model. Not yet run on the default Opus 5.5.
 
 ## Changes from the issue
 

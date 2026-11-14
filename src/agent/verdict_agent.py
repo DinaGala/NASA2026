@@ -4,22 +4,24 @@
 
 The language model writes the text and picks the citations; code decides everything that must
 not be wrong. The status comes from a rule on the number of nearby runs, every number in the
-text must come from `find_runs`, and every citation must exist in psi_dashboard.chunks. A
-verdict breaking one of those rules is sent back to the model (ModelRetry). If the agent still
-fails, `answer` returns a verdict written entirely by code. Guide: docs/verdict_agent.md.
+text must come from `find_runs`, and every citation must be a page `search_papers` returned
+(a row of psi_dashboard.chunks). A verdict breaking one of those rules is sent back to the model
+(ModelRetry). If the agent still fails, `answer` returns a verdict written entirely by code.
+Guide: docs/verdict_agent.md.
 """
 
+import asyncio
 import logging
 import math
 import os
 import re
+import threading
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelRetry, RunContext, UsageLimits
-from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 from src.agent.search import PaperHit, search_papers
@@ -106,17 +108,8 @@ def evidence_from(query: ScenarioQuery, scenario: ScenarioResponse) -> RunEviden
     )
 
 
-def citation_in_chunks(engine: Engine, citation: Citation) -> bool:
-    with engine.connect() as connection:
-        return bool(
-            connection.execute(
-                text(
-                    "SELECT 1 FROM psi_dashboard.chunks"
-                    " WHERE psi_id = :psi_id AND doc_title = :doc_title AND page = :page LIMIT 1"
-                ),
-                citation.model_dump(),
-            ).first()
-        )
+class RunDataUnavailable(Exception):
+    """The runs could not be loaded: no verdict, not even the fallback, can be written."""
 
 
 @dataclass
@@ -127,16 +120,21 @@ class Deps:
     query: ScenarioQuery
     find_scenario: Callable[[Engine, ScenarioQuery], ScenarioResponse] = get_scenario_data
     search: Callable[..., list[PaperHit]] = search_papers
-    citation_exists: Callable[[Engine, Citation], bool] = citation_in_chunks
     # Filled during the run, then read by the output validator and the fallback.
     scenario: ScenarioResponse | None = None
     searched: bool = False
     hits: list[PaperHit] = field(default_factory=list)
+    # PydanticAI runs sync tools in parallel threads: one scenario query, however many callers.
+    _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
+
+    def load_scenario(self) -> ScenarioResponse:
+        with self._lock:
+            if self.scenario is None:
+                self.scenario = self.find_scenario(self.engine, self.query)
+            return self.scenario
 
     def evidence(self) -> RunEvidence:
-        if self.scenario is None:
-            self.scenario = self.find_scenario(self.engine, self.query)
-        return evidence_from(self.query, self.scenario)
+        return evidence_from(self.query, self.load_scenario())
 
 
 INSTRUCTIONS = f"""\
@@ -163,13 +161,12 @@ def llm_model() -> str:
     return os.getenv("LLM_MODEL") or DEFAULT_MODEL
 
 
+# No model here: `answer` passes `llm_model()` on every run, so LLM_MODEL is read in one place.
 verdict_agent = Agent(
-    llm_model(),
     deps_type=Deps,
     output_type=VerdictResponse,
     instructions=INSTRUCTIONS,
     retries={"tools": 1, "output": 2},
-    defer_model_check=True,
 )
 
 
@@ -200,8 +197,10 @@ def search_papers_tool(ctx: RunContext[Deps], question: str) -> list[dict]:
 
 # --- Output checks -------------------------------------------------------------------------
 
-NUMBER = re.compile(r"(?<![A-Za-z0-9_.])\d+(?:\.\d+)?(?![A-Za-z0-9_])")
-PAGE_REFERENCE = re.compile(r"\b(?:pp?\.|pages?)\s*\d+(?:\s*(?:[-–,]|and|to)\s*\d+)*", re.IGNORECASE)
+# A number may have a unit attached ("1500K", "0.3atm"); it is still checked.
+NUMBER = re.compile(r"(?<![A-Za-z0-9_.])\d+(?:\.\d+)?")
+# One page or one page range ("p. 6", "pp. 17-20"), never the numbers after it.
+PAGE_REFERENCE = re.compile(r"\b(?:pp?\.|pages?)\s*\d+(?:\s*[-–]\s*\d+)?", re.IGNORECASE)
 IDENTIFIER = re.compile(r"\b[A-Za-z]+[-_]?\d+[A-Za-z0-9_:-]*")  # PSI-69, CO2, FLEX-2, run ids
 
 
@@ -225,7 +224,10 @@ def numbers_in(evidence: RunEvidence) -> list[float]:
 
 
 def unsupported_numbers(text_: str, evidence: RunEvidence, citations: list[Citation]) -> list[str]:
-    """Numbers in the text that `find_runs` did not return (PSI IDs and page numbers ignored)."""
+    """Numbers in the text that `find_runs` did not return (PSI IDs and page numbers ignored).
+
+    `citations` must already be checked against the search hits: their titles are removed.
+    """
     cleaned = text_
     for citation in citations:
         cleaned = cleaned.replace(citation.doc_title, " ")
@@ -260,21 +262,21 @@ def check_verdict(verdict: VerdictResponse, deps: Deps) -> None:
             raise ModelRetry('An untested verdict must start with "Untested".')
         if closest and closest.label.lower() not in verdict.text.lower() and closest.run_id not in verdict.text:
             raise ModelRetry(f"Name the closest run: {closest.label} ({closest.psi_id}).")
+    if not deps.searched:
+        raise ModelRetry("Call search_papers before writing the verdict.")
+    found = {(hit.psi_id, hit.doc_title, hit.page) for hit in deps.hits}
+    not_found = [c for c in verdict.citations if (c.psi_id, c.doc_title, c.page) not in found]
+    if not_found:
+        listed = "; ".join(f"{c.psi_id} {c.doc_title!r} p. {c.page}" for c in not_found)
+        raise ModelRetry(f"search_papers did not return these pages: {listed}. Cite only its hits.")
+    if not verdict.citations and deps.hits:
+        raise ModelRetry("search_papers found passages: cite the pages you used.")
     bad = unsupported_numbers(verdict.text, evidence, verdict.citations)
     if bad:
         raise ModelRetry(
             f"These numbers are not in the find_runs output: {', '.join(bad)}. "
             "Use only numbers find_runs returned, or remove them."
         )
-    if not verdict.citations:
-        if not deps.searched:
-            raise ModelRetry("Call search_papers before writing the verdict.")
-        if deps.hits:
-            raise ModelRetry("search_papers found passages: cite the pages you used.")
-    missing = [c for c in verdict.citations if not deps.citation_exists(deps.engine, c)]
-    if missing:
-        listed = "; ".join(f"{c.psi_id} {c.doc_title!r} p. {c.page}" for c in missing)
-        raise ModelRetry(f"These citations do not exist: {listed}. Cite only search_papers hits.")
 
 
 @verdict_agent.output_validator
@@ -320,7 +322,16 @@ def prompt_for(query: ScenarioQuery) -> str:
 
 
 async def answer(deps: Deps) -> VerdictResponse:
-    """Run the agent; on any failure, return the code-written fallback verdict."""
+    """Load the runs, run the agent; if the agent fails, return the code-written fallback verdict.
+
+    Raises RunDataUnavailable when the runs cannot be loaded.
+    """
+    # Loaded once, before the agent and off the event loop: the tools, the validator and the
+    # fallback then read it from memory, so the fallback cannot fail on the database.
+    try:
+        await asyncio.to_thread(deps.load_scenario)
+    except Exception as error:
+        raise RunDataUnavailable("The run data is unavailable; try again shortly.") from error
     try:
         result = await verdict_agent.run(
             prompt_for(deps.query), deps=deps, model=llm_model(), usage_limits=USAGE_LIMITS

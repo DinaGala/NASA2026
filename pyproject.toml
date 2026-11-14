@@ -11,7 +11,7 @@ dependencies = [
     "pandas",
     "psycopg[binary]",
     "pyarrow",
-    "pydantic-ai-slim[anthropic]",
+    "pydantic-ai-slim[anthropic]>=2.68",  # retries={"tools":..,"output":..} form
     "pymupdf",
     "python-docx",
     "python-dotenv",

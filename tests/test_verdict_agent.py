@@ -1,5 +1,7 @@
 import asyncio
 import os
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -13,7 +15,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
 from src.agent.search import PaperHit
-from src.agent.verdict_agent import Deps, answer, check_verdict, status_for, verdict_agent
+from src.agent.verdict_agent import Deps, RunDataUnavailable, answer, check_verdict, status_for, verdict_agent
 from src.api.app import app, verdict_deps
 from src.contracts import Citation, ScenarioQuery, ScenarioResponse, VerdictResponse
 from src.database import engine
@@ -36,16 +38,24 @@ def scenario(name: str) -> ScenarioResponse:
     return ScenarioResponse.model_validate_json((FIXTURES / name).read_text())
 
 
-def fake_deps(query: ScenarioQuery = MOON, hits: list[PaperHit] | None = None) -> Deps:
-    """Deps from the committed fixtures and a fake paper search: no database, no LLM."""
+def fake_deps(query: ScenarioQuery = MOON, hits: list[PaperHit] | None = None, calls: list | None = None) -> Deps:
+    """Deps from the committed fixtures and a fake paper search: no database, no LLM.
+
+    `calls` collects one entry per scenario query, to count them.
+    """
     fixture = "scenario_moon_solid.json" if query.flame_config == "solid" else "scenario_moon.json"
     found = [HIT] if hits is None else hits
+
+    def find_scenario(_engine, _query):
+        if calls is not None:
+            calls.append(_query)
+        return scenario(fixture)
+
     return Deps(
         engine=None,
         query=query,
-        find_scenario=lambda _engine, _query: scenario(fixture),
+        find_scenario=find_scenario,
         search=lambda question, psi_ids=None, k=5: [hit for hit in found if not psi_ids or hit.psi_id in psi_ids],
-        citation_exists=lambda _engine, citation: citation == HIT_CITATION,
     )
 
 
@@ -88,10 +98,25 @@ class OutputValidatorTests(unittest.TestCase):
             deps,
         )
 
-    def test_a_citation_missing_from_chunks_is_rejected(self):
-        verdict = TESTED.model_copy(update={"citations": [Citation(psi_id="PSI-69", doc_title="Made up", page=3)]})
-        with self.assertRaisesRegex(ModelRetry, "do not exist"):
+    def test_a_number_with_a_unit_attached_is_checked(self):
+        verdict = TESTED.model_copy(update={"text": "Tested. Flames reached 1500K in 45s at 0.3atm."})
+        with self.assertRaisesRegex(ModelRetry, "1500, 45"):
             check_verdict(verdict, searched(fake_deps()))
+
+    def test_a_page_reference_does_not_hide_the_numbers_after_it(self):
+        verdict = TESTED.model_copy(update={"text": "Tested. See page 6 and 99 runs ignited."})
+        with self.assertRaisesRegex(ModelRetry, "99"):
+            check_verdict(verdict, searched(fake_deps()))
+
+    def test_a_citation_that_search_did_not_return_is_rejected(self):
+        # A real page the model might remember, but search_papers never returned it.
+        verdict = TESTED.model_copy(update={"citations": [Citation(psi_id="PSI-69", doc_title="FLEX Test Plan", page=1)]})
+        with self.assertRaisesRegex(ModelRetry, "did not return"):
+            check_verdict(verdict, searched(fake_deps()))
+
+    def test_search_is_required_even_with_citations(self):
+        with self.assertRaisesRegex(ModelRetry, "Call search_papers"):
+            check_verdict(TESTED, fake_deps())
 
     def test_zero_citations_only_when_search_found_nothing(self):
         bare = TESTED.model_copy(update={"citations": []})
@@ -106,6 +131,31 @@ class OutputValidatorTests(unittest.TestCase):
 
 class AgentWiringTests(unittest.TestCase):
     """The agent with stand-in models (TestModel, FunctionModel): no LLM cost."""
+
+    def test_the_scenario_is_queried_once_even_with_parallel_tools_and_a_fallback(self):
+        calls = []
+        with verdict_agent.override(model=PydanticTestModel(call_tools="all", custom_output_args=TESTED.model_dump())):
+            asyncio.run(answer(fake_deps(calls=calls)))
+        self.assertEqual(len(calls), 1)
+
+        calls.clear()
+
+        def broken(messages, info):
+            raise RuntimeError("model unavailable")
+
+        with verdict_agent.override(model=FunctionModel(broken)), self.assertLogs("src.agent.verdict_agent"):
+            asyncio.run(answer(fake_deps(calls=calls)))
+        self.assertEqual(len(calls), 1)  # the fallback reused the loaded runs
+
+    def test_unavailable_run_data_raises_instead_of_a_verdict(self):
+        deps = fake_deps()
+
+        def down(_engine, _query):
+            raise OperationalError("SELECT", {}, Exception("connection refused"))
+
+        deps.find_scenario = down
+        with self.assertRaises(RunDataUnavailable):
+            asyncio.run(answer(deps))
 
     def test_the_agent_calls_both_tools_and_returns_the_verdict(self):
         deps = fake_deps()
@@ -158,6 +208,21 @@ class VerdictEndpointTests(unittest.TestCase):
             response = self.client.post("/verdict", json=MOON.model_dump())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(VerdictResponse.model_validate(response.json()), TESTED)
+
+    def test_post_verdict_returns_503_when_the_run_data_is_unavailable(self):
+        def make_deps(query):
+            deps = fake_deps(query)
+            deps.find_scenario = lambda _engine, _query: (_ for _ in ()).throw(OperationalError("SELECT", {}, Exception("down")))
+            return deps
+
+        app.dependency_overrides[verdict_deps] = lambda: make_deps
+        response = self.client.post("/verdict", json=MOON.model_dump())
+        self.assertEqual(response.status_code, 503)
+
+    def test_importing_the_api_does_not_load_torch(self):
+        # /scenario and /inverse-flames must not pay for the paper-search models.
+        check = "import sys, src.api.app; sys.exit('torch' in sys.modules)"
+        self.assertEqual(subprocess.run([sys.executable, "-c", check], capture_output=True).returncode, 0)
 
     def test_post_verdict_falls_back_when_the_agent_fails(self):
         def broken(messages, info):

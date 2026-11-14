@@ -1,8 +1,10 @@
 """The bge-small embedding model, shared by the chunker and search_papers."""
 
 from functools import cache
+from typing import TYPE_CHECKING
 
-from sentence_transformers import SentenceTransformer
+if TYPE_CHECKING:  # imported on first use: torch takes seconds to load
+    from sentence_transformers import SentenceTransformer
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 DIMENSIONS = 384
@@ -11,8 +13,10 @@ QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 
 
 @cache
-def get_model() -> SentenceTransformer:
+def get_model() -> "SentenceTransformer":
     """Load the model once per process."""
+    from sentence_transformers import SentenceTransformer
+
     return SentenceTransformer(MODEL_NAME)
 
 
