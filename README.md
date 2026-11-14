@@ -40,6 +40,7 @@ This creates `.venv314` with Python 3.14, installs Python dependencies from `req
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
+| `make load-chunks` | Truncate and reload `psi_dashboard.chunks` and its BM25 tables from the committed parquet (~25 s, no re-embedding); how the paper search works: [`docs/paper_search.md`](docs/paper_search.md) |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
 | `make test` | Run the unit tests |
@@ -59,11 +60,22 @@ docker compose up -d --wait postgres
 PYTHONPATH=. .venv314/bin/python scripts/parse_psi_data.py
 PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py --dry-run
 PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py
+.venv314/bin/python scripts/load_chunks.py
 ```
+
+### Rebuilding the embedded chunks (maintainers only)
+
+`data/processed/chunks.parquet` is committed: it holds every chunk with its embedding, and `make load-chunks` loads it in about 25 seconds. Rebuild it only when the documents in `psi_data/`, the chunking, or the embedding model change:
+
+```bash
+.venv314/bin/python scripts/make_chunks.py   # asks for confirmation; 10–15 min
+```
+
+It re-embeds everything and overwrites the parquet. Commit the new file, then everyone runs `make load-chunks`. To undo an accidental run: `git checkout data/processed/chunks.parquet`.
 
 ## Database schema and current data
 
-The database is named `psi_flame`. Its tables live in the `psi_dashboard` schema and follow [`data_audit.md`](data_audit.md):
+The database is named `psi_flame`. Its tables live in the `psi_dashboard` schema and follow [`data_audit.md`](data/data_audit.md):
 
 - **`investigations`** — one PSI study per row, with acronym, title, pillar, fuel phase, hardware, objective, hypothesis, approach, impacts, DOI, dates, and original metadata in `raw` JSONB.
 - **`runs`** — experiment/test-level context, keyed by `test_id` and linked to its investigation by `psi_id`.

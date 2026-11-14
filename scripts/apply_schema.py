@@ -7,6 +7,7 @@ from src.database import engine
 
 SCHEMA_SQL = (
     "CREATE SCHEMA IF NOT EXISTS psi_dashboard",
+    "CREATE EXTENSION IF NOT EXISTS vector",
     """
     DO $$
     BEGIN
@@ -84,6 +85,41 @@ SCHEMA_SQL = (
         unit TEXT
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunks (
+        chunk_id TEXT PRIMARY KEY,
+        psi_id TEXT NOT NULL REFERENCES psi_dashboard.investigations(psi_id),
+        doc_title TEXT NOT NULL,
+        doc_category TEXT,
+        page INTEGER,
+        text TEXT NOT NULL,
+        embedding vector(384) NOT NULL
+    )
+    """,
+    # Words of the title and text (stemmed, English), kept up to date by Postgres.
+    """
+    ALTER TABLE psi_dashboard.chunks ADD COLUMN IF NOT EXISTS text_search tsvector
+        GENERATED ALWAYS AS (to_tsvector('english', doc_title || ' ' || text)) STORED
+    """,
+    # The keyword search ranks with BM25 on the two tables below, not on this index.
+    "DROP INDEX IF EXISTS psi_dashboard.chunks_text_search_idx",
+    # BM25 statistics, rebuilt from text_search by scripts/load_chunks.py:
+    # how often each word occurs in each chunk, and each chunk's length in words.
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunk_terms (
+        term TEXT NOT NULL,
+        chunk_id TEXT NOT NULL REFERENCES psi_dashboard.chunks(chunk_id),
+        tf INTEGER NOT NULL,
+        PRIMARY KEY (term, chunk_id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunk_lengths (
+        chunk_id TEXT PRIMARY KEY REFERENCES psi_dashboard.chunks(chunk_id),
+        psi_id TEXT NOT NULL,
+        length INTEGER NOT NULL
+    )
+    """,
 )
 
 
@@ -92,7 +128,7 @@ def main() -> None:
         for statement in SCHEMA_SQL:
             connection.execute(text(statement))
 
-    print("Schema applied successfully to psi_flame.psi_dashboard (runs table).")
+    print("Schema applied successfully to psi_flame.psi_dashboard (runs and chunks tables).")
 
 
 if __name__ == "__main__":

@@ -10,8 +10,13 @@ dependencies = [
     "openpyxl",
     "pandas",
     "psycopg[binary]",
+    "pyarrow",
+    "pymupdf",
+    "python-docx",
     "python-dotenv",
+    "python-pptx",
     "requests>=2.34.2",
+    "sentence-transformers",
     "sqlalchemy",
     "uvicorn",
 ]

@@ -9,5 +9,7 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+# Embedded chunks are committed so the team can load them without re-embedding.
+!data/processed/chunks.parquet
 psi_data/
 *.egg-info/
