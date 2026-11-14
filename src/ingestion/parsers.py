@@ -35,8 +35,14 @@ class BaseParser(ABC):
         pass
 
     def _normalize_headers(self, fieldnames: List[str]) -> Dict[str, str]:
-        """Map trimmed headers to original headers."""
-        return {f.strip(): f for f in fieldnames}
+        """Collapse header whitespace for lookup while retaining source headers."""
+        normalized: Dict[str, str] = {}
+        for field in fieldnames:
+            key = " ".join(field.split())
+            if key in normalized and normalized[key] != field:
+                raise ValueError(f"Ambiguous source headers normalize to {key!r}")
+            normalized[key] = field
+        return normalized
 
     def _add_outcome_stat(self, outcome: str):
         self.stats["outcome_counts"][outcome] = self.stats["outcome_counts"].get(outcome, 0) + 1
@@ -221,7 +227,7 @@ class BassParser(BaseParser):
             raise ValueError(f"Unsupported psi_id for BassParser: {self.psi_id}")
 
     def _normalize_material_geometry(self, raw_material: str) -> Dict[str, Any]:
-        """Normalize clear material families and geometry."""
+        """Normalize material and only assign dimensions when their meaning is clear."""
         result = {
             "material": None,
             "geometry": None,
@@ -231,9 +237,9 @@ class BassParser(BaseParser):
         }
         if not raw_material:
             return result
-            
+
         text = raw_material.lower()
-        
+
         # Material
         if "pmma" in text:
             result["material"] = "PMMA"
@@ -241,59 +247,128 @@ class BassParser(BaseParser):
             result["material"] = "SIBAL"
         elif "nomex" in text:
             result["material"] = "Nomex"
-        elif "wax" in text:
+        elif "wax" in text or "candle" in text or "paraffin" in text:
             result["material"] = "wax"
-        
+        elif "fiberglass" in text or "fibreglass" in text:
+            result["material"] = "fiberglass"
+
         # Geometry
-        if "film" in text:
+        if "sphere" in text:
+            result["geometry"] = "sphere"
+        elif "film" in text:
             result["geometry"] = "film"
         elif "rod" in text:
             result["geometry"] = "rod"
         elif "slab" in text:
             result["geometry"] = "slab"
-        elif "sphere" in text:
-            result["geometry"] = "sphere"
 
-        # Dimensions (mm)
-        thickness = None
-        m = re.search(r"(\d+(\.\d+)?)\s*micron", text)
-        if m:
-            thickness = float(m.group(1)) / 1000.0
-        else:
-            m = re.search(r"(\d+(\.\d+)?)\s*mm\s+thick", text)
-            if m:
-                thickness = float(m.group(1))
+        # Extract source dimensions with units, then classify them by explicit
+        # wording or known geometry. A bare "2 cm" must never become width.
+        dimension_pattern = re.compile(
+            r"(?<![\w.])(?P<number>\d+/\d+|\d+(?:\.\d+)?)\s*"
+            r"(?P<unit>microns?|µm|um|mm|cm|inches?|in|[\"”])",
+            re.IGNORECASE,
+        )
+        dimensions = []
+        for match in dimension_pattern.finditer(text):
+            number = match.group("number")
+            if "/" in number:
+                numerator, denominator = number.split("/", 1)
+                numeric_value = float(numerator) / float(denominator)
             else:
-                m = re.search(r"(\d+(\.\d+)?)\s*mm\s+", text)
-                if m:
-                    thickness = float(m.group(1))
+                numeric_value = float(number)
+            unit = match.group("unit").lower()
+            if unit in {"micron", "microns", "µm", "um"}:
+                value_mm = numeric_value / 1000.0
+                unit_group = "micron"
+            elif unit == "mm":
+                value_mm = numeric_value
+                unit_group = "mm"
+            elif unit == "cm":
+                value_mm = numeric_value * 10.0
+                unit_group = "cm"
+            else:
+                value_mm = numeric_value * 25.4
+                unit_group = "inch"
+            after = text[match.end():]
+            explicit_kind = None
+            if re.match(r"\s*(?:thick|thickness)\b", after):
+                explicit_kind = "thickness"
+            elif re.match(r"\s*(?:wide|width)\b", after):
+                explicit_kind = "width"
+            elif re.match(r"\s*(?:diameter|dia\.? )\b", after):
+                explicit_kind = "diameter"
+            dimensions.append({
+                "value_mm": value_mm,
+                "unit_group": unit_group,
+                "start": match.start(),
+                "kind": explicit_kind,
+            })
 
-        if thickness is not None:
-            result["measurements"].append({"variable": "sample_thickness", "value": thickness, "unit": "mm"})
+        assigned: Dict[str, float] = {}
+        for dim in dimensions:
+            if dim["kind"]:
+                assigned[dim["kind"]] = dim["value_mm"]
+            elif dim["unit_group"] == "micron":
+                # Film/fuel descriptions commonly specify thickness in microns.
+                assigned.setdefault("thickness", dim["value_mm"])
 
-        width = None
-        m = re.search(r"(\d+(\.\d+)?)\s*cm\s+wide", text)
-        if m:
-            width = float(m.group(1)) * 10.0
-        else:
-            m = re.search(r"(\d+(\.\d+)?)\s*cm\s+", text)
-            if m:
-                 width = float(m.group(1)) * 10.0
-        
-        if width is not None:
-            result["measurements"].append({"variable": "sample_width", "value": width, "unit": "mm"})
+        unassigned = [d for d in dimensions if d["kind"] is None and
+                      not (d["unit_group"] == "micron" and "thickness" in assigned)]
 
-        if thickness and not width:
-            result["size_mm"] = thickness
-        elif width and not thickness:
-            result["size_mm"] = width
+        if result["geometry"] in {"film", "slab"} and "thickness" not in assigned:
+            thin_candidates = [d for d in unassigned if d["unit_group"] in {"mm", "micron"}]
+            cm_candidates = [d for d in unassigned if d["unit_group"] == "cm"]
+            if len(thin_candidates) == 1 and (len(cm_candidates) == 1 or "width" in assigned):
+                chosen = thin_candidates[0]
+                assigned["thickness"] = chosen["value_mm"]
+                unassigned.remove(chosen)
 
-        norm_data = {"original": raw_material}
+        if result["geometry"] in {"sphere", "rod"} and "diameter" not in assigned:
+            diameter_candidates = [d for d in unassigned if d["unit_group"] != "micron"]
+            if len(diameter_candidates) == 1:
+                chosen = diameter_candidates[0]
+                assigned["diameter"] = chosen["value_mm"]
+                unassigned.remove(chosen)
+
+        if result["geometry"] in {"film", "slab"} and "width" not in assigned and "thickness" in assigned:
+            width_candidates = [d for d in unassigned if d["unit_group"] == "cm"]
+            if len(width_candidates) == 1:
+                chosen = width_candidates[0]
+                assigned["width"] = chosen["value_mm"]
+                unassigned.remove(chosen)
+
+        variable_for_kind = {
+            "thickness": "sample_thickness",
+            "width": "sample_width",
+            "diameter": "sample_diameter",
+        }
+        for kind, variable in variable_for_kind.items():
+            if kind in assigned:
+                result["measurements"].append({
+                    "variable": variable,
+                    "value": assigned[kind],
+                    "unit": "mm",
+                })
+
+        if len(assigned) == 1:
+            result["size_mm"] = next(iter(assigned.values()))
+        elif not assigned and len(dimensions) == 1:
+            # Retain a single untyped size without falsely labeling it width or thickness.
+            result["size_mm"] = dimensions[0]["value_mm"]
+
+        norm_data = {
+            "original": raw_material,
+            "dimensions_mm": [
+                {"value": d["value_mm"], "kind": d["kind"], "unit_group": d["unit_group"]}
+                for d in dimensions
+            ],
+        }
         if "black" in text:
             norm_data["color"] = "black"
         elif "clear" in text:
             norm_data["color"] = "clear"
-        
+
         result["normalization_notes"] = norm_data
         return result
 
@@ -316,6 +391,7 @@ class BassParser(BaseParser):
         return res
 
     def _parse_psi25(self) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        self.stats["header_rows"] = 1
         with open(self.file_path, "r", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             header_map = self._normalize_headers(reader.fieldnames or [])
@@ -361,28 +437,43 @@ class BassParser(BaseParser):
                 o2_raw = get_val("Calibrated initial O2 % by vol")
                 if o2_raw:
                     try:
-                        record["o2_frac"] = float(o2_raw) / 100.0
+                        o2_pct = float(o2_raw)
+                        if not 0 <= o2_pct <= 100:
+                            raise ValueError("O2 percent outside 0–100")
+                        record["o2_frac"] = o2_pct / 100.0
                     except ValueError:
-                         self._record_error(i, "Calibrated initial O2 % by vol", o2_raw, "Non-numeric O2")
+                        self.stats["flagged_records"] += 1
+                        record["quality_flags"].append("invalid_initial_o2")
+                        self._record_error(i, "Calibrated initial O2 % by vol", o2_raw, "Invalid O2 percent")
+                else:
+                    self.stats["missing_o2_count"] += 1
+                    record["quality_flags"].append("missing_initial_o2")
                 
                 record["pressure_atm"] = 1.0
                 record["raw"]["_normalization"] = {
                     "pressure": {"value": 1.0, "source": "assumed", "reason": "BASS-II audit specification"},
                     "material": norm_mat["normalization_notes"],
-                    "_source": {"filename": os.path.basename(self.file_path), "row": i}
                 }
+                record["raw"]["_source"] = {"filename": os.path.basename(self.file_path), "row": i}
 
-                self._add_meas_div(record, "final_o2_frac", get_val("Calibrated final O2 % by vol"), "fraction", div=100.0)
-                self._add_meas_div(record, "initial_co2_frac", get_val("Initial CO2 % by vol"), "fraction", div=100.0)
-                self._add_meas_div(record, "final_co2_frac", get_val("Final CO2 % by vol"), "fraction", div=100.0)
+                self._add_meas_div(record, "final_o2_frac", get_val("Calibrated final O2 % by vol"), "fraction", i, div=100.0)
+                self._add_meas_div(record, "initial_co2_frac", get_val("Initial CO2 % by vol"), "fraction", i, div=100.0)
+                self._add_meas_div(record, "final_co2_frac", get_val("Final CO2 % by vol"), "fraction", i, div=100.0)
                 
                 def add_co_meas(var, val_raw):
                     if not val_raw: return
                     try:
-                        record["measurements"].append({"variable": var, "value": float(val_raw), "unit": "ppm"})
+                        value = float(val_raw)
+                        if value < 0:
+                            record["quality_flags"].append(f"invalid_{var}: negative_source_value")
+                            self._record_error(i, var, val_raw, "Negative CO reading retained in raw; not stored as a concentration")
+                            self.stats["flagged_records"] += 1
+                            return
+                        record["measurements"].append({"variable": var, "value": value, "unit": "ppm"})
                     except ValueError:
                         record["quality_flags"].append(f"invalid_{var}: {val_raw}")
                         self._record_error(i, var, val_raw, "Non-numeric CO value")
+                        self.stats["flagged_records"] += 1
 
                 add_co_meas("initial_co_ppm", get_val("Initial CO (ppm)"))
                 add_co_meas("final_co_ppm", get_val("Final CO (ppm)"))
@@ -392,17 +483,23 @@ class BassParser(BaseParser):
                     record["raw"]["_normalization"]["flow_display"] = self._parse_flow_display(air_display)
 
                 found_outcome = "unknown"
-                for v in row.values():
-                    v_str = str(v).lower()
-                    if "ext" in v_str:
-                         found_outcome = "extinction"
-                         break
-                    elif "ignited" in v_str:
-                         found_outcome = "ignited"
-                         break
+                display_text = " ".join(
+                    value for value in (get_val("Air display"), get_val("Fan display")) if value
+                ).lower()
+                if re.search(r"\bno\s+ignition\b|\bdid not ignite\b|\bnot ignited\b", display_text):
+                    found_outcome = "no_ignition"
+                elif re.search(r"\bblow\s*off\b|\bblowoff\b", display_text):
+                    found_outcome = "blowoff"
+                elif re.search(r"\bext(?:inction|inguish(?:ed|es|ing)?)?\b|(?<=\d)ext\b", display_text):
+                    found_outcome = "extinction"
+                elif re.search(r"\bignit(?:e|ed|es|ion|ing)\b", display_text):
+                    found_outcome = "ignited"
                 record["outcome"] = found_outcome
                 record["outcome_source"] = "parser_keyword" if found_outcome != "unknown" else "default"
                 self._add_outcome_stat(record["outcome"])
+
+                if record["quality_flags"]:
+                    record["raw"]["_normalization"]["quality_flags"] = list(record["quality_flags"])
 
                 self.results.append(record)
                 self.stats["parsed_records"] += 1
@@ -411,8 +508,9 @@ class BassParser(BaseParser):
         return self.results, self.stats
 
     def _parse_psi26(self) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        self.stats["header_rows"] = 3
         df = pd.read_excel(self.file_path, sheet_name="as run matrix", skiprows=2)
-        header_map = {c.strip(): c for c in df.columns}
+        header_map = self._normalize_headers(list(df.columns))
         
         for idx, row in df.iterrows():
             row_num = idx + 4 
@@ -427,6 +525,15 @@ class BassParser(BaseParser):
 
             as_run_no = get_val("As run test no.")
             test_no = get_val("Test no.")
+
+            row_has_data = any(
+                value is not None and str(value).strip()
+                for value in row.tolist()
+                if not (isinstance(value, float) and np.isnan(value))
+            )
+            if not row_has_data:
+                self.stats["skipped_blank_rows"] += 1
+                continue
             
             if not as_run_no or not test_no:
                 self.stats["skipped_non_test_rows"] += 1
@@ -470,29 +577,54 @@ class BassParser(BaseParser):
             o2_raw = get_val("O2 % by volume")
             if o2_raw:
                 try:
-                    record["o2_frac"] = float(o2_raw)
-                except ValueError:
+                    o2_value = float(o2_raw)
+                    if not 0 <= o2_value <= 1:
+                        raise ValueError("O2 fraction outside 0–1")
+                    record["o2_frac"] = o2_value
+                except ValueError as exc:
+                    record["quality_flags"].append("invalid_o2_fraction")
                     self._record_error(row_num, "O2 % by volume", o2_raw, "Non-numeric O2")
+                    self.stats["flagged_records"] += 1
+            else:
+                self.stats["missing_o2_count"] += 1
+                record["quality_flags"].append("missing_o2_fraction")
 
             p_raw = get_val("pressure, atm")
             if p_raw:
                 try:
-                    record["pressure_atm"] = float(p_raw)
-                except ValueError:
-                     self._record_error(row_num, "pressure, atm", p_raw, "Non-numeric pressure")
+                    pressure_value = float(p_raw)
+                    if pressure_value <= 0:
+                        raise ValueError("Pressure must be positive")
+                    record["pressure_atm"] = pressure_value
+                except ValueError as exc:
+                    record["quality_flags"].append("invalid_pressure")
+                    self._record_error(row_num, "pressure, atm", p_raw, str(exc))
+                    self.stats["flagged_records"] += 1
+            else:
+                self.stats["missing_pressure_count"] += 1
+                record["quality_flags"].append("missing_pressure")
 
             record["raw"]["_normalization"] = {
                 "material": norm_mat["normalization_notes"],
-                "_source": {"filename": os.path.basename(self.file_path), "sheet": "as run matrix", "row": row_num}
+                "pressure": {"source": "measured", "unit": "atm"},
+            }
+            record["raw"]["_source"] = {
+                "filename": os.path.basename(self.file_path),
+                "sheet": "as run matrix",
+                "row": row_num,
             }
 
             co2_raw = get_val("CO2, mm Hg")
             if co2_raw:
                 try:
-                    record["measurements"].append({"variable": "co2_partial_pressure", "value": float(co2_raw), "unit": "mmHg"})
+                    co2_value = float(co2_raw)
+                    if co2_value < 0:
+                        raise ValueError("Negative CO2 reading retained in raw")
+                    record["measurements"].append({"variable": "co2_partial_pressure", "value": co2_value, "unit": "mmHg"})
                 except ValueError:
                     record["quality_flags"].append(f"invalid_co2: {co2_raw}")
                     self._record_error(row_num, "CO2, mm Hg", co2_raw, "Non-numeric CO2")
+                    self.stats["flagged_records"] += 1
 
             air_display = get_val("Air display")
             if air_display:
@@ -505,18 +637,21 @@ class BassParser(BaseParser):
             found_outcome = "unknown"
             if obs_text:
                 lower_obs = obs_text.lower()
-                if any(k in lower_obs for k in ["extinguish", "ext.", "self-ext"]):
-                    found_outcome = "extinction"
-                elif "ignited" in lower_obs or "ignit" in lower_obs:
-                    found_outcome = "ignited"
-                elif "no ignition" in lower_obs:
+                if re.search(r"\bno\s+ignition\b|\bdid not ignite\b|\bnot ignited\b|\bfailed to ignite\b|\bignition failed\b", lower_obs):
                     found_outcome = "no_ignition"
-                elif "blowoff" in lower_obs or "blow off" in lower_obs:
+                elif re.search(r"\bblow\s*off\b|\bblowoff\b", lower_obs):
                     found_outcome = "blowoff"
+                elif re.search(r"\bextinguish(?:ed|es|ing)?\b|\bextinction\b|\bself-ext", lower_obs):
+                    found_outcome = "extinction"
+                elif re.search(r"\bignit(?:e|ed|es|ion|ing)\b", lower_obs):
+                    found_outcome = "ignited"
             
             record["outcome"] = found_outcome
             record["outcome_source"] = "observation_keyword" if found_outcome != "unknown" else "default"
             self._add_outcome_stat(record["outcome"])
+
+            if record["quality_flags"]:
+                record["raw"]["_normalization"]["quality_flags"] = list(record["quality_flags"])
 
             self.results.append(record)
             self.stats["parsed_records"] += 1
@@ -524,16 +659,21 @@ class BassParser(BaseParser):
 
         return self.results, self.stats
 
-    def _add_meas_div(self, record, var, val, unit, div=1.0):
+    def _add_meas_div(self, record, var, val, unit, row_num, div=1.0):
         if val and val.strip():
             try:
+                source_value = float(val.strip())
+                if div != 1.0 and not 0 <= source_value <= 100:
+                    raise ValueError(f"percent value outside 0–100: {source_value}")
                 record["measurements"].append({
                     "variable": var,
-                    "value": float(val.strip()) / div,
+                    "value": source_value / div,
                     "unit": unit
                 })
-            except ValueError:
-                pass
+            except ValueError as exc:
+                record["quality_flags"].append(f"invalid_{var}: {val.strip()}")
+                self._record_error(row_num, var, val.strip(), str(exc) or "Non-numeric measurement")
+                self.stats["flagged_records"] += 1
 
 class CfiGParser(BaseParser):
     def __init__(self, file_path: str, psi_id: str, flame_type: str):
