@@ -6,7 +6,15 @@ from typing import Annotated
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
 
-from src.contracts import ScenarioQuery, ScenarioResponse, VerdictResponse
+from src.contracts import (
+    ScenarioQuery,
+    ScenarioResponse,
+    VerdictResponse,
+    InverseFlameQuery,
+    InverseFlameResponse,
+)
+from src.database import engine
+from src.api.queries import get_scenario_data, get_inverse_flames_data
 
 FIXTURES = Path(__file__).resolve().parents[2] / "data" / "fixtures"
 
@@ -25,9 +33,12 @@ app = FastAPI(title="PSI Flame API")
 
 @app.get("/scenario", response_model=ScenarioResponse)
 def get_scenario(query: Annotated[ScenarioQuery, Query()]) -> ScenarioResponse:
-    if query.flame_config == "solid":
-        return SCENARIO_MOON_SOLID
-    return SCENARIO_MOON
+    return get_scenario_data(engine, query)
+
+
+@app.get("/inverse-flames", response_model=InverseFlameResponse)
+def get_inverse_flames(query: Annotated[InverseFlameQuery, Query()]) -> InverseFlameResponse:
+    return get_inverse_flames_data(engine, query)
 
 
 @app.post("/verdict", response_model=VerdictResponse)

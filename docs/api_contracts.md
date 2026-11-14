@@ -2,7 +2,7 @@
 
 `src/contracts.py` defines the shape of every request and response of the API. The data track (A) fills these shapes from Postgres; the dashboard track (B) reads them. Both code against the same models, so **the names are fixed**: renaming a field means both tracks edit their code.
 
-Until the real queries land, the API returns fixed JSON files from `data/fixtures/`. They follow the same shapes, so the dashboard can be built now and keeps working when the real data replaces them.
+`/scenario` and `/inverse-flames` read run data from PostgreSQL. `/verdict` currently returns fixed JSON files from `data/fixtures/`. Fixture responses follow the contract shapes so the dashboard can be built before verdict generation is connected to evidence retrieval.
 
 ## Try it
 
@@ -20,10 +20,13 @@ curl -X POST http://127.0.0.1:8000/verdict \
 
 | Endpoint | Input | Output | Question it answers |
 | --- | --- | --- | --- |
-| `GET /scenario` | `ScenarioQuery` as query string | `ScenarioResponse` | Which ISS runs sit near this atmosphere? |
+| `GET /scenario` | `ScenarioQuery` as query string | `ScenarioResponse` | Which ambient-atmosphere runs sit near this atmosphere? |
+| `GET /inverse-flames` | `InverseFlameQuery` as query string | `InverseFlameResponse` | What inverse-flame tests were run at these burner-stream conditions? |
 | `POST /verdict` | `ScenarioQuery` as JSON body | `VerdictResponse` | In plain words: has this been tested, and where is the evidence? |
 
-Today both return fixtures: `flame_config=solid` gets the "solid" fixture, anything else gets the "Moon" fixture.
+Today `/verdict` returns fixtures: `flame_config=solid` gets the "solid" fixture, anything else gets the "Moon" fixture. `/scenario` and `/inverse-flames` are database-backed.
+
+`/scenario` is for ambient-atmosphere comparisons. It must exclude rows whose `o2_is_ambient` is false. Inverse-flame runs use burner-stream oxygen and are queried through `/inverse-flames` instead.
 
 ## Models
 
@@ -35,7 +38,7 @@ The atmosphere the user asks about.
 | --- | --- | --- | --- |
 | `o2_frac` | float | 0 to 1 | `0.30` (Moon-base plan) |
 | `pressure_atm` | float | > 0 | `0.69` |
-| `flame_config` | `FlameConfig` or null | optional | `"solid"` to look at solid materials only |
+| `flame_config` | `AmbientFlameConfig` or null | optional | `"solid"` to look at solid materials only |
 
 A value outside the rules is rejected with HTTP 422 before any code runs.
 
@@ -68,6 +71,40 @@ One test run on the ISS, i.e. one row of `psi_dashboard.runs`, cut down to what 
 | `closest` | The 5 nearest runs, nearest first: the "evidence" list | 5 FLEX runs |
 | `points` | Every run matching `flame_config`, with its distance: the dots of the scatter map | 402 runs |
 
+### `InverseFlameQuery` and `InverseFlameResponse`
+
+Inverse-flame oxygen is a burner-stream condition, not cabin or ambient oxygen. The endpoint uses explicitly named `burner_o2_min` and `burner_o2_max` filters and returns `burner_o2_frac`; it does not calculate ambient-scenario distance.
+
+Query filters are optional except for pagination defaults. Bounds are inclusive; if both ends of a range are supplied, the minimum must be no greater than the maximum. Fuel matching is case-insensitive. Invalid bounds are rejected with HTTP 422.
+
+| Field | Type / rule | Meaning |
+| --- | --- | --- |
+| `burner_o2_min`, `burner_o2_max` | float, 0 to 1 | Inclusive burner-stream oxygen bounds |
+| `pressure_min_atm`, `pressure_max_atm` | float, > 0 | Inclusive pressure bounds in atm |
+| `fuel` | string | Fuel filter |
+| `outcome` | `Outcome` | Canonical outcome filter |
+| `limit` | integer, 1 to 500; default 200 | Maximum runs returned |
+| `offset` | integer, >= 0; default 0 | Pagination offset |
+
+Each response run includes `run_id`, `psi_id`, `label`, `burner_o2_frac`, `pressure_atm`, `outcome`, and optional `outcome_detail` (for source details such as `flash`, `SE`, or `FT`). `total` is the count of matching runs before pagination. A response example:
+
+```json
+{
+  "total": 154,
+  "runs": [
+    {
+      "run_id": "PSI-159:inverse:21196 A1",
+      "psi_id": "PSI-159",
+      "label": "Methane",
+      "burner_o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "ignited",
+      "outcome_detail": "SE"
+    }
+  ]
+}
+```
+
 ### `VerdictResponse` (output of `POST /verdict`)
 
 ```json
@@ -89,7 +126,8 @@ These are `Literal` types: plain strings restricted to a closed list. They hold 
 | Type | Values |
 | --- | --- |
 | `Outcome` | `extinction`, `disruption`, `completion`, `ignited`, `no_ignition`, `blowoff`, `unknown` |
-| `FlameConfig` | `droplet`, `gas_normal`, `gas_inverse`, `solid`, `smoke` |
+| `FlameConfig` (stored run categories) | `droplet`, `gas_normal`, `gas_inverse`, `solid`, `smoke` |
+| `AmbientFlameConfig` (`/scenario`) | `droplet`, `gas_normal`, `solid`, `smoke` |
 | `VerdictStatus` | `tested`, `sparse`, `untested` |
 
 To list them in Python: `typing.get_args(Outcome)`.
