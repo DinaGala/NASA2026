@@ -2,7 +2,8 @@
 
 1. Shortlist (one SQL query, fast): two rankings of the same chunks, merged
    - semantic: cosine distance between the question's and the chunk's embeddings (meaning);
-   - keyword: Postgres full-text rank on the chunk's words (exact terms such as "CO2");
+   - keyword: BM25 on the chunk's words (exact and rare terms such as "CO2", "large-scale"),
+     from the chunk_terms / chunk_lengths tables built by scripts/load_chunks.py;
    fused with reciprocal rank fusion (RRF): each list gives a chunk 1 / (60 + rank), so a
    chunk near the top of either list, or fairly high in both, makes the shortlist.
 2. Re-rank (precise, ~1 s): a cross-encoder reads the question and each shortlisted chunk
@@ -24,6 +25,10 @@ from src.database import engine
 CANDIDATES = 50
 # RRF constant: 60 is the usual value; larger flattens the gap between ranks.
 RRF_K = 60
+# BM25 constants, the usual defaults: k1 sets how fast repeats stop counting, b how much
+# chunk length is penalised (0 = not at all, 1 = fully).
+BM25_K1 = 1.2
+BM25_B = 0.75
 # Small and fast (~1 s for 100 chunks on a laptop CPU). bge-reranker-base scored the same on
 # tests/test_search.py but took ~12 s.
 RERANKER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
@@ -48,16 +53,38 @@ SEARCH_SQL = text(
         ORDER BY embedding <=> CAST(:query_vector AS vector)
         LIMIT :candidates
     ),
+    -- BM25 keyword ranking. Each question word a chunk contains adds
+    --   idf * tf * (k1 + 1) / (tf + k1 * (1 - b + b * length / avg_length))
+    -- idf: rare words weigh more; tf: repeats help, with diminishing returns;
+    -- length: long chunks do not win just by holding more words.
+    question_terms AS (
+        SELECT DISTINCT lexeme AS term FROM unnest(to_tsvector('english', :query))
+    ),
+    corpus AS (
+        SELECT count(*) AS chunk_count, avg(length) AS avg_length
+        FROM psi_dashboard.chunk_lengths
+    ),
+    term_idf AS (
+        SELECT question_terms.term,
+               ln(1 + (corpus.chunk_count - count(*) + 0.5) / (count(*) + 0.5)) AS idf
+        FROM question_terms
+        JOIN psi_dashboard.chunk_terms AS terms USING (term)
+        CROSS JOIN corpus
+        GROUP BY question_terms.term, corpus.chunk_count
+    ),
     keyword AS (
-        -- Any of the question's words may match (OR), ranked by how many match and how close.
-        SELECT chunk_id,
-               row_number() OVER (ORDER BY ts_rank_cd(text_search, words) DESC) AS rank
-        FROM psi_dashboard.chunks,
-             CAST(replace(CAST(plainto_tsquery('english', :query) AS text), ' & ', ' | ')
-                  AS tsquery) AS words
-        WHERE text_search @@ words
-          AND (CAST(:psi_ids AS text[]) IS NULL OR psi_id = ANY(:psi_ids))
-        ORDER BY ts_rank_cd(text_search, words) DESC
+        SELECT terms.chunk_id,
+               row_number() OVER (ORDER BY sum(
+                   term_idf.idf * terms.tf * (:bm25_k1 + 1)
+                   / (terms.tf + :bm25_k1 * (1 - :bm25_b + :bm25_b * lengths.length / corpus.avg_length))
+               ) DESC) AS rank
+        FROM term_idf
+        JOIN psi_dashboard.chunk_terms AS terms USING (term)
+        JOIN psi_dashboard.chunk_lengths AS lengths USING (chunk_id)
+        CROSS JOIN corpus
+        WHERE CAST(:psi_ids AS text[]) IS NULL OR lengths.psi_id = ANY(:psi_ids)
+        GROUP BY terms.chunk_id
+        ORDER BY rank
         LIMIT :candidates
     ),
     fused AS (
@@ -94,6 +121,8 @@ def search_papers(query: str, psi_ids: list[str] | None = None, k: int = 5) -> l
                 "k": 2 * CANDIDATES,
                 "candidates": CANDIDATES,
                 "rrf_k": RRF_K,
+                "bm25_k1": BM25_K1,
+                "bm25_b": BM25_B,
             },
         ).all()
     if not shortlist:

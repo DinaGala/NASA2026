@@ -96,12 +96,30 @@ SCHEMA_SQL = (
         embedding vector(384) NOT NULL
     )
     """,
-    # Keyword side of the hybrid search: words of the title and text, kept up to date by Postgres.
+    # Words of the title and text (stemmed, English), kept up to date by Postgres.
     """
     ALTER TABLE psi_dashboard.chunks ADD COLUMN IF NOT EXISTS text_search tsvector
         GENERATED ALWAYS AS (to_tsvector('english', doc_title || ' ' || text)) STORED
     """,
-    "CREATE INDEX IF NOT EXISTS chunks_text_search_idx ON psi_dashboard.chunks USING gin (text_search)",
+    # The keyword search ranks with BM25 on the two tables below, not on this index.
+    "DROP INDEX IF EXISTS psi_dashboard.chunks_text_search_idx",
+    # BM25 statistics, rebuilt from text_search by scripts/load_chunks.py:
+    # how often each word occurs in each chunk, and each chunk's length in words.
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunk_terms (
+        term TEXT NOT NULL,
+        chunk_id TEXT NOT NULL REFERENCES psi_dashboard.chunks(chunk_id),
+        tf INTEGER NOT NULL,
+        PRIMARY KEY (term, chunk_id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunk_lengths (
+        chunk_id TEXT PRIMARY KEY REFERENCES psi_dashboard.chunks(chunk_id),
+        psi_id TEXT NOT NULL,
+        length INTEGER NOT NULL
+    )
+    """,
 )
 
 

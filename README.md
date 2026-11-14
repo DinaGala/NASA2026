@@ -40,7 +40,7 @@ This creates `.venv314` with Python 3.14, installs Python dependencies from `req
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
-| `make load-chunks` | Truncate and reload `psi_dashboard.chunks` from the committed parquet (seconds, no re-embedding); how the paper search works: [`docs/paper_search.md`](docs/paper_search.md) |
+| `make load-chunks` | Truncate and reload `psi_dashboard.chunks` and its BM25 tables from the committed parquet (~25 s, no re-embedding); how the paper search works: [`docs/paper_search.md`](docs/paper_search.md) |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
 | `make test` | Run the unit tests |
@@ -65,7 +65,7 @@ PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py
 
 ### Rebuilding the embedded chunks (maintainers only)
 
-`data/processed/chunks.parquet` is committed: it holds every chunk with its embedding, and `make load-chunks` loads it in seconds. Rebuild it only when the documents in `psi_data/`, the chunking, or the embedding model change:
+`data/processed/chunks.parquet` is committed: it holds every chunk with its embedding, and `make load-chunks` loads it in about 25 seconds. Rebuild it only when the documents in `psi_data/`, the chunking, or the embedding model change:
 
 ```bash
 .venv/bin/python scripts/make_chunks.py   # asks for confirmation; 10–15 min

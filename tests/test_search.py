@@ -37,6 +37,18 @@ class SearchPapersTests(unittest.TestCase):
                 found = {hit.psi_id for hit in search_papers(question, k=5)}
                 self.assertTrue(found & expected, f"top 5 came from {sorted(found)}")
 
+    def test_bm25_tables_cover_every_chunk(self):
+        with engine.connect() as connection:
+            chunks, lengths, chunks_with_terms = connection.execute(
+                text(
+                    "SELECT (SELECT count(*) FROM psi_dashboard.chunks),"
+                    " (SELECT count(*) FROM psi_dashboard.chunk_lengths),"
+                    " (SELECT count(DISTINCT chunk_id) FROM psi_dashboard.chunk_terms)"
+                )
+            ).one()
+        self.assertEqual(lengths, chunks)
+        self.assertEqual(chunks_with_terms, chunks)
+
     def test_psi_ids_filter_limits_the_hits(self):
         from src.agent.search import search_papers
 
