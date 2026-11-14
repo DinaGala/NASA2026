@@ -1,83 +1,80 @@
-# NASA2026
+# NASA Flame in Freefall
 
-## Project Structure
+This project is building a dashboard around NASA Physical Sciences Informatics (PSI) combustion studies. The current database milestone creates a local PostgreSQL database, applies the shared schema, and imports investigation metadata only.
 
-```text
-├── docker-compose.yml
-├── .env
-├── .env.example
-├── .gitignore
-├── requirements.txt
-├── README.md
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── src/
-│   ├── __init__.py
-│   ├── database.py
-│   ├── models.py
-│   │
-│   └── ingestion/
-│       ├── __init__.py
-│       └── psi_client.py
+## Prerequisites
+
+- Python 3
+- Docker Desktop, or Docker Engine with Docker Compose (for example, Colima on macOS)
+- The PSI investigation metadata under `psi_data/PSI-*/investigation.json`
+
+## Configure the database
+
+Create or update `.env` in the project root. Use the same credentials for the container and Python scripts:
+
+```dotenv
+POSTGRES_USER=flame_user
+POSTGRES_PASSWORD=your_local_password
+POSTGRES_DB=psi_flame
+POSTGRES_PORT=5432
 ```
 
-## Getting Started
+Do not commit `.env`. Keep `POSTGRES_DB` set to `psi_flame`; an old `flame_db` value will make the Python scripts connect to the wrong database.
 
-### Step 1 — Create the Python environment
+## Quick setup
 
-Assuming you're using your Mac:
+With Docker running and `.env` configured, run:
 
 ```bash
-python3 --version
+make setup
 ```
 
-Create a virtual environment:
+This creates `.venv`, installs Python dependencies from `requirements.txt`, starts the PostgreSQL container, waits for it to become healthy, applies the schema, and imports investigation metadata.
+
+## Individual Make targets
+
+| Command | Action |
+|---|---|
+| `make install` | Create `.venv` and install Python dependencies |
+| `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
+| `make schema` | Create the database schema and tables |
+| `make import` | Upsert PSI investigations from `psi_data` |
+| `make verify` | List tables, count investigations, and list study IDs |
+| `make db-down` | Stop the PostgreSQL container while preserving its data volume |
+
+Equivalent manual commands:
 
 ```bash
 python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -r requirements.txt
+docker compose up -d --wait postgres
+.venv/bin/python scripts/apply_schema.py
+.venv/bin/python scripts/import_psi_data.py
 ```
 
-Activate it:
+## Database schema and current data
+
+The database is named `psi_flame`. Its tables live in the `psi_dashboard` schema and follow [`data_audit.md`](data_audit.md):
+
+- **`investigations`** — one PSI study per row, with acronym, title, pillar, fuel phase, hardware, objective, hypothesis, approach, impacts, DOI, dates, and original metadata in `raw` JSONB.
+- **`scenarios`** — experiment/test-level context, keyed by `test_id` and linked to its investigation by `psi_id`. This is the agreed name in place of `tests`.
+- **`measurements`** — numeric variable/value/unit rows linked to a scenario by `test_id`.
+
+The schema setup creates all three tables. The importer currently populates only `investigations`, keyed by `psi_id`; `scenarios` and `measurements` remain empty for a later milestone. The investigation import is safe to rerun because it upserts existing records.
+
+When all local metadata files are present, the expected number of investigation rows is 24.
+
+## Manual database verification
+
+`make verify` runs these checks:
 
 ```bash
-source .venv/bin/activate
+docker compose exec postgres psql -U flame_user -d psi_flame -c "\\dt psi_dashboard.*"
+docker compose exec postgres psql -U flame_user -d psi_flame -c "SELECT count(*) FROM psi_dashboard.investigations;"
+docker compose exec postgres psql -U flame_user -d psi_flame -c "SELECT psi_id, acronym, title FROM psi_dashboard.investigations ORDER BY psi_id;"
 ```
 
-Upgrade pip:
+## Downloading PSI data
 
-```bash
-python -m pip install --upgrade pip
-```
-
-### Step 2 — Run the dependencies file
-
-Install the requirements:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Step 3 — Install Docker CLI and Colima
-
-If you use Homebrew, run:
-
-```bash
-brew install docker docker-compose colima
-```
-
-### Step 4 — Start the Docker Engine
-
-```bash
-colima start
-```
-
-### Step 5 — Launch the services
-
-```bash
-docker-compose up -d
-```
-
-```
+The repository includes PSI downloader utilities in `scripts/` and `src/ingestion/`. The database import step expects metadata already downloaded under `psi_data/`. The data directory is local input and should not be added to Git.

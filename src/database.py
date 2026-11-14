@@ -9,8 +9,8 @@ database_url = URL.create(
     username=os.getenv("POSTGRES_USER", "flame_user"),
     password=os.getenv("POSTGRES_PASSWORD"),
     host="localhost",
-    port=5432,
-    database="flame_db",
+    port=int(os.getenv("POSTGRES_PORT", "5432")),
+    database=os.getenv("POSTGRES_DB", "psi_flame"),
 )
 
 engine = create_engine(database_url)
