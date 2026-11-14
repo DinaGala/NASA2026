@@ -8,6 +8,7 @@ import json
 import math
 from pathlib import Path
 
+from src.constants import O2_SCALE, PRESSURE_SCALE
 from src.contracts import Citation, Run, ScenarioQuery, ScenarioResponse, VerdictResponse
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,9 +22,6 @@ MMHG_PER_ATM = 760.0
 # The BASS-II table has no pressure column; the runs were at ISS cabin pressure.
 BASS_II_PRESSURE_ATM = 1.0
 
-# A run is "nearby" when its scaled distance to the query is at most 1.
-O2_SCALE = 0.05
-PRESSURE_SCALE = 0.2
 N_CLOSEST = 5
 
 MOON = ScenarioQuery(o2_frac=0.30, pressure_atm=0.69)
