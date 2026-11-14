@@ -19,7 +19,7 @@ from fastapi import testclient
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
-from src.agent.verdict_agent import Deps, RunEvidence, answer
+from src.agent.verdict_agent import DEFAULT_MODEL, Deps, RunEvidence, answer
 from src.api.app import app
 from src.contracts import ScenarioQuery, VerdictResponse
 from src.database import engine
@@ -137,7 +137,8 @@ class LiveScenarioTests(unittest.TestCase):
         self.assertRegex(verdict.text, THIN_EVIDENCE)
 
     def test_a_broken_api_key_still_returns_a_valid_fallback_verdict(self):
-        broken_key = {"ANTHROPIC_API_KEY": "sk-ant-broken"}
+        # Pin an Anthropic model: with another provider in .env, the fake key would not be used.
+        broken_key = {"ANTHROPIC_API_KEY": "sk-ant-broken", "LLM_MODEL": DEFAULT_MODEL}
         with mock.patch.dict(os.environ, broken_key), self.assertLogs("src.agent.verdict_agent"):
             response = testclient.TestClient(app).post("/verdict", json=MOON_DROPLET.model_dump())
         self.assertEqual(response.status_code, 200)

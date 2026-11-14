@@ -137,6 +137,16 @@ class OutputValidatorTests(unittest.TestCase):
             check_verdict(verdict, deps)
         check_verdict(verdict.model_copy(update={"text": f"Untested. The closest is {closest}; it ignited."}), deps)
 
+    def test_experiment_names_are_not_checked_as_numbers(self):
+        # Shaped like PSI-68's "FLEX-2 (Flame Extinguishment Experiment - 2)", with a number that
+        # is not in the Moon evidence, so only stripping the name lets the verdict through.
+        name = "FLEX-9 (Flame Extinguishment Experiment - 9)"
+        deps = searched(fake_deps())
+        deps.find_study_names = lambda _engine, psi_ids: {"PSI-69": name}
+        for text_ in (f"Tested: 17 runs in {name}.", "Tested: 17 runs in the Flame Extinguishment Experiment - 9."):
+            with self.subTest(text=text_):
+                check_verdict(TESTED.model_copy(update={"text": text_}), deps)
+
     def test_a_percent_must_be_a_fraction_not_a_count(self):
         # The Moon evidence holds the count 2 (completions) and 15 (disruptions), but no 0.15 fraction.
         verdict = TESTED.model_copy(update={"text": "Tested. Earlier tests ran at 15% oxygen."})
@@ -188,6 +198,17 @@ class AgentWiringTests(unittest.TestCase):
         with verdict_agent.override(model=FunctionModel(broken)), self.assertLogs("src.agent.verdict_agent"):
             asyncio.run(answer(fake_deps(calls=calls)))
         self.assertEqual(len(calls), 1)  # the fallback reused the loaded runs
+
+    def test_failed_name_and_flame_lookups_do_not_block_a_verdict(self):
+        def down(_engine, _ids):
+            raise OperationalError("SELECT", {}, Exception("investigations missing"))
+
+        deps = fake_deps()
+        deps.find_study_names = deps.find_flame_types = down
+        with self.assertLogs("src.agent.verdict_agent"):
+            evidence = deps.evidence()
+        self.assertEqual(evidence.studies, {"PSI-69": "PSI-69"})  # IDs instead of names
+        self.assertEqual(evidence.nearby_runs_by_flame_type, {"unknown": evidence.n_nearby})
 
     def test_unavailable_run_data_raises_instead_of_a_verdict(self):
         deps = fake_deps()

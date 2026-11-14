@@ -59,14 +59,14 @@ answer(deps)
 1. **FastAPI validates the body** as a `ScenarioQuery` (O₂ between 0 and 1, pressure above 0, a known flame type). Anything else is a 422; the agent never sees it.
 2. **The endpoint builds `Deps`** through the `verdict_deps` dependency: the database engine, the request's query, and two swappable functions (`find_scenario`, `search`). `Deps` also holds the run's state: the scenario once loaded, whether the papers were searched, and the hits returned.
 3. **`answer` loads the runs first**, once, in a worker thread (`asyncio.to_thread`) so the database query never blocks the event loop. If that fails, it raises `RunDataUnavailable` and the endpoint returns a 503: without the runs, not even the fallback can be written truthfully.
-4. **`answer` starts the agent** with a one-line prompt (the scenario and the question), the model from `LLM_MODEL` (read on every run, the only place it is set), and `UsageLimits(request_limit=8, total_tokens_limit=30_000)`.
+4. **`answer` starts the agent** with a one-line prompt (the scenario and the question), the model from `LLM_MODEL` (read on every run, the only place it is set), and `UsageLimits(request_limit=8, total_tokens_limit=50_000)`.
 5. **PydanticAI sends the first request** to the model: the instructions (the rules in plain words), the prompt, and three tool schemas: `find_runs` (no arguments), `search_papers(question: str)`, and an output tool whose arguments are a `VerdictResponse`. Calling the output tool is how the model hands in its answer as structured data. PydanticAI adapts that request to each model (some models refuse to be forced to call a tool), so any model set in `LLM_MODEL` works as is.
 6. **In its first turn, the model calls `find_runs` and `search_papers` together** (the instructions ask for it), which saves a round trip: a verdict takes 2 model calls instead of 3. For `find_runs`, PydanticAI runs the Python function and sends its result back as JSON. The function summarises the runs loaded in step 3 (the same `get_scenario_data` as `GET /scenario`); a lock keeps it to one query even when tools run in parallel threads.
 7. **`search_papers`** gets a question the model words itself, such as "droplet flame extinction at elevated oxygen". The tool restricts the search to the studies of the nearby runs (here PSI-69), or of the closest runs when none is nearby; drops hits from Word files (no page to cite); keeps 5; and records them in `Deps.hits`. Behind it, [paper search](paper_search.md) runs meaning + BM25 keywords, then a re-ranker.
 8. **The model calls the output tool** with its verdict. Two checks follow:
    - **Shape**, by Pydantic: `status` is one of the three values, every citation has a page ≥ 1, and so on.
    - **Content**, by `check_verdict` (below). A failure raises `ModelRetry("These numbers are not in the find_runs output: 23 …")`; PydanticAI sends that message back to the model as the result of its output call, and the model tries again, at most twice.
-9. **The verdict is returned** and FastAPI serialises it as a `VerdictResponse`. A run typically takes 2 to 3 model calls and 6-15k tokens (9k on average); the limits (8 calls, 30k tokens) stop a model that loops, or an expensive model set by mistake, and the request then gets the fallback.
+9. **The verdict is returned** and FastAPI serialises it as a `VerdictResponse`. A run typically takes 2 to 3 model calls and 6-15k tokens (9k on average); the limits (8 calls, 50k tokens) stop a model that loops, or an expensive model set by mistake, and the request then gets the fallback.
 10. **If the agent raises** (authentication, network, a model error, retries or the request limit used up), `answer` logs it and returns `fallback_verdict(deps)`, built from the runs loaded in step 3, with no new query.
 
 ## The rules, inside
@@ -93,7 +93,7 @@ answer(deps)
 | `nearby_o2_range`, `nearby_pressure_range` | `[0.3, 0.34]`, `[0.7, 0.71]` | |
 | `nearby_studies` | `["PSI-69"]` | Which investigations the paper search is limited to |
 | `closest` | 5 runs | Study, label, conditions, outcome, distance |
-| `studies` | `{"PSI-69": "FLEX (Flame Extinguishment Experiment)"}` | Readers know experiments by name, not by PSI ID; read once from `investigations` |
+| `studies` | `{"PSI-69": "FLEX (Flame Extinguishment Experiment)"}` | Readers know experiments by name, not by PSI ID; read once from `investigations`. If that lookup fails, the PSI IDs are used: names only shape the wording, so they never block a verdict (same for flame types, which then count as "unknown"). |
 | `nearby_runs_by_flame_type`, `nearby_outcomes_by_flame_type` | `{"droplet": 17}`, `{"droplet": {"disruption": 15, "completion": 2}}` | A scenario without a flame type must never blend droplets and gas flames into one count; read once from `runs` (a `Run` does not carry its flame type). Each closest run also carries its `flame_config`. |
 
 Values are rounded (O₂ to 3 decimals, pressure and distance to 2), so the model sees the same precision it should write.
@@ -128,7 +128,7 @@ Each failure says what to fix, so the retry is a correction, not a reroll.
 
 `unsupported_numbers(text, evidence, citations)`:
 
-1. **Remove what is not a quantity:** the titles of the cited documents, already checked to be search hits ("SRD 201306" is a title, not a figure); the closest runs' IDs (`PSI-69:flex:41`) and labels ("100 micron PMMA film", which come from `find_runs`); page references, one page or one range only (`p. 6`, `pp. 17-20`), never the numbers after them; and identifiers with letters before digits (`PSI-69`, `CO2`, `FLEX-2`).
+1. **Remove what is not a quantity:** the titles of the cited documents, already checked to be search hits ("SRD 201306" is a title, not a figure); the closest runs' IDs (`PSI-69:flex:41`) and labels ("100 micron PMMA film"), and the experiment names ("FLEX-2 (Flame Extinguishment Experiment - 2)", whole or either part), all of which come from `find_runs`; page references, one page or one range only (`p. 6`, `pp. 17-20`), never the numbers after them; and identifiers with letters before digits (`PSI-69`, `CO2`, `FLEX-2`).
 2. **Extract the remaining numbers**, including those with a unit attached: "1500K", "45s" and "0.3atm" are checked as 1500, 45 and 0.3.
 3. **Collect every number in `RunEvidence`**, wherever it sits: the query, counts, ranges, each closest run's values.
 4. **Match each number at the precision it is written:** "0.70" matches 0.703 (2 decimals), "17" matches 17. A percent ("30%", "30 percent") matches only a fraction (0.3), never a count: a "13%" from a paper does not pass because 13 runs happened to complete. A bare number matches only a value as written.
@@ -159,7 +159,7 @@ Built from `RunEvidence` only: the status, then either the nearby count and outc
 | **Citations must be search hits** | Check the page exists anywhere in `chunks` | A page the model remembers may exist and still not support the claim. Only pages retrieved for this question were read; checking in memory also saves a query per citation. |
 | **Paper-search models imported on first use** | Import them with the module | `sentence_transformers` loads torch, which takes seconds; `/scenario` and `/inverse-flames` never search papers and should not pay for it. |
 | **`Deps` with swappable functions** | Call the database directly in the tools | Tests run the agent without a database or an LLM, and the scenario source can change without touching the agent. |
-| **Limits: 2 retries, 8 model calls, 30k tokens** | Defaults | Bounds cost and latency; a model that cannot follow the rules in 2 tries falls back. The token cap sits at about twice the largest verdict measured (14.5k), so it only cuts a runaway run. |
+| **Limits: 2 retries, 8 model calls, 50k tokens** | Defaults | Bounds cost and latency; a model that cannot follow the rules in 2 tries falls back. A normal verdict uses 6-15k tokens; one using both retries makes ~5 calls, each resending the conversation (~25-35k). The token cap sits above that worst case, so it never cuts a correction, only a runaway run. |
 | **Claude Haiku 5.5, through `LLM_MODEL`** | A larger model (Sonnet, Opus) | The cheapest model that passes every check: about $0.0012 per verdict, the 6 demo scenarios twice in a row with no retry (#9). Code enforces the rules, so a stronger model would cost several times more for the same verdicts. Read on every run, in one place, so a change in `.env` needs no code change. |
 | **Live tests behind `make test-live`** | Run them in `make test` | They cost money and need a key and the loaded database. `make test` stays free and offline. |
 | **Study names given to the model** | Let it use PSI IDs | A judge has never heard of PSI-69; "NASA's FLEX experiment" is the first thing the answer needs to be understood. |
@@ -180,7 +180,7 @@ ANTHROPIC_API_KEY=sk-ant-...          # the key of that provider
 
 Without `LLM_MODEL`, the code uses Claude Haiku 5.5 (`DEFAULT_MODEL`), the model the prompt was tuned on. Another model for one run: `make test-live LLM_MODEL=...`; re-run the live tests before switching, since the prompt was tuned on Haiku 5.5.
 
-`pydantic-ai-slim[anthropic]>=2.68`: older versions accept only an integer for `retries`, and the agent would fail to start (silently, into the fallback). Limits, in `src/agent/verdict_agent.py`: `retries={"output": 2}` (the issue's `output_retries=2`, as PydanticAI 2.x writes it), `USAGE_LIMITS = UsageLimits(request_limit=8, total_tokens_limit=30_000)`, `PAPER_HITS = 5`, `TESTED_MIN_RUNS = 3`.
+`pydantic-ai-slim[anthropic]>=2.68`: older versions accept only an integer for `retries`, and the agent would fail to start (silently, into the fallback). Limits, in `src/agent/verdict_agent.py`: `retries={"output": 2}` (the issue's `output_retries=2`, as PydanticAI 2.x writes it), `USAGE_LIMITS = UsageLimits(request_limit=8, total_tokens_limit=50_000)`, `PAPER_HITS = 5`, `TESTED_MIN_RUNS = 3`.
 
 ## Tests
 

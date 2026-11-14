@@ -42,9 +42,10 @@ QUESTION = (
 )
 TESTED_MIN_RUNS = 3
 PAPER_HITS = 5
-# A verdict uses 6-15k tokens (9k on average, #9); the token cap, about twice the largest,
-# only cuts a runaway run (or an expensive model set by mistake), which then gets the fallback.
-USAGE_LIMITS = UsageLimits(request_limit=8, total_tokens_limit=30_000)
+# A normal verdict uses 6-15k tokens over 2-3 calls (#9). With both allowed output retries, a run
+# makes ~5 calls, each resending the conversation: ~25-35k. The cap sits above that, so it only
+# cuts a runaway run (or an expensive model set by mistake), which then gets the fallback.
+USAGE_LIMITS = UsageLimits(request_limit=8, total_tokens_limit=50_000)
 
 
 def status_for(n_nearby: int) -> VerdictStatus:
@@ -202,8 +203,16 @@ class Deps:
         with self._lock:
             if self.scenario is None:
                 scenario = self.find_scenario(self.engine, self.query)
-                self.study_names = self.find_study_names(self.engine, involved_studies(scenario))
-                self.flame_types = self.find_flame_types(self.engine, involved_runs(scenario))
+                # Names and flame types only shape the wording: without them, the verdict uses
+                # PSI IDs and an "unknown" flame type rather than failing a request whose runs loaded.
+                try:
+                    self.study_names = self.find_study_names(self.engine, involved_studies(scenario))
+                except Exception:
+                    logger.exception("Study names unavailable; the verdict will use PSI IDs")
+                try:
+                    self.flame_types = self.find_flame_types(self.engine, involved_runs(scenario))
+                except Exception:
+                    logger.exception("Flame types unavailable; nearby runs are counted as unknown")
                 self.scenario = scenario
             return self.scenario
 
@@ -332,6 +341,11 @@ def unsupported_numbers(text_: str, evidence: RunEvidence, citations: list[Citat
         cleaned = cleaned.replace(citation.doc_title, " ")
     for run in evidence.closest:  # run IDs and labels ("100 micron PMMA film") come from find_runs
         cleaned = cleaned.replace(run.run_id, " ").replace(run.label, " ")
+    for name in evidence.studies.values():  # "FLEX-2 (Flame Extinguishment Experiment - 2)"
+        acronym, _, title = name.partition(" (")
+        for part in (name, title.removesuffix(")"), acronym):  # the model may write either part
+            if part:
+                cleaned = cleaned.replace(part, " ")
     cleaned = IDENTIFIER.sub(" ", PAGE_REFERENCE.sub(" ", cleaned))
 
     allowed = numbers_in(evidence)
