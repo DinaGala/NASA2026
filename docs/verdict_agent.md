@@ -61,8 +61,8 @@ answer(deps)
 3. **`answer` loads the runs first**, once, in a worker thread (`asyncio.to_thread`) so the database query never blocks the event loop. If that fails, it raises `RunDataUnavailable` and the endpoint returns a 503: without the runs, not even the fallback can be written truthfully.
 4. **`answer` starts the agent** with a one-line prompt (the scenario and the question), the model from `LLM_MODEL` (read on every run, the only place it is set), and `UsageLimits(request_limit=8, total_tokens_limit=30_000)`.
 5. **PydanticAI sends the first request** to the model: the instructions (the rules in plain words), the prompt, and three tool schemas: `find_runs` (no arguments), `search_papers(question: str)`, and an output tool whose arguments are a `VerdictResponse`. Calling the output tool is how the model hands in its answer as structured data. PydanticAI adapts that request to each model (some models refuse to be forced to call a tool), so any model set in `LLM_MODEL` works as is.
-6. **The model calls `find_runs`.** PydanticAI runs the Python function and sends its result back as JSON. The function summarises the runs loaded in step 3 (the same `get_scenario_data` as `GET /scenario`); a lock keeps it to one query even when tools run in parallel threads.
-7. **The model calls `search_papers`** with a question it words itself, such as "droplet flame extinction at elevated oxygen". The tool restricts the search to the studies of the nearby runs (here PSI-69), or of the closest runs when none is nearby; drops hits from Word files (no page to cite); keeps 5; and records them in `Deps.hits`. Behind it, [paper search](paper_search.md) runs meaning + BM25 keywords, then a re-ranker.
+6. **In its first turn, the model calls `find_runs` and `search_papers` together** (the instructions ask for it), which saves a round trip: a verdict takes 2 model calls instead of 3. For `find_runs`, PydanticAI runs the Python function and sends its result back as JSON. The function summarises the runs loaded in step 3 (the same `get_scenario_data` as `GET /scenario`); a lock keeps it to one query even when tools run in parallel threads.
+7. **`search_papers`** gets a question the model words itself, such as "droplet flame extinction at elevated oxygen". The tool restricts the search to the studies of the nearby runs (here PSI-69), or of the closest runs when none is nearby; drops hits from Word files (no page to cite); keeps 5; and records them in `Deps.hits`. Behind it, [paper search](paper_search.md) runs meaning + BM25 keywords, then a re-ranker.
 8. **The model calls the output tool** with its verdict. Two checks follow:
    - **Shape**, by Pydantic: `status` is one of the three values, every citation has a page ≥ 1, and so on.
    - **Content**, by `check_verdict` (below). A failure raises `ModelRetry("These numbers are not in the find_runs output: 23 …")`; PydanticAI sends that message back to the model as the result of its output call, and the model tries again, at most twice.
@@ -94,17 +94,22 @@ answer(deps)
 | `nearby_studies` | `["PSI-69"]` | Which investigations the paper search is limited to |
 | `closest` | 5 runs | Study, label, conditions, outcome, distance |
 | `studies` | `{"PSI-69": "FLEX (Flame Extinguishment Experiment)"}` | Readers know experiments by name, not by PSI ID; read once from `investigations` |
+| `nearby_runs_by_flame_type`, `nearby_outcomes_by_flame_type` | `{"droplet": 17}`, `{"droplet": {"disruption": 15, "completion": 2}}` | A scenario without a flame type must never blend droplets and gas flames into one count; read once from `runs` (a `Run` does not carry its flame type). Each closest run also carries its `flame_config`. |
 
 Values are rounded (O₂ to 3 decimals, pressure and distance to 2), so the model sees the same precision it should write.
 
 ### The instructions
 
-`INSTRUCTIONS` in `src/agent/verdict_agent.py`, tuned on the four demo scenarios (#9). They state the reader (someone who has never heard of these NASA experiments), the rules the validator enforces, and a fixed shape for `text`, 3 or 4 short sentences under 90 words:
+`INSTRUCTIONS` in `src/agent/verdict_agent.py`, tuned on the six demo scenarios (#9). They state the reader (someone who has never heard of these NASA experiments), ask for both tools in the first turn, list the rules the validator enforces, and fix the shape of `text`: 3 or 4 short sentences under 90 words, starting with the status and a colon ("Tested:", "Sparse:", "Untested:"), with no sentence labels and no mention of the instructions.
 
-1. **The answer:** the status in words and how many runs sit nearby, naming the experiment ("NASA's FLEX experiment"), never a PSI ID or run ID.
-2. **What happened**, with the outcome counts in plain words. The instructions carry a glossary, so a judge never meets a bare "disruption": extinction = the flame went out; disruption = the burning droplet broke apart while its flame was still burning (the meaning established on #7); completion = the fuel burned away; ignited / no_ignition; blowoff; unknown = not recorded.
-3. **At most one sentence from a paper**, and only if it explains these runs. The first tuning round showed true but distracting details (other gases, other conditions) crowding out the answer.
+1. **The answer:** how many runs sit nearby, in which experiment and with which flame type, naming the experiment ("NASA's FLEX experiment"), never a PSI ID or run ID.
+2. **What happened**, per flame type, never one blended count; when the scenario names no flame type and all nearby runs share one, it says so. Outcomes come with plain words, so a judge never meets a bare "disruption": extinction = the flame went out; disruption = the droplet broke apart; completion = the fuel burned away; for gas flames, ignited / no ignition, never extinction; blowoff; unknown = not recorded.
+3. **At most one sentence from a cited passage**, saying what the passage says, and not presenting it as the cause of these runs' results unless the passage itself does. This rule came from the citation check: a verdict once linked a true test-plan sentence to 2 runs it said nothing about.
 4. **How sure:** how many runs and experiments; for sparse, say plainly that the evidence is thin; for untested, how far the closest run is.
+
+**Disruption wording.** Whether FLEX's "disruption" means the flame was still burning is not confirmed (the open question from #7: the only source is the CFI document, not FLEX). So the glossary says only "the droplet broke apart", and a verdict claiming the flame "kept burning" or was "still burning" is sent back.
+
+**No `temperature`.** Claude Haiku 5.5 does not support sampling settings: PydanticAI ignores `temperature=0` with a warning. Stability comes instead from the fixed shape above and the code checks, verified by running every scenario twice in a row.
 
 ### The output validator (`check_verdict`)
 
@@ -113,7 +118,9 @@ Values are rounded (O₂ to 3 decimals, pressure and distance to 2), so the mode
 3. **`search_papers` was called.** A verdict written without searching is sent back.
 4. **Every citation is a page `search_papers` returned** in this run (same study, title and page), so a row of `psi_dashboard.chunks` that was actually retrieved. A page the model remembers, even a real one, is rejected. Checked in memory, no database query.
 5. **Zero citations** only when the search found nothing.
-6. **Every number in the text appears in the `find_runs` output** (next section). Checked last, once the citations are known to be real, because their titles are removed from the text first.
+6. **No unconfirmed claim:** "still burning", "kept burning", "continued to burn" are sent back (see "Disruption wording" above).
+7. **Gas-flame scenarios never speak of extinction** ("extinct…", "extinguish…", "went out"), even when quoting a paper: a gas flame is described by whether it ignited. The instructions say so too, but the model slipped once in six live verdicts, so code enforces it.
+8. **Every number in the text appears in the `find_runs` output** (next section). Checked last, once the citations are known to be real, because their titles are removed from the text first.
 
 Each failure says what to fix, so the retry is a correction, not a reroll.
 
@@ -153,10 +160,13 @@ Built from `RunEvidence` only: the status, then either the nearby count and outc
 | **Paper-search models imported on first use** | Import them with the module | `sentence_transformers` loads torch, which takes seconds; `/scenario` and `/inverse-flames` never search papers and should not pay for it. |
 | **`Deps` with swappable functions** | Call the database directly in the tools | Tests run the agent without a database or an LLM, and the scenario source can change without touching the agent. |
 | **Limits: 2 retries, 8 model calls, 30k tokens** | Defaults | Bounds cost and latency; a model that cannot follow the rules in 2 tries falls back. The token cap sits at about twice the largest verdict measured (14.5k), so it only cuts a runaway run. |
-| **Claude Haiku 5.5, through `LLM_MODEL`** | A larger model (Sonnet, Opus) | The cheapest model that passes every check: $0.0013 per verdict, the 4 demo scenarios twice in a row with no retry (#9). Code enforces the rules, so a stronger model would cost several times more for the same verdicts. Read on every run, in one place, so a change in `.env` needs no code change. |
+| **Claude Haiku 5.5, through `LLM_MODEL`** | A larger model (Sonnet, Opus) | The cheapest model that passes every check: about $0.0012 per verdict, the 6 demo scenarios twice in a row with no retry (#9). Code enforces the rules, so a stronger model would cost several times more for the same verdicts. Read on every run, in one place, so a change in `.env` needs no code change. |
 | **Live tests behind `make test-live`** | Run them in `make test` | They cost money and need a key and the loaded database. `make test` stays free and offline. |
 | **Study names given to the model** | Let it use PSI IDs | A judge has never heard of PSI-69; "NASA's FLEX experiment" is the first thing the answer needs to be understood. |
 | **A fixed 4-part shape and an outcome glossary in the prompt** | A free-form "3-5 plain sentences" | The first live round produced accurate but dense answers: bare jargon ("disruption"), side details from the papers. The shape keeps every answer short and in the same order. |
+| **Both tools in the first turn** | Let the model call them one after the other | Saves a model round trip: 2 calls per verdict instead of 3, about 2-3 s less. The search question doesn't depend on `find_runs`' result. |
+| **Paper-search models loaded at API startup, in the background** | Load them on the first search | The first `/verdict` would otherwise pay several seconds of model loading; in the background, `/scenario` is never held up. |
+| **Gas-flame and "still burning" rules in code** | Instructions only | Both are in the instructions, but a model slips now and then (once in six for the gas rule); a check makes them hold every time. |
 | **A percent matches only a fraction** | Accept a percent of any value | Found by reading a live verdict: a "13%" from a paper passed because 13 runs had completed. |
 
 ## Configuration
@@ -182,7 +192,7 @@ Without `LLM_MODEL`, the code uses Claude Haiku 5.5 (`DEFAULT_MODEL`), the model
 | `OutputValidatorTests` | none | Each check, including **an invented number is rejected**, a number with a unit, a number hidden behind a page reference, a citation search did not return, a verdict written without searching |
 | `AgentWiringTests` | `TestModel`, `FunctionModel` | Both tools are called; an invented number is sent back and corrected; a failing model falls back; one runs query per request, parallel tools and fallback included; unavailable runs raise |
 | `VerdictEndpointTests` | `TestModel`, `FunctionModel` | `POST /verdict` returns the agent's verdict, the fallback, or a 503 when the runs cannot be loaded; importing the API does not load torch |
-| `tests/live/test_verdict_live.py` | the real one | The four demo scenarios (table below), each with ≥ 1 citation, no fallback and under 15k input tokens; a broken API key → valid fallback |
+| `tests/live/test_verdict_live.py` | the real one | The six demo scenarios (table below), each with ≥ 1 citation, no fallback and under 15k input tokens; a broken API key → valid fallback |
 
 `TestModel` and `FunctionModel` are PydanticAI's stand-in models: the first calls the tools and returns a given output; the second is a Python function playing the model turn by turn (here: call `find_runs`, call `search_papers`, hand in a verdict with an invented number, then a correct one).
 
@@ -194,18 +204,23 @@ Without `LLM_MODEL`, the code uses Claude Haiku 5.5 (`DEFAULT_MODEL`), the model
 | Moon solid | 0.30 O₂, 0.69 atm, solid | `untested`, starts "Untested" | the closest run (BASS SIBAL today; BASS-II accepted) |
 | Earth air droplet | 0.21 O₂, 1 atm, droplet | `tested` | the extinction count (62 of 100) |
 | Sparse droplet | 0.21 O₂, 2 atm, droplet | `sparse` | that the evidence is thin; only 2 FLEX runs nearby, and every O₂ from 0.17 to 0.25 at 2 atm gives the same 2 |
+| Moon, any flame type | 0.30 O₂, 0.69 atm | `tested` | each flame type's count separately; today all 17 nearby runs are droplets, so the verdict says so |
+| Moon, gas flame | 0.30 O₂, 0.69 atm, `gas_normal` | `untested`, names the closest run | ignited / no-ignition terms, never extinction. No gas run sits within the "nearby" rule: the closest, CFI-G "30% ethane" at 0.33 O₂ and 0.5 atm, is at distance 1.15 |
 
-**Measured on 2026-11-14** (#9), with `LLM_MODEL=anthropic:claude-haiku-5-5` ($0.50 / $2.50 per million input / output tokens): with the final prompt and checks, all four scenarios passed twice in a row (rounds 4 and 5), with no retry and no fallback.
+Every live verdict is also checked for no fallback, ≥ 1 citation, under 15k input tokens, and never "kept burning" / "still burning". Latency is reported against a 10 s target, not asserted (it depends on the network). The test class first warms up the paper-search models, as a running API does at startup.
 
-| Per verdict, final prompt (8 verdicts) | Average | Range |
+**Measured on 2026-11-14** (#9), with `LLM_MODEL=anthropic:claude-haiku-5-5` ($0.50 / $2.50 per million input / output tokens): with the final prompt and checks, all six scenarios passed twice in a row (rounds F and G), with no retry and no fallback.
+
+| Per verdict, final prompt (12 verdicts) | Average | Range |
 | --- | --- | --- |
-| Cost | $0.0013 | $0.0011–0.0017 |
-| Input tokens | 8.2k | up to 11.4k (limit 15k) |
-| Output tokens | 0.9k | |
-| Model requests | 2.9 | 2–3 |
-| Latency | 11.4 s | up to 18.1 s |
+| Cost | $0.0012 | up to $0.0016 |
+| Input tokens | 7.2k | up to 10.2k (limit 15k) |
+| Model requests | 2.2 | 2–3 |
+| Latency | 8.2 s (median 8.0 s) | up to 10.8 s; paper search ~1.7 s of it |
 
-All 20 live verdicts of the tuning (5 rounds) cost $0.025 in total.
+- **Latency:** most verdicts take 6–9 s, but 6 of the 42 six-scenario verdicts took 10 s or more (1 of 12 in the final rounds; one early outlier took 34.6 s). The time is mostly the model's two calls, which vary from run to run. **The dashboard should show a loading state for `/verdict`.**
+- **Citations checked by hand:** in the final round, each verdict's paper sentence was compared with its cited page; all 6 are supported by the page (one names the FLEX EIRD a "test plan").
+- **Total:** the 62 live verdicts of #9 (4-scenario and 6-scenario rounds) cost $0.075.
 
 ## Changes from the issues
 
@@ -214,5 +229,7 @@ The project moved on after #8 was written:
 - **`find_runs` uses the real `/scenario` code.** #11 landed `get_scenario_data`, so the fixture is no longer needed; `Deps.find_scenario` can still swap the source.
 - **`find_runs` takes no query and returns `RunEvidence`**, instead of `find_runs(query) → ScenarioResponse` (see the decisions above).
 - **"tested: n_nearby ≥ 3 (the same rule as `in_envelope`)":** `in_envelope` is `n_nearby > 0` in the merged `/scenario` code, so the two rules differ. The status follows the issue's 3-level rule; `in_envelope` is unchanged.
+- **#9: the two new Moon scenarios follow the data.** The issue expected Moon with a gas flame to be `tested`, and Moon without a flame type to describe droplet and gas runs separately. Under the "nearby" rule (±0.05 O₂, ±0.2 atm), no gas run is near the Moon point (CFI-G's runs are at 0.5 atm), and all 17 nearby runs are FLEX droplets. So Moon, gas flame is `untested`, and Moon, any flame type says all nearby runs are droplets. The data audit's wider Moon window (with 20 CFI-G gas flames) is a different rule.
+- **#9: no `temperature=0`:** Claude Haiku 5.5 has no sampling settings (see "No `temperature`" above).
 - **#9: unittest instead of `@pytest.mark.live`.** The project's tests are unittest; the live tests are skipped unless `LIVE_LLM_TESTS=1`, which has the same effect: a normal `make test` never calls the API.
 - **Moon solid's closest run is BASS (PSI-26), not BASS-II.** Since #14, the 250 BASS and BASS-II runs are all compared, and a BASS run is simply closer: SIBAL at 0.227 O₂ and 0.99 atm (distance 2.11), against BASS-II's best at 0.222 O₂ and an assumed 1.0 atm (distance 2.20, 42nd). The agent names whichever run `find_runs` reports as closest.

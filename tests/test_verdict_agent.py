@@ -19,6 +19,7 @@ from src.contracts import Citation, ScenarioQuery, ScenarioResponse, VerdictResp
 FIXTURES = Path(__file__).resolve().parents[1] / "data" / "fixtures"
 MOON = ScenarioQuery(o2_frac=0.30, pressure_atm=0.69)
 MOON_SOLID = ScenarioQuery(o2_frac=0.30, pressure_atm=0.69, flame_config="solid")
+MOON_GAS = ScenarioQuery(o2_frac=0.30, pressure_atm=0.69, flame_config="gas_normal")
 HIT = PaperHit("PSI-69", "FLEX Test Plan", 6, "Test matrix at 0.75 atm and 0.30 O2 ...", 0.9)
 HIT_CITATION = Citation(psi_id="PSI-69", doc_title="FLEX Test Plan", page=6)
 
@@ -34,12 +35,18 @@ def scenario(name: str) -> ScenarioResponse:
     return ScenarioResponse.model_validate_json((FIXTURES / name).read_text())
 
 
-def fake_deps(query: ScenarioQuery = MOON, hits: list[PaperHit] | None = None, calls: list | None = None) -> Deps:
+def fake_deps(
+    query: ScenarioQuery = MOON,
+    hits: list[PaperHit] | None = None,
+    calls: list | None = None,
+    flame_types: dict[str, str] | None = None,
+) -> Deps:
     """Deps from the committed fixtures and a fake paper search: no database, no LLM.
 
     `calls` collects one entry per scenario query, to count them.
     """
-    fixture = "scenario_moon_solid.json" if query.flame_config == "solid" else "scenario_moon.json"
+    # Droplets (or no flame type): the tested Moon fixture; any other type: the untested one.
+    fixture = "scenario_moon.json" if query.flame_config in (None, "droplet") else "scenario_moon_solid.json"
     found = [HIT] if hits is None else hits
 
     def find_scenario(_engine, _query):
@@ -53,6 +60,9 @@ def fake_deps(query: ScenarioQuery = MOON, hits: list[PaperHit] | None = None, c
         find_scenario=find_scenario,
         search=lambda question, psi_ids=None, k=5: [hit for hit in found if not psi_ids or hit.psi_id in psi_ids],
         find_study_names=lambda _engine, psi_ids: {"PSI-69": "FLEX (Flame Extinguishment Experiment)"},
+        find_flame_types=lambda _engine, run_ids: {
+            run_id: (flame_types or {}).get(run_id, query.flame_config or "droplet") for run_id in run_ids
+        },
     )
 
 
@@ -65,6 +75,15 @@ class StatusRuleTests(unittest.TestCase):
     def test_status_comes_from_the_number_of_nearby_runs(self):
         self.assertEqual([status_for(n) for n in (0, 1, 2, 3, 17)],
                          ["untested", "sparse", "sparse", "tested", "tested"])
+
+
+class EvidenceTests(unittest.TestCase):
+    def test_nearby_runs_are_counted_per_flame_type(self):
+        nearby = [run for run in scenario("scenario_moon.json").points if run.distance <= 1]
+        gas = {run.run_id: "gas_normal" for run in nearby[:5]}
+        evidence = fake_deps(flame_types=gas).evidence()
+        self.assertEqual(evidence.nearby_runs_by_flame_type, {"gas_normal": 5, "droplet": len(nearby) - 5})
+        self.assertEqual(sum(evidence.nearby_runs_by_flame_type.values()), evidence.n_nearby)
 
 
 class OutputValidatorTests(unittest.TestCase):
@@ -99,6 +118,24 @@ class OutputValidatorTests(unittest.TestCase):
         verdict = TESTED.model_copy(update={"text": "Tested. Flames reached 1500K in 45s at 0.3atm."})
         with self.assertRaisesRegex(ModelRetry, "1500, 45"):
             check_verdict(verdict, searched(fake_deps()))
+
+    def test_an_unconfirmed_still_burning_claim_is_rejected(self):
+        for claim in ("the flame was still burning", "flames kept burning", "it continued to burn"):
+            verdict = TESTED.model_copy(update={"text": f"Tested. 17 runs: in 15, {claim}."})
+            with self.subTest(claim=claim), self.assertRaisesRegex(ModelRetry, "not confirmed"):
+                check_verdict(verdict, searched(fake_deps()))
+
+    def test_a_gas_flame_verdict_never_speaks_of_extinction(self):
+        deps = searched(fake_deps(MOON_GAS))
+        closest = deps.evidence().closest[0].label
+        verdict = VerdictResponse(
+            status="untested",
+            text=f"Untested. The closest is {closest}; a report describes a flame that self-extinguished.",
+            citations=[HIT_CITATION],
+        )
+        with self.assertRaisesRegex(ModelRetry, "gas-flame"):
+            check_verdict(verdict, deps)
+        check_verdict(verdict.model_copy(update={"text": f"Untested. The closest is {closest}; it ignited."}), deps)
 
     def test_a_percent_must_be_a_fraction_not_a_count(self):
         # The Moon evidence holds the count 2 (completions) and 15 (disruptions), but no 0.15 fraction.

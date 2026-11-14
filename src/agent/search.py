@@ -113,6 +113,12 @@ def get_reranker() -> "CrossEncoder":
     return CrossEncoder(RERANKER_NAME)
 
 
+def warm_up() -> None:
+    """Load both models now (several seconds), so the first search does not pay for it."""
+    embed_query("warm up")
+    get_reranker()
+
+
 def search_papers(query: str, psi_ids: list[str] | None = None, k: int = 5) -> list[PaperHit]:
     """Return the k best chunks for the query, optionally only from some investigations."""
     query_vector = "[" + ",".join(map(str, embed_query(query))) + "]"
