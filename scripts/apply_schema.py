@@ -96,6 +96,12 @@ SCHEMA_SQL = (
         embedding vector(384) NOT NULL
     )
     """,
+    # Keyword side of the hybrid search: words of the title and text, kept up to date by Postgres.
+    """
+    ALTER TABLE psi_dashboard.chunks ADD COLUMN IF NOT EXISTS text_search tsvector
+        GENERATED ALWAYS AS (to_tsvector('english', doc_title || ' ' || text)) STORED
+    """,
+    "CREATE INDEX IF NOT EXISTS chunks_text_search_idx ON psi_dashboard.chunks USING gin (text_search)",
 )
 
 

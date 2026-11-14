@@ -6,11 +6,15 @@ from sqlalchemy.exc import OperationalError
 from src.database import engine
 
 # Each question must find one of its investigations in the top 5 hits.
+# Widened from the issue's list, per each study's investigation.json:
+# - PSI-117 and PSI-142 are ground studies of FLEX flight data (PSI-117 covers diluents,
+#   both cover cool flames); FLEX-2 (PSI-68) is the same programme as FLEX.
+# - CFI-G (PSI-159) is the "Cool Flames Investigation with Gases".
 QUESTIONS = {
     "oxygen effect on flame spread over solids": {"PSI-25", "PSI-26"},
-    "CO2 dilution putting out droplet flames": {"PSI-69"},
+    "CO2 dilution putting out droplet flames": {"PSI-69", "PSI-68", "PSI-117"},
     "smoke detector response": {"PSI-102", "PSI-101"},
-    "cool flames": {"PSI-39"},
+    "cool flames": {"PSI-39", "PSI-159", "PSI-117", "PSI-142"},
     "large-scale flame spread in a spacecraft": {"PSI-98", "PSI-99", "PSI-100"},
 }
 

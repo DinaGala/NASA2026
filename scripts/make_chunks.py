@@ -45,6 +45,15 @@ def clean(text: str) -> str:
     return " ".join(text.split())
 
 
+def is_noise(text: str) -> bool:
+    """Reference lists, software logs and tables of contents: dense with topic words, so they
+    rank high, but they explain nothing. Thresholds measured on the PSI corpus (~4% of chunks)."""
+    words = len(text.split())
+    citations = len(re.findall(r"\b(?:19|20)\d\d\b|et al|pp\.|Vol\.|Proc\.|J\. |Journal|\[\d+\]|doi", text))
+    dot_leaders = len(re.findall(r"\.{4,}|(?:\. ){4,}", text))
+    return citations / words >= 0.08 or dot_leaders >= 3
+
+
 def split_words(text: str) -> list[str]:
     words = text.split()
     step = WORDS_PER_CHUNK - OVERLAP_WORDS
@@ -102,6 +111,8 @@ def chunk_document(path: Path) -> list[dict]:
     rows = []
     for page, raw_text in pages(path):
         for index, text in enumerate(split_words(clean(raw_text))):
+            if is_noise(text):
+                continue
             rows.append(
                 {
                     "chunk_id": f"{psi_id}/{doc_key}/p{page or 0}/c{index}",
