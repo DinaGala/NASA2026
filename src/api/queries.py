@@ -31,6 +31,7 @@ def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
         text("o2_frac"),
         text("pressure_atm"),
         text("outcome"),
+        text("raw"),
         distance_expr.label("distance")
     ).select_from(text("psi_dashboard.runs")).where(
         and_(
@@ -53,12 +54,25 @@ def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
         for row in results:
             # Map fuel, falling back to material, then run_label, to label.
             label = row.fuel or row.material or row.run_label or "Unknown"
+            raw = row.raw if isinstance(row.raw, dict) else {}
+            normalization = raw.get("_normalization", {})
+            pressure_info = normalization.get("pressure", {}) if isinstance(normalization, dict) else {}
+            pressure_source = pressure_info.get("source") if isinstance(pressure_info, dict) else None
+            if pressure_source not in {"measured", "assumed", "unknown"}:
+                pressure_source = (
+                    "measured"
+                    if any(key in raw for key in (
+                        "Ambient pressure; mmHg", "approx p (bar)", "pressure, atm"
+                    ))
+                    else "unknown"
+                )
             all_runs.append(Run(
                 run_id=row.test_id,
                 psi_id=row.psi_id,
                 label=label,
                 o2_frac=row.o2_frac,
                 pressure_atm=row.pressure_atm,
+                pressure_source=pressure_source,
                 outcome=row.outcome,
                 distance=row.distance
             ))

@@ -53,13 +53,15 @@ One test run on the ISS, i.e. one row of `psi_dashboard.runs`, cut down to what 
   "label": "Methanol",
   "o2_frac": 0.3,
   "pressure_atm": 0.703,
+  "pressure_source": "measured",
   "outcome": "disruption",
   "distance": 0.065
 }
 ```
 
 - `label` is the fuel, or the material for solid samples (e.g. `"100 micron PMMA film 2 cm wide"`).
-- `outcome` can be `null` when it has not been extracted yet (BASS-II outcomes are free text for now).
+- `pressure_source` is `measured`, `assumed`, or `unknown`. BASS-II uses an audit-specified 1 atm assumption; its scenario points and distances should be visibly labeled as assumed-pressure data.
+- `outcome` can be `null` when not extracted, or `unknown` when the source does not support a safe classification; original BASS observations remain in raw data.
 - `distance` is **not stored** in the database: it is computed for each query, so the same run has a different distance for every question. See [Distance and "nearby"](#distance-and-nearby).
 
 ### `ScenarioResponse` (output of `GET /scenario`)
