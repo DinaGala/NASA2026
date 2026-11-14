@@ -5,5 +5,20 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "fastapi",
+    "httpx",
+    "openpyxl",
+    "pandas",
+    "psycopg[binary]",
+    "python-dotenv",
     "requests>=2.34.2",
+    "sqlalchemy",
+    "uvicorn",
 ]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["src*"]

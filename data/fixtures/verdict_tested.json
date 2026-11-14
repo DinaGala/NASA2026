@@ -1,0 +1,11 @@
+{
+  "status": "tested",
+  "text": "Tested. 17 FLEX droplet runs on the ISS sat at 0.30 to 0.34 O2 and 0.70 to 0.71 atm. 15 ended in disruption and 2 burned to completion; none extinguished.",
+  "citations": [
+    {
+      "psi_id": "PSI-69",
+      "doc_title": "FLEX Test Plan",
+      "page": 6
+    }
+  ]
+}

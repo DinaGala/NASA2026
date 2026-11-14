@@ -1,0 +1,3671 @@
+{
+  "in_envelope": true,
+  "n_nearby": 17,
+  "closest": [
+    {
+      "run_id": "PSI-69-41",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 0.065
+    },
+    {
+      "run_id": "PSI-69-43",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.069
+    },
+    {
+      "run_id": "PSI-69-40",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.07
+    },
+    {
+      "run_id": "PSI-69-42",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.07
+    },
+    {
+      "run_id": "PSI-69-25",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.707,
+      "outcome": "completion",
+      "distance": 0.085
+    }
+  ],
+  "points": [
+    {
+      "run_id": "PSI-69-41",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 0.065
+    },
+    {
+      "run_id": "PSI-69-43",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.069
+    },
+    {
+      "run_id": "PSI-69-40",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.07
+    },
+    {
+      "run_id": "PSI-69-42",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.07
+    },
+    {
+      "run_id": "PSI-69-25",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.707,
+      "outcome": "completion",
+      "distance": 0.085
+    },
+    {
+      "run_id": "PSI-69-26",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.708,
+      "outcome": "disruption",
+      "distance": 0.092
+    },
+    {
+      "run_id": "PSI-69-28",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.71,
+      "outcome": "disruption",
+      "distance": 0.101
+    },
+    {
+      "run_id": "PSI-69-27",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 0.711,
+      "outcome": "disruption",
+      "distance": 0.107
+    },
+    {
+      "run_id": "PSI-69-37",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 0.803
+    },
+    {
+      "run_id": "PSI-69-38",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 0.803
+    },
+    {
+      "run_id": "PSI-69-39",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 0.803
+    },
+    {
+      "run_id": "PSI-69-19",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.709,
+      "outcome": "disruption",
+      "distance": 0.806
+    },
+    {
+      "run_id": "PSI-69-20",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.71,
+      "outcome": "completion",
+      "distance": 0.806
+    },
+    {
+      "run_id": "PSI-69-21",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.711,
+      "outcome": "disruption",
+      "distance": 0.807
+    },
+    {
+      "run_id": "PSI-69-22",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.711,
+      "outcome": "disruption",
+      "distance": 0.807
+    },
+    {
+      "run_id": "PSI-69-23",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.713,
+      "outcome": "disruption",
+      "distance": 0.808
+    },
+    {
+      "run_id": "PSI-69-24",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.34,
+      "pressure_atm": 0.714,
+      "outcome": "disruption",
+      "distance": 0.809
+    },
+    {
+      "run_id": "PSI-69-92",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.706,
+      "outcome": "disruption",
+      "distance": 1.003
+    },
+    {
+      "run_id": "PSI-69-88",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.707,
+      "outcome": "disruption",
+      "distance": 1.004
+    },
+    {
+      "run_id": "PSI-69-89",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.707,
+      "outcome": "disruption",
+      "distance": 1.004
+    },
+    {
+      "run_id": "PSI-69-91",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.708,
+      "outcome": "disruption",
+      "distance": 1.004
+    },
+    {
+      "run_id": "PSI-69-93",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.707,
+      "outcome": "disruption",
+      "distance": 1.004
+    },
+    {
+      "run_id": "PSI-69-90",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.25,
+      "pressure_atm": 0.709,
+      "outcome": "disruption",
+      "distance": 1.005
+    },
+    {
+      "run_id": "PSI-69-174",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.7,
+      "outcome": "disruption",
+      "distance": 1.201
+    },
+    {
+      "run_id": "PSI-69-175",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.7,
+      "outcome": "disruption",
+      "distance": 1.201
+    },
+    {
+      "run_id": "PSI-69-249",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-251",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-252",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-94",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.702,
+      "outcome": "extinction",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-95",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-96",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 1.202
+    },
+    {
+      "run_id": "PSI-69-176",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 1.203
+    },
+    {
+      "run_id": "PSI-69-177",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.24,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 1.203
+    },
+    {
+      "run_id": "PSI-69-104",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-178",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.702,
+      "outcome": "extinction",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-250",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.7,
+      "outcome": "completion",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-253",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.7,
+      "outcome": "extinction",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-254",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.7,
+      "outcome": "disruption",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-97",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.703,
+      "outcome": "completion",
+      "distance": 1.401
+    },
+    {
+      "run_id": "PSI-69-100",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-105",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-107",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.704,
+      "outcome": "disruption",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-179",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.703,
+      "outcome": "disruption",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-183",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-184",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.704,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-185",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.704,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-186",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-98",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-99",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.704,
+      "outcome": "extinction",
+      "distance": 1.402
+    },
+    {
+      "run_id": "PSI-69-101",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.709,
+      "outcome": "extinction",
+      "distance": 1.403
+    },
+    {
+      "run_id": "PSI-69-106",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.708,
+      "outcome": "disruption",
+      "distance": 1.403
+    },
+    {
+      "run_id": "PSI-69-108",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.23,
+      "pressure_atm": 0.708,
+      "outcome": "completion",
+      "distance": 1.403
+    },
+    {
+      "run_id": "PSI-69-29",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.009,
+      "outcome": "completion",
+      "distance": 1.595
+    },
+    {
+      "run_id": "PSI-69-44",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.009,
+      "outcome": "disruption",
+      "distance": 1.595
+    },
+    {
+      "run_id": "PSI-69-45",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.011,
+      "outcome": "extinction",
+      "distance": 1.605
+    },
+    {
+      "run_id": "PSI-69-30",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.012,
+      "outcome": "extinction",
+      "distance": 1.611
+    },
+    {
+      "run_id": "PSI-69-31",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.014,
+      "outcome": "disruption",
+      "distance": 1.619
+    },
+    {
+      "run_id": "PSI-69-32",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.014,
+      "outcome": "completion",
+      "distance": 1.622
+    },
+    {
+      "run_id": "PSI-69-52",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.3,
+      "pressure_atm": 1.015,
+      "outcome": "disruption",
+      "distance": 1.623
+    },
+    {
+      "run_id": "PSI-69-112",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.698,
+      "outcome": "completion",
+      "distance": 1.8
+    },
+    {
+      "run_id": "PSI-69-258",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.697,
+      "outcome": "extinction",
+      "distance": 1.8
+    },
+    {
+      "run_id": "PSI-69-259",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.696,
+      "outcome": "extinction",
+      "distance": 1.8
+    },
+    {
+      "run_id": "PSI-69-102",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.801
+    },
+    {
+      "run_id": "PSI-69-103",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 1.801
+    },
+    {
+      "run_id": "PSI-69-255",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.7,
+      "outcome": "extinction",
+      "distance": 1.801
+    },
+    {
+      "run_id": "PSI-69-256",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.699,
+      "outcome": "extinction",
+      "distance": 1.801
+    },
+    {
+      "run_id": "PSI-69-257",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.699,
+      "outcome": "extinction",
+      "distance": 1.801
+    },
+    {
+      "run_id": "PSI-69-109",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 1.802
+    },
+    {
+      "run_id": "PSI-69-110",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 1.802
+    },
+    {
+      "run_id": "PSI-69-111",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.706,
+      "outcome": "completion",
+      "distance": 1.802
+    },
+    {
+      "run_id": "PSI-69-131",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.005,
+      "outcome": "disruption",
+      "distance": 1.981
+    },
+    {
+      "run_id": "PSI-69-132",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.007,
+      "outcome": "disruption",
+      "distance": 1.987
+    },
+    {
+      "run_id": "PSI-69-133",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.009,
+      "outcome": "disruption",
+      "distance": 1.995
+    },
+    {
+      "run_id": "PSI-69-134",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.009,
+      "outcome": "extinction",
+      "distance": 1.998
+    },
+    {
+      "run_id": "PSI-69-117",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.699,
+      "outcome": "extinction",
+      "distance": 2.0
+    },
+    {
+      "run_id": "PSI-69-262",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.694,
+      "outcome": "extinction",
+      "distance": 2.0
+    },
+    {
+      "run_id": "PSI-69-263",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.695,
+      "outcome": "extinction",
+      "distance": 2.0
+    },
+    {
+      "run_id": "PSI-69-113",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 2.001
+    },
+    {
+      "run_id": "PSI-69-115",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.705,
+      "outcome": "extinction",
+      "distance": 2.001
+    },
+    {
+      "run_id": "PSI-69-118",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.001
+    },
+    {
+      "run_id": "PSI-69-260",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.001
+    },
+    {
+      "run_id": "PSI-69-261",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.7,
+      "outcome": "extinction",
+      "distance": 2.001
+    },
+    {
+      "run_id": "PSI-69-116",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 2.002
+    },
+    {
+      "run_id": "PSI-69-139",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.011,
+      "outcome": "disruption",
+      "distance": 2.002
+    },
+    {
+      "run_id": "PSI-69-36",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.709,
+      "outcome": "extinction",
+      "distance": 2.002
+    },
+    {
+      "run_id": "PSI-69-135",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.011,
+      "outcome": "completion",
+      "distance": 2.003
+    },
+    {
+      "run_id": "PSI-69-136",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.011,
+      "outcome": "completion",
+      "distance": 2.003
+    },
+    {
+      "run_id": "PSI-69-137",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.011,
+      "outcome": "disruption",
+      "distance": 2.003
+    },
+    {
+      "run_id": "PSI-69-54",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.712,
+      "outcome": "extinction",
+      "distance": 2.003
+    },
+    {
+      "run_id": "PSI-69-55",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.714,
+      "outcome": "disruption",
+      "distance": 2.004
+    },
+    {
+      "run_id": "PSI-69-56",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.716,
+      "outcome": "completion",
+      "distance": 2.004
+    },
+    {
+      "run_id": "PSI-69-57",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.716,
+      "outcome": "extinction",
+      "distance": 2.004
+    },
+    {
+      "run_id": "PSI-69-138",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.24,
+      "pressure_atm": 1.011,
+      "outcome": "disruption",
+      "distance": 2.005
+    },
+    {
+      "run_id": "PSI-25-B1",
+      "psi_id": "PSI-25",
+      "label": "100 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B12",
+      "psi_id": "PSI-25",
+      "label": "300 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B2",
+      "psi_id": "PSI-25",
+      "label": "200 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B3",
+      "psi_id": "PSI-25",
+      "label": "100 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B4",
+      "psi_id": "PSI-25",
+      "label": "300 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B5",
+      "psi_id": "PSI-25",
+      "label": "200 micron 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B7",
+      "psi_id": "PSI-25",
+      "label": "400 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-F1",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M1",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 1 sided 2 cm",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M14",
+      "psi_id": "PSI-25",
+      "label": "2mm thick PMMA 1 sided 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M2",
+      "psi_id": "PSI-25",
+      "label": "3 mm thick PMMA 1 sided 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M5",
+      "psi_id": "PSI-25",
+      "label": "3 mm thick PMMA 2 sided 2 cm thick",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-O1",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-O2",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M4",
+      "psi_id": "PSI-25",
+      "label": "5 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.218,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.257
+    },
+    {
+      "run_id": "PSI-25-M6",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.218,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.257
+    },
+    {
+      "run_id": "PSI-25-F3",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.217,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.271
+    },
+    {
+      "run_id": "PSI-25-M12",
+      "psi_id": "PSI-25",
+      "label": "2 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.217,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.271
+    },
+    {
+      "run_id": "PSI-69-204",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.995,
+      "outcome": "disruption",
+      "distance": 2.36
+    },
+    {
+      "run_id": "PSI-69-205",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.996,
+      "outcome": "disruption",
+      "distance": 2.364
+    },
+    {
+      "run_id": "PSI-69-1",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 0.997,
+      "outcome": "disruption",
+      "distance": 2.366
+    },
+    {
+      "run_id": "PSI-25-B10",
+      "psi_id": "PSI-25",
+      "label": "1 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B11",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B13",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.4 mm thick film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B15",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B6",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B8",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B9",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-F2",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-M15",
+      "psi_id": "PSI-25",
+      "label": "2 cm 4 mm 1 sided PMMA slab",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-69-4",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-69-5",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-69-6",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-69-9",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "disruption",
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-69-202",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.376
+    },
+    {
+      "run_id": "PSI-69-206",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": "disruption",
+      "distance": 2.376
+    },
+    {
+      "run_id": "PSI-69-7",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.002,
+      "outcome": "disruption",
+      "distance": 2.381
+    },
+    {
+      "run_id": "PSI-69-203",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 2.382
+    },
+    {
+      "run_id": "PSI-69-2",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.003,
+      "outcome": "extinction",
+      "distance": 2.384
+    },
+    {
+      "run_id": "PSI-69-8",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.003,
+      "outcome": "disruption",
+      "distance": 2.386
+    },
+    {
+      "run_id": "PSI-69-207",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.004,
+      "outcome": "completion",
+      "distance": 2.387
+    },
+    {
+      "run_id": "PSI-69-208",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.004,
+      "outcome": "completion",
+      "distance": 2.388
+    },
+    {
+      "run_id": "PSI-69-168",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.004,
+      "outcome": "disruption",
+      "distance": 2.39
+    },
+    {
+      "run_id": "PSI-25-P25",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.209,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.391
+    },
+    {
+      "run_id": "PSI-69-3",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.394
+    },
+    {
+      "run_id": "PSI-69-33",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.395
+    },
+    {
+      "run_id": "PSI-69-273",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.396
+    },
+    {
+      "run_id": "PSI-69-49",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.397
+    },
+    {
+      "run_id": "PSI-69-121",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.692,
+      "outcome": "extinction",
+      "distance": 2.4
+    },
+    {
+      "run_id": "PSI-69-122",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.699,
+      "outcome": "extinction",
+      "distance": 2.4
+    },
+    {
+      "run_id": "PSI-69-267",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.695,
+      "outcome": "extinction",
+      "distance": 2.4
+    },
+    {
+      "run_id": "PSI-69-268",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.698,
+      "outcome": "extinction",
+      "distance": 2.4
+    },
+    {
+      "run_id": "PSI-69-119",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-120",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-123",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.7,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-124",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-264",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-265",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.701,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-266",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.702,
+      "outcome": "extinction",
+      "distance": 2.401
+    },
+    {
+      "run_id": "PSI-69-169",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 2.402
+    },
+    {
+      "run_id": "PSI-69-274",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 2.402
+    },
+    {
+      "run_id": "PSI-69-170",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.009,
+      "outcome": "extinction",
+      "distance": 2.404
+    },
+    {
+      "run_id": "PSI-25-B21",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-M13",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-M3",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide 5 mm thick 1 sided PMMA",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-P22a",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-T25",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-T26",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-69-228",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.01,
+      "outcome": "extinction",
+      "distance": 2.407
+    },
+    {
+      "run_id": "PSI-69-34",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.01,
+      "outcome": "extinction",
+      "distance": 2.409
+    },
+    {
+      "run_id": "PSI-69-229",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.011,
+      "outcome": "disruption",
+      "distance": 2.411
+    },
+    {
+      "run_id": "PSI-69-35",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.011,
+      "outcome": "extinction",
+      "distance": 2.411
+    },
+    {
+      "run_id": "PSI-69-48",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.011,
+      "outcome": "disruption",
+      "distance": 2.413
+    },
+    {
+      "run_id": "PSI-69-230",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.012,
+      "outcome": "extinction",
+      "distance": 2.415
+    },
+    {
+      "run_id": "PSI-69-46",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.012,
+      "outcome": "disruption",
+      "distance": 2.417
+    },
+    {
+      "run_id": "PSI-69-47",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.013,
+      "outcome": "completion",
+      "distance": 2.419
+    },
+    {
+      "run_id": "PSI-69-50",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.013,
+      "outcome": "extinction",
+      "distance": 2.419
+    },
+    {
+      "run_id": "PSI-69-53",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.013,
+      "outcome": "disruption",
+      "distance": 2.42
+    },
+    {
+      "run_id": "PSI-25-B22",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-P13a",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T27",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T28a",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T28b",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T29",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-69-51",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.015,
+      "outcome": "completion",
+      "distance": 2.425
+    },
+    {
+      "run_id": "PSI-25-P13b",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.206,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.437
+    },
+    {
+      "run_id": "PSI-69-199",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.992,
+      "outcome": "extinction",
+      "distance": 2.506
+    },
+    {
+      "run_id": "PSI-69-224",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.994,
+      "outcome": "completion",
+      "distance": 2.511
+    },
+    {
+      "run_id": "PSI-25-M10",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick 1 cm wide PMMA slab",
+      "o2_frac": 0.201,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.515
+    },
+    {
+      "run_id": "PSI-69-200",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.995,
+      "outcome": "extinction",
+      "distance": 2.515
+    },
+    {
+      "run_id": "PSI-69-201",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.996,
+      "outcome": "extinction",
+      "distance": 2.518
+    },
+    {
+      "run_id": "PSI-69-196",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.998,
+      "outcome": "extinction",
+      "distance": 2.524
+    },
+    {
+      "run_id": "PSI-69-222",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 2.527
+    },
+    {
+      "run_id": "PSI-69-223",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 2.529
+    },
+    {
+      "run_id": "PSI-25-M11",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 5 mm thick",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-25-P18",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-25-P22b",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-69-197",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-69-198",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": "disruption",
+      "distance": 2.531
+    },
+    {
+      "run_id": "PSI-69-144",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 2.538
+    },
+    {
+      "run_id": "PSI-69-145",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.005,
+      "outcome": "extinction",
+      "distance": 2.544
+    },
+    {
+      "run_id": "PSI-69-148",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.006,
+      "outcome": "disruption",
+      "distance": 2.548
+    },
+    {
+      "run_id": "PSI-69-146",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 2.553
+    },
+    {
+      "run_id": "PSI-69-149",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.008,
+      "outcome": "disruption",
+      "distance": 2.556
+    },
+    {
+      "run_id": "PSI-69-150",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.01,
+      "outcome": "extinction",
+      "distance": 2.561
+    },
+    {
+      "run_id": "PSI-69-271",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.698,
+      "outcome": "extinction",
+      "distance": 2.6
+    },
+    {
+      "run_id": "PSI-69-272",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.699,
+      "outcome": "extinction",
+      "distance": 2.6
+    },
+    {
+      "run_id": "PSI-69-125",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-126",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.705,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-127",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-128",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-129",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.706,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-130",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.707,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-147",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.705,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-269",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.7,
+      "outcome": "extinction",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-69-270",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.701,
+      "outcome": "completion",
+      "distance": 2.601
+    },
+    {
+      "run_id": "PSI-25-P5",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.193,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.642
+    },
+    {
+      "run_id": "PSI-25-M16",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.192,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.659
+    },
+    {
+      "run_id": "PSI-69-225",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.991,
+      "outcome": "extinction",
+      "distance": 2.666
+    },
+    {
+      "run_id": "PSI-25-M8",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 2 mm thick",
+      "o2_frac": 0.191,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.675
+    },
+    {
+      "run_id": "PSI-69-187",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.997,
+      "outcome": "extinction",
+      "distance": 2.684
+    },
+    {
+      "run_id": "PSI-69-188",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.998,
+      "outcome": "extinction",
+      "distance": 2.684
+    },
+    {
+      "run_id": "PSI-69-180",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.998,
+      "outcome": "extinction",
+      "distance": 2.685
+    },
+    {
+      "run_id": "PSI-69-182",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.999,
+      "outcome": "disruption",
+      "distance": 2.687
+    },
+    {
+      "run_id": "PSI-69-231",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.998,
+      "outcome": "disruption",
+      "distance": 2.687
+    },
+    {
+      "run_id": "PSI-69-181",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.19,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 2.688
+    },
+    {
+      "run_id": "PSI-25-M19",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick 2 cm 2ide PMMA slab",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-P20",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-P24",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-M7",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 1 mm thick",
+      "o2_frac": 0.189,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.708
+    },
+    {
+      "run_id": "PSI-25-P6",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.189,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.708
+    },
+    {
+      "run_id": "PSI-25-M17",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide PMMA 2 mm thick",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T5",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T6",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T15",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.187,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.74
+    },
+    {
+      "run_id": "PSI-25-T4",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.187,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.74
+    },
+    {
+      "run_id": "PSI-25-P4",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-T1",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-T2",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-P14",
+      "psi_id": "PSI-25",
+      "label": "1/4 blac rod",
+      "o2_frac": 0.184,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.79
+    },
+    {
+      "run_id": "PSI-25-P16",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-25-P23",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-25-T24",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL top side ign",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-69-226",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 2.854
+    },
+    {
+      "run_id": "PSI-25-M20",
+      "psi_id": "PSI-25",
+      "label": "5 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-M9",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 3 mm thick",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-O3a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-O3b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-P15",
+      "psi_id": "PSI-25",
+      "label": "1/4 black rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-69-171",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-69-227",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 2.858
+    },
+    {
+      "run_id": "PSI-69-189",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 2.861
+    },
+    {
+      "run_id": "PSI-69-62",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 2.863
+    },
+    {
+      "run_id": "PSI-69-172",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.003,
+      "outcome": "extinction",
+      "distance": 2.864
+    },
+    {
+      "run_id": "PSI-69-154",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.003,
+      "outcome": "extinction",
+      "distance": 2.865
+    },
+    {
+      "run_id": "PSI-69-173",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.003,
+      "outcome": "disruption",
+      "distance": 2.865
+    },
+    {
+      "run_id": "PSI-69-151",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.003,
+      "outcome": "completion",
+      "distance": 2.866
+    },
+    {
+      "run_id": "PSI-69-232",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.005,
+      "outcome": "extinction",
+      "distance": 2.87
+    },
+    {
+      "run_id": "PSI-25-M18",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide PMMA 3 mm thick",
+      "o2_frac": 0.179,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.874
+    },
+    {
+      "run_id": "PSI-69-190",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.874
+    },
+    {
+      "run_id": "PSI-69-64",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.874
+    },
+    {
+      "run_id": "PSI-69-152",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 2.875
+    },
+    {
+      "run_id": "PSI-69-155",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 2.875
+    },
+    {
+      "run_id": "PSI-69-165",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 2.876
+    },
+    {
+      "run_id": "PSI-69-191",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 2.876
+    },
+    {
+      "run_id": "PSI-69-153",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 2.877
+    },
+    {
+      "run_id": "PSI-69-156",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.008,
+      "outcome": "completion",
+      "distance": 2.878
+    },
+    {
+      "run_id": "PSI-69-233",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.008,
+      "outcome": "completion",
+      "distance": 2.878
+    },
+    {
+      "run_id": "PSI-69-234",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.009,
+      "outcome": "completion",
+      "distance": 2.88
+    },
+    {
+      "run_id": "PSI-69-63",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.01,
+      "outcome": "completion",
+      "distance": 2.884
+    },
+    {
+      "run_id": "PSI-69-59",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.012,
+      "outcome": "extinction",
+      "distance": 2.89
+    },
+    {
+      "run_id": "PSI-69-58",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.017,
+      "outcome": "extinction",
+      "distance": 2.905
+    },
+    {
+      "run_id": "PSI-69-60",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.018,
+      "outcome": "extinction",
+      "distance": 2.907
+    },
+    {
+      "run_id": "PSI-25-P1",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.177,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.908
+    },
+    {
+      "run_id": "PSI-25-P3a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.177,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.908
+    },
+    {
+      "run_id": "PSI-69-61",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.019,
+      "outcome": "extinction",
+      "distance": 2.908
+    },
+    {
+      "run_id": "PSI-25-P9",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.176,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.925
+    },
+    {
+      "run_id": "PSI-25-T16",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.176,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.925
+    },
+    {
+      "run_id": "PSI-25-B17",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-P12",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-P19",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-T13",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-B18",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-B20",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-F4",
+      "psi_id": "PSI-25",
+      "label": "Japan Wax candle",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-P2",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-P3b",
+      "psi_id": "PSI-25",
+      "label": "1/4 clear rod",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-T18",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-B16",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-B19",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-T7",
+      "psi_id": "PSI-25",
+      "label": "4 cm spherical section",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-T19",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T20",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T21",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T23",
+      "psi_id": "PSI-25",
+      "label": "2 cm Sibal moved igniter",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T3",
+      "psi_id": "PSI-25",
+      "label": "4 cm spherical section",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-69-194",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.989,
+      "outcome": "extinction",
+      "distance": 3.0
+    },
+    {
+      "run_id": "PSI-69-140",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.702,
+      "outcome": "extinction",
+      "distance": 3.001
+    },
+    {
+      "run_id": "PSI-69-141",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 3.001
+    },
+    {
+      "run_id": "PSI-69-142",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.703,
+      "outcome": "extinction",
+      "distance": 3.001
+    },
+    {
+      "run_id": "PSI-69-143",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.704,
+      "outcome": "extinction",
+      "distance": 3.001
+    },
+    {
+      "run_id": "PSI-69-195",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.99,
+      "outcome": "extinction",
+      "distance": 3.002
+    },
+    {
+      "run_id": "PSI-69-239",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.992,
+      "outcome": "extinction",
+      "distance": 3.008
+    },
+    {
+      "run_id": "PSI-25-O15a",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-25-T11",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-25-T22",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-69-240",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.996,
+      "outcome": "extinction",
+      "distance": 3.017
+    },
+    {
+      "run_id": "PSI-69-193",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.024
+    },
+    {
+      "run_id": "PSI-69-192",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.025
+    },
+    {
+      "run_id": "PSI-69-235",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.025
+    },
+    {
+      "run_id": "PSI-69-236",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.025
+    },
+    {
+      "run_id": "PSI-69-237",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 0.999,
+      "outcome": "disruption",
+      "distance": 3.026
+    },
+    {
+      "run_id": "PSI-69-238",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.17,
+      "pressure_atm": 1.0,
+      "outcome": "completion",
+      "distance": 3.026
+    },
+    {
+      "run_id": "PSI-25-P10",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.17,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.027
+    },
+    {
+      "run_id": "PSI-25-T14",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.169,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.044
+    },
+    {
+      "run_id": "PSI-25-T17",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.169,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.044
+    },
+    {
+      "run_id": "PSI-25-P17",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.168,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.061
+    },
+    {
+      "run_id": "PSI-25-T12",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.168,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.061
+    },
+    {
+      "run_id": "PSI-25-O10",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O15b",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O6",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O20",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.165,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.113
+    },
+    {
+      "run_id": "PSI-25-P8",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-T10",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-T9",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-O14",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-25-P21a",
+      "psi_id": "PSI-25",
+      "label": "1/4 black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-25-P21b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-69-243",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.16,
+      "pressure_atm": 0.997,
+      "outcome": "extinction",
+      "distance": 3.194
+    },
+    {
+      "run_id": "PSI-25-O7",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-69-209",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-69-210",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-69-211",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-69-241",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-69-242",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.001,
+      "outcome": "extinction",
+      "distance": 3.204
+    },
+    {
+      "run_id": "PSI-69-157",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.003,
+      "outcome": "extinction",
+      "distance": 3.207
+    },
+    {
+      "run_id": "PSI-69-158",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 3.215
+    },
+    {
+      "run_id": "PSI-25-O13a",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.159,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.218
+    },
+    {
+      "run_id": "PSI-25-O21",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.159,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.218
+    },
+    {
+      "run_id": "PSI-69-159",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.007,
+      "outcome": "extinction",
+      "distance": 3.218
+    },
+    {
+      "run_id": "PSI-69-160",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.01,
+      "outcome": "extinction",
+      "distance": 3.225
+    },
+    {
+      "run_id": "PSI-25-O8a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.157,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.253
+    },
+    {
+      "run_id": "PSI-25-O8b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.155,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.288
+    },
+    {
+      "run_id": "PSI-25-O11",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.154,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.306
+    },
+    {
+      "run_id": "PSI-25-O22",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear rod",
+      "o2_frac": 0.154,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.306
+    },
+    {
+      "run_id": "PSI-25-O19",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.153,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.324
+    },
+    {
+      "run_id": "PSI-25-O18",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.152,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.341
+    },
+    {
+      "run_id": "PSI-25-O17",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.151,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.359
+    },
+    {
+      "run_id": "PSI-25-O5a",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.151,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.359
+    },
+    {
+      "run_id": "PSI-69-244",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.994,
+      "outcome": "extinction",
+      "distance": 3.364
+    },
+    {
+      "run_id": "PSI-69-245",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 0.996,
+      "outcome": "extinction",
+      "distance": 3.367
+    },
+    {
+      "run_id": "PSI-25-B14",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.377
+    },
+    {
+      "run_id": "PSI-25-O9",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.377
+    },
+    {
+      "run_id": "PSI-69-70",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.001,
+      "outcome": "extinction",
+      "distance": 3.38
+    },
+    {
+      "run_id": "PSI-69-73",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.001,
+      "outcome": "extinction",
+      "distance": 3.38
+    },
+    {
+      "run_id": "PSI-69-161",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.004,
+      "outcome": "extinction",
+      "distance": 3.387
+    },
+    {
+      "run_id": "PSI-69-212",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.005,
+      "outcome": "extinction",
+      "distance": 3.389
+    },
+    {
+      "run_id": "PSI-69-162",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 3.39
+    },
+    {
+      "run_id": "PSI-69-72",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.007,
+      "outcome": "completion",
+      "distance": 3.393
+    },
+    {
+      "run_id": "PSI-69-163",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 3.395
+    },
+    {
+      "run_id": "PSI-69-164",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 3.395
+    },
+    {
+      "run_id": "PSI-69-65",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 3.395
+    },
+    {
+      "run_id": "PSI-69-74",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.008,
+      "outcome": "completion",
+      "distance": 3.395
+    },
+    {
+      "run_id": "PSI-69-66",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.009,
+      "outcome": "extinction",
+      "distance": 3.398
+    },
+    {
+      "run_id": "PSI-69-67",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.01,
+      "outcome": "extinction",
+      "distance": 3.4
+    },
+    {
+      "run_id": "PSI-69-71",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.011,
+      "outcome": "extinction",
+      "distance": 3.402
+    },
+    {
+      "run_id": "PSI-69-68",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.012,
+      "outcome": "extinction",
+      "distance": 3.404
+    },
+    {
+      "run_id": "PSI-25-O4",
+      "psi_id": "PSI-25",
+      "label": "3/8\"clear rod",
+      "o2_frac": 0.148,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.412
+    },
+    {
+      "run_id": "PSI-25-O13b",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.146,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.448
+    },
+    {
+      "run_id": "PSI-25-O16",
+      "psi_id": "PSI-25",
+      "label": "3/8\"clear rod",
+      "o2_frac": 0.145,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.466
+    },
+    {
+      "run_id": "PSI-25-O5b",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.142,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.52
+    },
+    {
+      "run_id": "PSI-69-215",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 0.997,
+      "outcome": "extinction",
+      "distance": 3.549
+    },
+    {
+      "run_id": "PSI-69-216",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 0.998,
+      "outcome": "extinction",
+      "distance": 3.551
+    },
+    {
+      "run_id": "PSI-69-246",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.553
+    },
+    {
+      "run_id": "PSI-69-213",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.555
+    },
+    {
+      "run_id": "PSI-69-214",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.555
+    },
+    {
+      "run_id": "PSI-69-247",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.0,
+      "outcome": "extinction",
+      "distance": 3.555
+    },
+    {
+      "run_id": "PSI-69-166",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.001,
+      "outcome": "extinction",
+      "distance": 3.558
+    },
+    {
+      "run_id": "PSI-69-167",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 3.56
+    },
+    {
+      "run_id": "PSI-69-78",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.008,
+      "outcome": "extinction",
+      "distance": 3.573
+    },
+    {
+      "run_id": "PSI-69-69",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.009,
+      "outcome": "completion",
+      "distance": 3.576
+    },
+    {
+      "run_id": "PSI-69-77",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.14,
+      "pressure_atm": 1.011,
+      "outcome": "extinction",
+      "distance": 3.58
+    },
+    {
+      "run_id": "PSI-25-O12",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.136,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.628
+    },
+    {
+      "run_id": "PSI-69-217",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 0.999,
+      "outcome": "extinction",
+      "distance": 3.735
+    },
+    {
+      "run_id": "PSI-69-218",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.001,
+      "outcome": "extinction",
+      "distance": 3.738
+    },
+    {
+      "run_id": "PSI-69-248",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.005,
+      "outcome": "extinction",
+      "distance": 3.746
+    },
+    {
+      "run_id": "PSI-69-82",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.006,
+      "outcome": "extinction",
+      "distance": 3.749
+    },
+    {
+      "run_id": "PSI-69-79",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.011,
+      "outcome": "extinction",
+      "distance": 3.759
+    },
+    {
+      "run_id": "PSI-69-76",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.012,
+      "outcome": "extinction",
+      "distance": 3.763
+    },
+    {
+      "run_id": "PSI-69-80",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.013,
+      "outcome": "extinction",
+      "distance": 3.764
+    },
+    {
+      "run_id": "PSI-69-81",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.013,
+      "outcome": "extinction",
+      "distance": 3.765
+    },
+    {
+      "run_id": "PSI-69-75",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.13,
+      "pressure_atm": 1.014,
+      "outcome": "extinction",
+      "distance": 3.767
+    },
+    {
+      "run_id": "PSI-69-219",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 3.924
+    },
+    {
+      "run_id": "PSI-69-220",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.002,
+      "outcome": "extinction",
+      "distance": 3.924
+    },
+    {
+      "run_id": "PSI-69-221",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.005,
+      "outcome": "extinction",
+      "distance": 3.929
+    },
+    {
+      "run_id": "PSI-69-84",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.009,
+      "outcome": "extinction",
+      "distance": 3.938
+    },
+    {
+      "run_id": "PSI-69-86",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.013,
+      "outcome": "extinction",
+      "distance": 3.946
+    },
+    {
+      "run_id": "PSI-69-85",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.015,
+      "outcome": "extinction",
+      "distance": 3.949
+    },
+    {
+      "run_id": "PSI-69-87",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.015,
+      "outcome": "extinction",
+      "distance": 3.949
+    },
+    {
+      "run_id": "PSI-69-83",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.12,
+      "pressure_atm": 1.016,
+      "outcome": "extinction",
+      "distance": 3.951
+    },
+    {
+      "run_id": "PSI-69-17",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.034,
+      "outcome": "disruption",
+      "distance": 6.956
+    },
+    {
+      "run_id": "PSI-69-18",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.044,
+      "outcome": "extinction",
+      "distance": 7.007
+    },
+    {
+      "run_id": "PSI-69-14",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.705,
+      "outcome": "extinction",
+      "distance": 10.233
+    },
+    {
+      "run_id": "PSI-69-15",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.719,
+      "outcome": "extinction",
+      "distance": 10.304
+    },
+    {
+      "run_id": "PSI-69-16",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.726,
+      "outcome": "extinction",
+      "distance": 10.34
+    },
+    {
+      "run_id": "PSI-69-13",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 2.729,
+      "outcome": "extinction",
+      "distance": 10.354
+    },
+    {
+      "run_id": "PSI-69-11",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 3.051,
+      "outcome": "extinction",
+      "distance": 11.942
+    },
+    {
+      "run_id": "PSI-69-10",
+      "psi_id": "PSI-69",
+      "label": "Methanol",
+      "o2_frac": 0.21,
+      "pressure_atm": 3.052,
+      "outcome": "extinction",
+      "distance": 11.948
+    },
+    {
+      "run_id": "PSI-69-12",
+      "psi_id": "PSI-69",
+      "label": "Heptane",
+      "o2_frac": 0.21,
+      "pressure_atm": 3.053,
+      "outcome": "disruption",
+      "distance": 11.949
+    }
+  ]
+}

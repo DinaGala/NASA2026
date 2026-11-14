@@ -39,6 +39,9 @@ This creates `.venv`, installs Python dependencies from `requirements.txt`, star
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
+| `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
+| `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`) |
+| `make test` | Run the unit tests |
 | `make verify` | List tables, count investigations, and list study IDs |
 | `make db-down` | Stop the PostgreSQL container while preserving its data volume |
 
@@ -48,6 +51,7 @@ Equivalent manual commands:
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install -e .
 docker compose up -d --wait postgres
 .venv/bin/python scripts/apply_schema.py
 .venv/bin/python scripts/import_psi_data.py

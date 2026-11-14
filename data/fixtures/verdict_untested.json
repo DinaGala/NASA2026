@@ -1,0 +1,11 @@
+{
+  "status": "untested",
+  "text": "Untested for solid materials. No solid run sits near 0.30 O2 and 0.69 atm. The closest is BASS-II, at 0.22 O2 and about 1 atm.",
+  "citations": [
+    {
+      "psi_id": "PSI-25",
+      "doc_title": "BASS-II Summary Report",
+      "page": 113
+    }
+  ]
+}
