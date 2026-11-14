@@ -61,6 +61,31 @@ Numeric measurements are extracted into a `measurements` list with `variable`, `
 - `stoichiometric_mixture_fraction` (1)
 - `hydrocarbon_burn_rate` (mg/s)
 - `peak_burner_temperature` (K) - Converted from Celsius if necessary.
+- `final_o2_frac` (fraction) - PSI-25
+- `initial_co2_frac`, `final_co2_frac` (fraction) - PSI-25
+- `initial_co_ppm`, `final_co_ppm` (ppm) - PSI-25
+- `co2_partial_pressure` (mmHg) - PSI-26
+- `sample_thickness`, `sample_width` (mm) - BASS material normalization
+
+## BASS-II (PSI-25) and BASS (PSI-26) Implementation details
+
+### PSI-25 BASS-II
+- **Source**: `psi_data/PSI-25/Experimental table/PSI-25_Experimental table_BASS-II.csv`
+- **Identity**: `PSI-25:bassii:<Test #>`
+- **Pressure**: Assumed `1.0 atm` per audit specification (recorded in `raw._normalization`).
+- **Oxygen**: `Calibrated initial O2 % by vol` divided by 100.
+- **Outcomes**: Mostly `unknown`, but some extracted from flow display text (e.g., "ext").
+
+### PSI-26 BASS
+- **Source**: `psi_data/PSI-26/Science Documents/PSI-26_Science Documents_As Run_Test Matrix.xlsx`, sheet `as run matrix`.
+- **Identity**: `PSI-26:bass:<As run test no.>:<Test no.>`
+- **Discrepancy Reconciled**: The source sheet has 131 data rows. 121 rows have both identifiers and are imported. 10 rows are skipped as non-test entries (setup/stow/maintenance).
+- **Oxygen**: `O2 % by volume` values are used directly as fractions (approx 0.159-0.227).
+- **Outcomes**: Extracted from observation text using keyword matching (`extinguish`, `ignited`, `blowoff`, etc.).
+
+### Common BASS Logic
+- **Material/Geometry**: Normalized from `Fuel Sample Material` or `material` strings into `runs.material`, `runs.geometry`, and measurements (`sample_thickness`, `sample_width`). Unclear/combined dimensions are kept in `raw._normalization`.
+- **Flow Display**: Air/Fan display strings are parsed into structured objects in `raw._normalization.flow_display`.
 
 ## Known Limitations / Flagged Issues
 - **FLEX "Burning rate; mm"**: Preserved in `raw` but not normalized into a rate measurement because the time denominator is unconfirmed in the header.

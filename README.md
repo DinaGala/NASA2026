@@ -54,11 +54,11 @@ python3.14 -m venv .venv314
 .venv314/bin/python -m pip install -r requirements.txt
 .venv314/bin/python -m pip install -e .
 docker compose up -d --wait postgres
-.venv/bin/python scripts/apply_schema.py
-.venv/bin/python scripts/import_psi_data.py
-PYTHONPATH=. .venv/bin/python scripts/parse_psi_data.py
-PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py --dry-run
-PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py
+.venv314/bin/python scripts/apply_schema.py
+.venv314/bin/python scripts/import_psi_data.py
+PYTHONPATH=. .venv314/bin/python scripts/parse_psi_data.py
+PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py --dry-run
+PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py
 ```
 
 ## Database schema and current data
