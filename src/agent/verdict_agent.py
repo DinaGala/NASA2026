@@ -16,12 +16,16 @@ import math
 import os
 import re
 import threading
+import time
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelRetry, RunContext, UsageLimits
+from pydantic_ai.messages import ModelRequest, RetryPromptPart
+from sqlalchemy import bindparam, text
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from sqlalchemy.engine import Engine
 
 from src.agent.search import PaperHit, search_papers
@@ -76,9 +80,25 @@ class RunEvidence(BaseModel):
     nearby_pressure_range: list[float] | None
     nearby_studies: list[str]
     closest: list[RunFact]
+    # "PSI-69" -> "FLEX (Flame Extinguishment Experiment)": readers know names, not IDs.
+    studies: dict[str, str]
 
 
-def evidence_from(query: ScenarioQuery, scenario: ScenarioResponse) -> RunEvidence:
+def involved_studies(scenario: ScenarioResponse) -> list[str]:
+    """The studies `find_runs` talks about: those of the nearby runs and of the closest runs."""
+    return sorted({run.psi_id for run in scenario.points if run.distance <= 1} | {run.psi_id for run in scenario.closest})
+
+
+def study_names_from_db(engine: Engine, psi_ids: list[str]) -> dict[str, str]:
+    query = text(
+        "SELECT psi_id, acronym, title FROM psi_dashboard.investigations WHERE psi_id = ANY(:psi_ids)"
+    ).bindparams(bindparam("psi_ids", type_=ARRAY(TEXT)))
+    with engine.connect() as connection:
+        rows = connection.execute(query, {"psi_ids": psi_ids})
+        return {row.psi_id: f"{row.acronym} ({row.title})" if row.acronym else row.title for row in rows}
+
+
+def evidence_from(query: ScenarioQuery, scenario: ScenarioResponse, names: dict[str, str]) -> RunEvidence:
     nearby = [run for run in scenario.points if run.distance <= 1]
     o2 = [run.o2_frac for run in nearby if run.o2_frac is not None]
     pressure = [run.pressure_atm for run in nearby if run.pressure_atm is not None]
@@ -105,11 +125,26 @@ def evidence_from(query: ScenarioQuery, scenario: ScenarioResponse) -> RunEviden
             )
             for run in scenario.closest
         ],
+        studies={psi_id: names.get(psi_id, psi_id) for psi_id in involved_studies(scenario)},
     )
 
 
 class RunDataUnavailable(Exception):
     """The runs could not be loaded: no verdict, not even the fallback, can be written."""
+
+
+@dataclass
+class RunReport:
+    """What one verdict cost: time, model calls, corrections, tokens. Logged by `answer`."""
+
+    model: str
+    latency_s: float
+    fell_back: bool
+    requests: int = 0
+    retries: int = 0  # verdicts or tool calls sent back to the model (ModelRetry)
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cost_usd: float | None = None  # from PydanticAI's price data; None when the model is unknown
 
 
 @dataclass
@@ -120,39 +155,52 @@ class Deps:
     query: ScenarioQuery
     find_scenario: Callable[[Engine, ScenarioQuery], ScenarioResponse] = get_scenario_data
     search: Callable[..., list[PaperHit]] = search_papers
+    find_study_names: Callable[[Engine, list[str]], dict[str, str]] = study_names_from_db
     # Filled during the run, then read by the output validator and the fallback.
     scenario: ScenarioResponse | None = None
+    study_names: dict[str, str] = field(default_factory=dict)
     searched: bool = False
     hits: list[PaperHit] = field(default_factory=list)
+    report: RunReport | None = None  # set by `answer`
     # PydanticAI runs sync tools in parallel threads: one scenario query, however many callers.
     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def load_scenario(self) -> ScenarioResponse:
         with self._lock:
             if self.scenario is None:
-                self.scenario = self.find_scenario(self.engine, self.query)
+                scenario = self.find_scenario(self.engine, self.query)
+                self.study_names = self.find_study_names(self.engine, involved_studies(scenario))
+                self.scenario = scenario
             return self.scenario
 
     def evidence(self) -> RunEvidence:
-        return evidence_from(self.query, self.load_scenario())
+        return evidence_from(self.query, self.load_scenario(), self.study_names)
 
 
 INSTRUCTIONS = f"""\
-You answer one question for a scenario (an oxygen fraction and a pressure), for engineers
-planning fire safety beyond Earth: "{QUESTION}"
+You answer one question about a scenario (an oxygen fraction and a pressure): "{QUESTION}"
+Your reader has never heard of these NASA experiments: a judge, or an engineer from another field.
 
-Call `find_runs` for the ISS test runs near the scenario, then `search_papers` for what the
-investigations' documents say. Then write the verdict:
+First call `find_runs` (the ISS test runs near the scenario), then `search_papers` (what the
+experiments' documents say). Then write the verdict. A verdict that breaks a rule is sent back:
 - `status` is the `status` that `find_runs` returns. Do not change it.
-- Every number in `text` comes from the `find_runs` output, written as it appears there (you
-  may write a fraction such as 0.3 as 30%). No other numbers: no years, no sample sizes, no
-  values from the papers.
-- Every claim drawn from a paper cites it: one entry in `citations` per page used, with the
-  `psi_id`, `doc_title` and `page` of a `search_papers` hit. Cite nothing that search did not return.
-- If the status is untested, `text` starts with "Untested" and names the closest run (its label
-  and study).
-- Keep `text` to 3-5 plain sentences: what was tested near these conditions, what happened,
-  how sure the evidence is.
+- Every number in `text` comes from the `find_runs` output, written as it appears there (a
+  fraction such as 0.3 may be written as 30%). No other numbers: no years, no values from papers.
+- `citations`: one entry per page you used, copied from a `search_papers` hit (`psi_id`,
+  `doc_title`, `page`). Cite at least one.
+- If the status is untested, `text` starts with "Untested" and names the closest run by its label.
+
+Write `text` as 3 or 4 short sentences, under 90 words, in plain English:
+1. The answer: the status in words, and how many runs sit near these conditions, in which
+   experiment. Name experiments as in `studies` ("NASA's FLEX experiment"), never by PSI ID or run ID.
+2. What happened in those runs, with the outcome counts in plain words: extinction = the flame
+   went out; disruption = the burning droplet broke apart while its flame was still burning;
+   completion = the fuel burned away; ignited / no_ignition = the flame lit, or did not;
+   blowoff = the gas flow blew the flame out; unknown = not recorded.
+3. Only if a cited passage explains these runs or the experiment, one sentence from it. Leave
+   out side details (other gases, other conditions, other experiments).
+4. How sure: for tested, how many runs and experiments the evidence rests on; for sparse, say
+   plainly that the evidence is thin; for untested, how far the closest run is (its conditions).
 """
 
 
@@ -201,6 +249,7 @@ def search_papers_tool(ctx: RunContext[Deps], question: str) -> list[dict]:
 NUMBER = re.compile(r"(?<![A-Za-z0-9_.])\d+(?:\.\d+)?")
 # One page or one page range ("p. 6", "pp. 17-20"), never the numbers after it.
 PAGE_REFERENCE = re.compile(r"\b(?:pp?\.|pages?)\s*\d+(?:\s*[-–]\s*\d+)?", re.IGNORECASE)
+PERCENT = re.compile(r"\s*(?:%|percent\b|per cent\b)", re.IGNORECASE)
 IDENTIFIER = re.compile(r"\b[A-Za-z]+[-_]?\d+[A-Za-z0-9_:-]*")  # PSI-69, CO2, FLEX-2, run ids
 
 
@@ -231,19 +280,24 @@ def unsupported_numbers(text_: str, evidence: RunEvidence, citations: list[Citat
     cleaned = text_
     for citation in citations:
         cleaned = cleaned.replace(citation.doc_title, " ")
-    for run in evidence.closest:
-        cleaned = cleaned.replace(run.run_id, " ")
+    for run in evidence.closest:  # run IDs and labels ("100 micron PMMA film") come from find_runs
+        cleaned = cleaned.replace(run.run_id, " ").replace(run.label, " ")
     cleaned = IDENTIFIER.sub(" ", PAGE_REFERENCE.sub(" ", cleaned))
 
     allowed = numbers_in(evidence)
     bad = []
-    for token in NUMBER.findall(cleaned):
+    for match in NUMBER.finditer(cleaned):
+        token = match.group()
         value = float(token)
         decimals = len(token.split(".")[1]) if "." in token else 0
         tolerance = 0.5 * 10**-decimals + 1e-9
-        as_written = any(math.isclose(v, value, abs_tol=tolerance) for v in allowed)
-        as_percent = any(v <= 1 and math.isclose(v * 100, value, abs_tol=tolerance) for v in allowed)
-        if not (as_written or as_percent):
+        # "13%" or "13 percent" can only be a fraction (0.13), never a count that happens to be 13;
+        # a bare number can only be a value as written.
+        if PERCENT.match(cleaned, match.end()):
+            supported = any(v <= 1 and math.isclose(v * 100, value, abs_tol=tolerance) for v in allowed)
+        else:
+            supported = any(math.isclose(v, value, abs_tol=tolerance) for v in allowed)
+        if not supported:
             bad.append(token)
     return bad
 
@@ -332,11 +386,29 @@ async def answer(deps: Deps) -> VerdictResponse:
         await asyncio.to_thread(deps.load_scenario)
     except Exception as error:
         raise RunDataUnavailable("The run data is unavailable; try again shortly.") from error
+    model = llm_model()
+    started = time.perf_counter()
     try:
-        result = await verdict_agent.run(
-            prompt_for(deps.query), deps=deps, model=llm_model(), usage_limits=USAGE_LIMITS
-        )
-        return result.output
+        result = await verdict_agent.run(prompt_for(deps.query), deps=deps, model=model, usage_limits=USAGE_LIMITS)
     except Exception:  # bad key, model down, retries or limits exhausted: the demo still answers
         logger.exception("Verdict agent failed; returning the fallback verdict")
+        deps.report = RunReport(model=model, latency_s=time.perf_counter() - started, fell_back=True)
         return fallback_verdict(deps)
+    usage = result.usage
+    deps.report = RunReport(
+        model=model,
+        latency_s=time.perf_counter() - started,
+        fell_back=False,
+        requests=usage.requests,
+        retries=sum(
+            isinstance(part, RetryPromptPart)
+            for message in result.all_messages()
+            if isinstance(message, ModelRequest)
+            for part in message.parts
+        ),
+        input_tokens=usage.input_tokens,
+        output_tokens=usage.output_tokens,
+        cost_usd=None if usage.cost is None else float(usage.cost),
+    )
+    logger.info("Verdict %s: %s", result.output.status, deps.report)
+    return result.output

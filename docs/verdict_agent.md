@@ -27,7 +27,8 @@ An illustrative response (the wording varies from run to run; the status and the
 | `status_for` | same file | The status rule: 3+ nearby runs tested, 1-2 sparse, 0 untested |
 | `check_verdict` | same file | The output validator: status, wording, numbers, citations |
 | `fallback_verdict` | same file | A verdict written by code alone, for when the agent fails |
-| `answer` | same file | Runs the agent with its limits; returns the verdict or the fallback |
+| `answer` | same file | Runs the agent with its limits; returns the verdict or the fallback, and records a `RunReport` |
+| `RunReport` | same file | One verdict's cost: latency, model requests, retries, input/output tokens, USD, fallback or not |
 | `POST /verdict` | `src/api/app.py` | Builds the agent's dependencies and calls `answer` |
 | Tests | `tests/test_verdict_agent.py` | Rules, validator, wiring with stand-in models, endpoint, live runs |
 
@@ -92,8 +93,18 @@ answer(deps)
 | `nearby_o2_range`, `nearby_pressure_range` | `[0.3, 0.34]`, `[0.7, 0.71]` | |
 | `nearby_studies` | `["PSI-69"]` | Which investigations the paper search is limited to |
 | `closest` | 5 runs | Study, label, conditions, outcome, distance |
+| `studies` | `{"PSI-69": "FLEX (Flame Extinguishment Experiment)"}` | Readers know experiments by name, not by PSI ID; read once from `investigations` |
 
 Values are rounded (O₂ to 3 decimals, pressure and distance to 2), so the model sees the same precision it should write.
+
+### The instructions
+
+`INSTRUCTIONS` in `src/agent/verdict_agent.py`, tuned on the four demo scenarios (#9). They state the reader (someone who has never heard of these NASA experiments), the rules the validator enforces, and a fixed shape for `text`, 3 or 4 short sentences under 90 words:
+
+1. **The answer:** the status in words and how many runs sit nearby, naming the experiment ("NASA's FLEX experiment"), never a PSI ID or run ID.
+2. **What happened**, with the outcome counts in plain words. The instructions carry a glossary, so a judge never meets a bare "disruption": extinction = the flame went out; disruption = the burning droplet broke apart while its flame was still burning (the meaning established on #7); completion = the fuel burned away; ignited / no_ignition; blowoff; unknown = not recorded.
+3. **At most one sentence from a paper**, and only if it explains these runs. The first tuning round showed true but distracting details (other gases, other conditions) crowding out the answer.
+4. **How sure:** how many runs and experiments; for sparse, say plainly that the evidence is thin; for untested, how far the closest run is.
 
 ### The output validator (`check_verdict`)
 
@@ -110,15 +121,15 @@ Each failure says what to fix, so the retry is a correction, not a reroll.
 
 `unsupported_numbers(text, evidence, citations)`:
 
-1. **Remove what is not a quantity:** the titles of the cited documents, already checked to be search hits ("SRD 201306" is a title, not a figure); the closest runs' IDs (`PSI-69:flex:41`); page references, one page or one range only (`p. 6`, `pp. 17-20`), never the numbers after them; and identifiers with letters before digits (`PSI-69`, `CO2`, `FLEX-2`).
+1. **Remove what is not a quantity:** the titles of the cited documents, already checked to be search hits ("SRD 201306" is a title, not a figure); the closest runs' IDs (`PSI-69:flex:41`) and labels ("100 micron PMMA film", which come from `find_runs`); page references, one page or one range only (`p. 6`, `pp. 17-20`), never the numbers after them; and identifiers with letters before digits (`PSI-69`, `CO2`, `FLEX-2`).
 2. **Extract the remaining numbers**, including those with a unit attached: "1500K", "45s" and "0.3atm" are checked as 1500, 45 and 0.3.
 3. **Collect every number in `RunEvidence`**, wherever it sits: the query, counts, ranges, each closest run's values.
-4. **Match each number at the precision it is written:** "0.70" matches 0.703 (2 decimals), "17" matches 17. A fraction may be written as a percent: "30%" matches 0.3.
+4. **Match each number at the precision it is written:** "0.70" matches 0.703 (2 decimals), "17" matches 17. A percent ("30%", "30 percent") matches only a fraction (0.3), never a count: a "13%" from a paper does not pass because 13 runs happened to complete. A bare number matches only a value as written.
 5. **Anything left unmatched is invented**, and the verdict goes back to the model.
 
-Example: *"Tested at 30% O2 and 0.69 atm: 17 FLEX runs (PSI-69), 15 ended in disruption; see FLEX Test Plan p. 6."* → after step 1: `30`, `0.69`, `17`, `15` → all found (0.3 as percent, the query, `n_nearby`, the disruption count) → accepted. Rejected: "23 runs", "reached 1500K", and "see page 6 and 99 runs ignited" (the 99).
+Example: *"Tested at 30% O2 and 0.69 atm: 17 FLEX runs (PSI-69), 15 ended in disruption; see FLEX Test Plan p. 6."* → after step 1: `30`, `0.69`, `17`, `15` → all found (0.3 as percent, the query, `n_nearby`, the disruption count) → accepted. Rejected: "23 runs", "reached 1500K", "see page 6 and 99 runs ignited" (the 99), and "tests across 13% oxygen" when no fraction 0.13 is in the evidence.
 
-Known limits: numbers written as words ("seventeen") are not checked, and a wrong number that happens to equal another value in the evidence ("2 hours", when 2 runs completed) passes. The check catches invented figures, not every misuse of a real one. It errs the other way too: an ordinal such as "2nd" is checked as 2, so a harmless phrase can cost a retry.
+Known limits: numbers written as words ("seventeen") are not checked, and a wrong bare number that happens to equal another value in the evidence ("2 hours", when 2 runs completed) passes. The check catches invented figures, not every misuse of a real one. It errs the other way too: an ordinal such as "2nd" is checked as 2, so a harmless phrase can cost a retry.
 
 ### The fallback (`fallback_verdict`)
 
@@ -144,6 +155,9 @@ Built from `RunEvidence` only: the status, then either the nearby count and outc
 | **Limits: 2 retries, 8 model calls** | Defaults | Bounds cost and latency; a model that cannot follow the rules in 2 tries falls back. |
 | **`LLM_MODEL`, default Claude Opus 5.5, set per run** | Hard-coded model; or set in the `Agent` constructor | Opus 5.5 is the most careful with strict rules; a cheaper model (e.g. a Haiku) suits development and tests. One line in `.env`. Read on every run, in one place, so a change to `.env` needs no code change. |
 | **Live tests behind `make test-live`** | Run them in `make test` | They cost money and need a key and the loaded database. `make test` stays free and offline. |
+| **Study names given to the model** | Let it use PSI IDs | A judge has never heard of PSI-69; "NASA's FLEX experiment" is the first thing the answer needs to be understood. |
+| **A fixed 4-part shape and an outcome glossary in the prompt** | A free-form "3-5 plain sentences" | The first live round produced accurate but dense answers: bare jargon ("disruption"), side details from the papers. The shape keeps every answer short and in the same order. |
+| **A percent matches only a fraction** | Accept a percent of any value | Found by reading a live verdict: a "13%" from a paper passed because 13 runs had completed. |
 
 ## Configuration
 
@@ -168,19 +182,37 @@ Without `LLM_MODEL`, the code uses Claude Opus 5.5. A cheaper model for developm
 | `OutputValidatorTests` | none | Each check, including **an invented number is rejected**, a number with a unit, a number hidden behind a page reference, a citation search did not return, a verdict written without searching |
 | `AgentWiringTests` | `TestModel`, `FunctionModel` | Both tools are called; an invented number is sent back and corrected; a failing model falls back; one runs query per request, parallel tools and fallback included; unavailable runs raise |
 | `VerdictEndpointTests` | `TestModel`, `FunctionModel` | `POST /verdict` returns the agent's verdict, the fallback, or a 503 when the runs cannot be loaded; importing the API does not load torch |
-| `LiveVerdictTests` | the real one | Moon droplet → tested, count in the text, ≥ 1 citation; Moon solid → untested, names the closest run, ≥ 1 citation; a broken API key → valid fallback |
+| `tests/live/test_verdict_live.py` | the real one | The four demo scenarios (table below), each with ≥ 1 citation, no fallback and under 15k input tokens; a broken API key → valid fallback |
 
 `TestModel` and `FunctionModel` are PydanticAI's stand-in models: the first calls the tools and returns a given output; the second is a Python function playing the model turn by turn (here: call `find_runs`, call `search_papers`, hand in a verdict with an invented number, then a correct one).
 
-`make test` runs everything except the live tests (no LLM cost, no network). `make test-live` runs them all: it needs the database loaded (`make load-chunks` and the runs loaders) and a real API key in `.env`. The two smoke tests can only pass with a real model answer: they require a citation, and the fallback has none.
+`make test` runs `tests/test_*.py` only: no LLM cost, no network. `make test-live` runs `tests/live/test_verdict_live.py` with `LIVE_LLM_TESTS=1`: it needs the database loaded (`make load-chunks` and the runs loaders) and a real API key in `.env`. The scenario tests can only pass with a real model answer: they require a citation, and the fallback has none. Each verdict is printed with its `RunReport` and appended to `data/processed/live_verdicts.jsonl` (not committed).
 
-**Verified on 2026-11-14:** `make test-live` passed 16/16 with `LLM_MODEL=anthropic:claude-haiku-5-5`, before and after merging #14. The code-review fixes (stricter citation and number checks) were verified offline; re-run `make test-live` to confirm them with the real model. Not yet run on the default Opus 5.5.
+| Scenario | Query | Expected | Must mention |
+| --- | --- | --- | --- |
+| Moon droplet | 0.30 O₂, 0.69 atm, droplet | `tested` | the nearby count (17) |
+| Moon solid | 0.30 O₂, 0.69 atm, solid | `untested`, starts "Untested" | the closest run (BASS SIBAL today; BASS-II accepted) |
+| Earth air droplet | 0.21 O₂, 1 atm, droplet | `tested` | the extinction count (62 of 100) |
+| Sparse droplet | 0.21 O₂, 2 atm, droplet | `sparse` | that the evidence is thin; only 2 FLEX runs nearby, and every O₂ from 0.17 to 0.25 at 2 atm gives the same 2 |
 
-## Changes from the issue
+**Measured on 2026-11-14** (#9), with `LLM_MODEL=anthropic:claude-haiku-5-5` ($0.50 / $2.50 per million input / output tokens): with the final prompt and checks, all four scenarios passed twice in a row (rounds 4 and 5), with no retry and no fallback.
+
+| Per verdict, final prompt (8 verdicts) | Average | Range |
+| --- | --- | --- |
+| Cost | $0.0013 | $0.0011–0.0017 |
+| Input tokens | 8.2k | up to 11.4k (limit 15k) |
+| Output tokens | 0.9k | |
+| Model requests | 2.9 | 2–3 |
+| Latency | 11.4 s | up to 18.1 s |
+
+All 20 live verdicts of the tuning (5 rounds) cost $0.025 in total. Not yet run on the default Opus 5.5 (expected about 8× the cost).
+
+## Changes from the issues
 
 The project moved on after #8 was written:
 
 - **`find_runs` uses the real `/scenario` code.** #11 landed `get_scenario_data`, so the fixture is no longer needed; `Deps.find_scenario` can still swap the source.
 - **`find_runs` takes no query and returns `RunEvidence`**, instead of `find_runs(query) → ScenarioResponse` (see the decisions above).
 - **"tested: n_nearby ≥ 3 (the same rule as `in_envelope`)":** `in_envelope` is `n_nearby > 0` in the merged `/scenario` code, so the two rules differ. The status follows the issue's 3-level rule; `in_envelope` is unchanged.
+- **#9: unittest instead of `@pytest.mark.live`.** The project's tests are unittest; the live tests are skipped unless `LIVE_LLM_TESTS=1`, which has the same effect: a normal `make test` never calls the API.
 - **Moon solid's closest run is BASS (PSI-26), not BASS-II.** Since #14, the 250 BASS and BASS-II runs are all compared, and a BASS run is simply closer: SIBAL at 0.227 O₂ and 0.99 atm (distance 2.11), against BASS-II's best at 0.222 O₂ and an assumed 1.0 atm (distance 2.20, 42nd). The agent names whichever run `find_runs` reports as closest.

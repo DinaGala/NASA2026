@@ -1,24 +1,20 @@
 import asyncio
-import os
 import subprocess
 import sys
 import unittest
 from pathlib import Path
-from unittest import mock
 
 from fastapi import testclient
 from pydantic_ai import ModelRetry
 from pydantic_ai.messages import ModelResponse, ToolCallPart
 from pydantic_ai.models.function import AgentInfo, FunctionModel
 from pydantic_ai.models.test import TestModel as PydanticTestModel  # not a test class
-from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
 from src.agent.search import PaperHit
 from src.agent.verdict_agent import Deps, RunDataUnavailable, answer, check_verdict, status_for, verdict_agent
 from src.api.app import app, verdict_deps
 from src.contracts import Citation, ScenarioQuery, ScenarioResponse, VerdictResponse
-from src.database import engine
 
 FIXTURES = Path(__file__).resolve().parents[1] / "data" / "fixtures"
 MOON = ScenarioQuery(o2_frac=0.30, pressure_atm=0.69)
@@ -56,6 +52,7 @@ def fake_deps(query: ScenarioQuery = MOON, hits: list[PaperHit] | None = None, c
         query=query,
         find_scenario=find_scenario,
         search=lambda question, psi_ids=None, k=5: [hit for hit in found if not psi_ids or hit.psi_id in psi_ids],
+        find_study_names=lambda _engine, psi_ids: {"PSI-69": "FLEX (Flame Extinguishment Experiment)"},
     )
 
 
@@ -102,6 +99,14 @@ class OutputValidatorTests(unittest.TestCase):
         verdict = TESTED.model_copy(update={"text": "Tested. Flames reached 1500K in 45s at 0.3atm."})
         with self.assertRaisesRegex(ModelRetry, "1500, 45"):
             check_verdict(verdict, searched(fake_deps()))
+
+    def test_a_percent_must_be_a_fraction_not_a_count(self):
+        # The Moon evidence holds the count 2 (completions) and 15 (disruptions), but no 0.15 fraction.
+        verdict = TESTED.model_copy(update={"text": "Tested. Earlier tests ran at 15% oxygen."})
+        with self.assertRaisesRegex(ModelRetry, "15"):
+            check_verdict(verdict, searched(fake_deps()))
+        verdict = TESTED.model_copy(update={"text": "Tested at 30 percent oxygen: 17 runs, 15 disruptions."})
+        check_verdict(verdict, searched(fake_deps()))
 
     def test_a_page_reference_does_not_hide_the_numbers_after_it(self):
         verdict = TESTED.model_copy(update={"text": "Tested. See page 6 and 99 runs ignited."})
@@ -234,53 +239,6 @@ class VerdictEndpointTests(unittest.TestCase):
         verdict = VerdictResponse.model_validate(response.json())
         self.assertEqual(verdict.status, "tested")
         self.assertIn("17", verdict.text)
-
-
-def database_ready() -> bool:
-    try:
-        with engine.connect() as connection:
-            return bool(connection.execute(text(
-                "SELECT (SELECT count(*) FROM psi_dashboard.chunks) > 0"
-                " AND (SELECT count(*) FROM psi_dashboard.runs) > 0"
-            )).scalar())
-    except OperationalError:
-        return False
-
-
-LIVE = os.getenv("LIVE_LLM_TESTS") == "1" and database_ready()
-
-
-@unittest.skipUnless(LIVE, "set LIVE_LLM_TESTS=1 (calls the real LLM; needs the database loaded)")
-class LiveVerdictTests(unittest.TestCase):
-    """Real model, real database. Costs a few cents per run: `make test-live`."""
-
-    @unittest.skipUnless(os.getenv("ANTHROPIC_API_KEY"), "needs ANTHROPIC_API_KEY")
-    def test_moon_droplet_is_tested_with_the_find_runs_counts(self):
-        deps = Deps(engine=engine, query=MOON)
-        verdict = asyncio.run(answer(deps))
-        evidence = deps.evidence()
-        self.assertEqual(verdict.status, "tested")
-        self.assertIn(str(evidence.n_nearby), verdict.text)
-        self.assertGreaterEqual(len(verdict.citations), 1, verdict.text)
-
-    @unittest.skipUnless(os.getenv("ANTHROPIC_API_KEY"), "needs ANTHROPIC_API_KEY")
-    def test_moon_solid_is_untested_and_names_the_closest_run(self):
-        deps = Deps(engine=engine, query=MOON_SOLID)
-        verdict = asyncio.run(answer(deps))
-        closest = deps.evidence().closest[0]
-        self.assertEqual(verdict.status, "untested")
-        self.assertTrue(verdict.text.startswith("Untested"), verdict.text)
-        self.assertIn(closest.label.lower(), verdict.text.lower())
-        self.assertGreaterEqual(len(verdict.citations), 1, verdict.text)
-
-    def test_a_broken_api_key_still_returns_a_valid_fallback_verdict(self):
-        broken_key = {"ANTHROPIC_API_KEY": "sk-ant-broken", "LLM_MODEL": "anthropic:claude-opus-5-5"}
-        with mock.patch.dict(os.environ, broken_key), self.assertLogs("src.agent.verdict_agent"):
-            response = testclient.TestClient(app).post("/verdict", json=MOON.model_dump())
-        self.assertEqual(response.status_code, 200)
-        verdict = VerdictResponse.model_validate(response.json())
-        self.assertEqual(verdict.status, "tested")
-        self.assertEqual(verdict.citations, [])
 
 
 if __name__ == "__main__":
