@@ -5,7 +5,7 @@ VENV_PYTHON := $(VENV)/bin/python
 -include .env
 export
 
-.PHONY: setup install db-up schema import load-chunks fixtures api test verify db-down
+.PHONY: setup install db-up schema import load-chunks fixtures api test test-live verify db-down
 
 setup: install
 	docker compose up -d --wait postgres
@@ -39,6 +39,10 @@ api:
 
 test:
 	$(VENV_PYTHON) -m unittest tests/test_*.py
+
+# Calls the real LLM (a few cents): needs LLM_MODEL and its API key in .env.
+test-live:
+	LIVE_LLM_TESTS=1 $(VENV_PYTHON) -m unittest -v tests/test_verdict_agent.py
 
 verify:
 	docker-compose exec postgres psql -U flame_user -d psi_flame -c "\\dt psi_dashboard.*"

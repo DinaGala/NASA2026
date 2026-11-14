@@ -13,13 +13,16 @@
 import math
 from dataclasses import dataclass
 from functools import cache
+from typing import TYPE_CHECKING
 
-from sentence_transformers import CrossEncoder
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 
 from src.agent.embeddings import embed_query
 from src.database import engine
+
+if TYPE_CHECKING:  # imported on first use: torch takes seconds to load
+    from sentence_transformers import CrossEncoder
 
 # How many chunks each ranking contributes before fusion: the shortlist holds up to twice this.
 CANDIDATES = 50
@@ -103,8 +106,10 @@ SEARCH_SQL = text(
 
 
 @cache
-def get_reranker() -> CrossEncoder:
+def get_reranker() -> "CrossEncoder":
     """Load the re-ranker once per process."""
+    from sentence_transformers import CrossEncoder
+
     return CrossEncoder(RERANKER_NAME)
 
 

@@ -2,7 +2,7 @@
 
 `src/contracts.py` defines the shape of every request and response of the API. The data track (A) fills these shapes from Postgres; the dashboard track (B) reads them. Both code against the same models, so **the names are fixed**: renaming a field means both tracks edit their code.
 
-`/scenario` and `/inverse-flames` read run data from PostgreSQL. `/verdict` currently returns fixed JSON files from `data/fixtures/`. Fixture responses follow the contract shapes so the dashboard can be built before verdict generation is connected to evidence retrieval.
+`/scenario` and `/inverse-flames` read run data from PostgreSQL. `/verdict` runs the verdict agent (a language model with the runs and the papers as tools; see [`verdict_agent.md`](verdict_agent.md)). The fixtures in `data/fixtures/` are kept as examples of each shape.
 
 ## Try it
 
@@ -24,7 +24,7 @@ curl -X POST http://127.0.0.1:8000/verdict \
 | `GET /inverse-flames` | `InverseFlameQuery` as query string | `InverseFlameResponse` | What inverse-flame tests were run at these burner-stream conditions? |
 | `POST /verdict` | `ScenarioQuery` as JSON body | `VerdictResponse` | In plain words: has this been tested, and where is the evidence? |
 
-Today `/verdict` returns fixtures: `flame_config=solid` gets the "solid" fixture, anything else gets the "Moon" fixture. `/scenario` and `/inverse-flames` are database-backed.
+All three endpoints are database-backed. `/verdict` also calls the language model set by `LLM_MODEL`; if the model fails, it still answers, with a verdict written by code (no citations).
 
 `/scenario` is for ambient-atmosphere comparisons. It must exclude rows whose `o2_is_ambient` is false. Inverse-flame runs use burner-stream oxygen and are queried through `/inverse-flames` instead.
 
@@ -117,9 +117,9 @@ Each response run includes `run_id`, `psi_id`, `label`, `burner_o2_frac`, `press
 }
 ```
 
-- `status`: `tested` (runs nearby), `sparse` (only a few), `untested` (none).
-- `text`: the explanation shown to the user. Later written by an LLM from the document chunks.
-- `citations`: one `Citation` per source page: study, document title, page number in the PDF.
+- `status`: decided by code from the number of nearby runs, never by the model: `tested` (3 or more), `sparse` (1 or 2), `untested` (0).
+- `text`: the explanation shown to the user, written by the verdict agent. Every number in it comes from the runs data; an `untested` text starts with "Untested" and names the closest run.
+- `citations`: one `Citation` per source page: study, document title, page number in the PDF. Each one is a page the paper search returned for this verdict (a row of `psi_dashboard.chunks`). Empty only when the paper search found nothing, or in the fallback verdict.
 
 ## Allowed values
 
@@ -164,6 +164,6 @@ The two scenario fixtures are built from the FLEX (PSI-69) and BASS-II (PSI-25) 
 
 ## Open questions
 
-- The real "nearby" rule (scales and threshold), and where `sparse` starts.
+- The real "nearby" rule (scales and threshold). `sparse` currently means 1 or 2 nearby runs (`TESTED_MIN_RUNS` in `src/agent/verdict_agent.py`), while `in_envelope` is true from 1 run.
 - BASS-II has no pressure column: the fixtures assume 1 atm.
 - The `run_id` format (`PSI-69-25` here) should match whatever the `runs` loader uses.

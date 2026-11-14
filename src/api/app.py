@@ -1,10 +1,9 @@
-"""API skeleton: every endpoint returns a fixture from data/fixtures/ until the real queries land."""
+"""PSI Flame API: scenarios and inverse flames from Postgres, verdicts from the verdict agent."""
 
-from pathlib import Path
+from collections.abc import Callable
 from typing import Annotated
 
-from fastapi import FastAPI, Query
-from pydantic import BaseModel
+from fastapi import Depends, FastAPI, HTTPException, Query
 
 from src.contracts import (
     ScenarioQuery,
@@ -15,18 +14,7 @@ from src.contracts import (
 )
 from src.database import engine
 from src.api.queries import get_scenario_data, get_inverse_flames_data
-
-FIXTURES = Path(__file__).resolve().parents[2] / "data" / "fixtures"
-
-
-def load_fixture[T: BaseModel](name: str, model: type[T]) -> T:
-    return model.model_validate_json((FIXTURES / name).read_text())
-
-
-SCENARIO_MOON = load_fixture("scenario_moon.json", ScenarioResponse)
-SCENARIO_MOON_SOLID = load_fixture("scenario_moon_solid.json", ScenarioResponse)
-VERDICT_TESTED = load_fixture("verdict_tested.json", VerdictResponse)
-VERDICT_UNTESTED = load_fixture("verdict_untested.json", VerdictResponse)
+from src.agent.verdict_agent import Deps, RunDataUnavailable, answer
 
 app = FastAPI(title="PSI Flame API")
 
@@ -41,8 +29,17 @@ def get_inverse_flames(query: Annotated[InverseFlameQuery, Query()]) -> InverseF
     return get_inverse_flames_data(engine, query)
 
 
+def verdict_deps() -> Callable[[ScenarioQuery], Deps]:
+    """How /verdict builds the agent's dependencies; tests override it."""
+    return lambda query: Deps(engine=engine, query=query)
+
+
 @app.post("/verdict", response_model=VerdictResponse)
-def post_verdict(query: ScenarioQuery) -> VerdictResponse:
-    if query.flame_config == "solid":
-        return VERDICT_UNTESTED
-    return VERDICT_TESTED
+async def post_verdict(
+    query: ScenarioQuery, make_deps: Annotated[Callable[[ScenarioQuery], Deps], Depends(verdict_deps)]
+) -> VerdictResponse:
+    try:
+        return await answer(make_deps(query))
+    except RunDataUnavailable as error:
+        # Without the runs there is nothing true to say, not even the fallback verdict.
+        raise HTTPException(status_code=503, detail=str(error)) from error
