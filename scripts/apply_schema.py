@@ -7,6 +7,7 @@ from src.database import engine
 
 SCHEMA_SQL = (
     "CREATE SCHEMA IF NOT EXISTS psi_dashboard",
+    "CREATE EXTENSION IF NOT EXISTS vector",
     """
     DO $$
     BEGIN
@@ -84,6 +85,17 @@ SCHEMA_SQL = (
         unit TEXT
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.chunks (
+        chunk_id TEXT PRIMARY KEY,
+        psi_id TEXT NOT NULL REFERENCES psi_dashboard.investigations(psi_id),
+        doc_title TEXT NOT NULL,
+        doc_category TEXT,
+        page INTEGER,
+        text TEXT NOT NULL,
+        embedding vector(384) NOT NULL
+    )
+    """,
 )
 
 
@@ -92,7 +104,7 @@ def main() -> None:
         for statement in SCHEMA_SQL:
             connection.execute(text(statement))
 
-    print("Schema applied successfully to psi_flame.psi_dashboard (runs table).")
+    print("Schema applied successfully to psi_flame.psi_dashboard (runs and chunks tables).")
 
 
 if __name__ == "__main__":

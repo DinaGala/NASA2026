@@ -39,6 +39,8 @@ This creates `.venv`, installs Python dependencies from `requirements.txt`, star
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
+| `make chunks` | Rebuild `data/processed/chunks.parquet`: split the PSI documents into page chunks and embed them with bge-small (10–15 min; only when the documents or chunking change) |
+| `make load-chunks` | Truncate and reload `psi_dashboard.chunks` from the committed parquet (seconds, no re-embedding) |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
 | `make test` | Run the unit tests |
