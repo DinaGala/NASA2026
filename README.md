@@ -43,7 +43,8 @@ This creates `.venv314` with Python 3.14, installs Python dependencies from `req
 | `make load-chunks` | Truncate and reload `psi_dashboard.chunks` and its BM25 tables from the committed parquet (~25 s, no re-embedding); how the paper search works: [`docs/paper_search.md`](docs/paper_search.md) |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
-| `make test` | Run the unit tests |
+| `make test` | Run the unit tests (no LLM calls) |
+| `make test-live` | Run the verdict agent against the real LLM (a few cents; needs `LLM_MODEL` and its API key in `.env`; how it works: [`docs/verdict_agent.md`](docs/verdict_agent.md)) |
 | `make verify` | List tables, count investigations, and list study IDs |
 | `make db-down` | Stop the PostgreSQL container while preserving its data volume |
 

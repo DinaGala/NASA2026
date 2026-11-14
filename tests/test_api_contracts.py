@@ -64,16 +64,6 @@ class ApiTests(unittest.TestCase):
         response = self.client.get("/scenario", params={"o2_frac": 1.5, "pressure_atm": 0.69})
         self.assertEqual(response.status_code, 422)
 
-    def test_post_verdict_returns_a_fixture_verdict(self):
-        response = self.client.post("/verdict", json={"o2_frac": 0.3, "pressure_atm": 0.69})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["status"], "tested")
-
-        response = self.client.post(
-            "/verdict", json={"o2_frac": 0.3, "pressure_atm": 0.69, "flame_config": "solid"}
-        )
-        self.assertEqual(response.json()["status"], "untested")
-
     def test_docs_show_both_response_schemas(self):
         schemas = self.client.get("/openapi.json").json()["components"]["schemas"]
         self.assertIn("ScenarioResponse", schemas)

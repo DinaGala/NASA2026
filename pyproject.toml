@@ -11,6 +11,7 @@ dependencies = [
     "pandas",
     "psycopg[binary]",
     "pyarrow",
+    "pydantic-ai-slim[anthropic]",
     "pymupdf",
     "python-docx",
     "python-dotenv",
