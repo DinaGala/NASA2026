@@ -42,7 +42,7 @@ test:
 
 # Calls the real LLM (a few cents): needs LLM_MODEL and its API key in .env.
 test-live:
-	LIVE_LLM_TESTS=1 $(VENV_PYTHON) -m unittest -v tests/test_verdict_agent.py
+	LIVE_LLM_TESTS=1 $(VENV_PYTHON) -m unittest -v tests/live/test_verdict_live.py
 
 verify:
 	docker-compose exec postgres psql -U flame_user -d psi_flame -c "\\dt psi_dashboard.*"

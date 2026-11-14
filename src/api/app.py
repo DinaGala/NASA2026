@@ -1,6 +1,8 @@
 """PSI Flame API: scenarios and inverse flames from Postgres, verdicts from the verdict agent."""
 
+import asyncio
 from collections.abc import Callable
+from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -16,7 +18,17 @@ from src.database import engine
 from src.api.queries import get_scenario_data, get_inverse_flames_data
 from src.agent.verdict_agent import Deps, RunDataUnavailable, answer
 
-app = FastAPI(title="PSI Flame API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # The paper-search models take seconds to load. Load them in the background at startup, so
+    # the first /verdict does not pay for it and /scenario is never held up.
+    from src.agent.search import warm_up
+
+    app.state.warm_up = asyncio.create_task(asyncio.to_thread(warm_up))
+    yield
+
+
+app = FastAPI(title="PSI Flame API", lifespan=lifespan)
 
 
 @app.get("/scenario", response_model=ScenarioResponse)
