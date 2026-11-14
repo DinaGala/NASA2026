@@ -41,12 +41,14 @@ def get_existing_psi_ids() -> set:
 UPSERT_RUN = text(f"""
     INSERT INTO {SCHEMA_NAME}.runs (
         test_id, psi_id, source_file, run_label, granularity,
-        flame_config, fuel, o2_frac, o2_is_ambient, pressure_atm, 
-        diluent, diluent_frac, outcome, notes, raw
+        flame_config, fuel, material, geometry, size_mm, 
+        o2_frac, o2_is_ambient, pressure_atm, 
+        diluent, diluent_frac, outcome, outcome_source, notes, raw
     ) VALUES (
         :test_id, :psi_id, :source_file, :run_label, :granularity,
-        :flame_config, :fuel, :o2_frac, :o2_is_ambient, :pressure_atm,
-        :diluent, :diluent_frac, :outcome, :notes, CAST(:raw AS JSONB)
+        :flame_config, :fuel, :material, :geometry, :size_mm,
+        :o2_frac, :o2_is_ambient, :pressure_atm,
+        :diluent, :diluent_frac, :outcome, :outcome_source, :notes, CAST(:raw AS JSONB)
     )
     ON CONFLICT (test_id) DO UPDATE SET
         psi_id = EXCLUDED.psi_id,
@@ -55,12 +57,16 @@ UPSERT_RUN = text(f"""
         granularity = EXCLUDED.granularity,
         flame_config = EXCLUDED.flame_config,
         fuel = EXCLUDED.fuel,
+        material = EXCLUDED.material,
+        geometry = EXCLUDED.geometry,
+        size_mm = EXCLUDED.size_mm,
         o2_frac = EXCLUDED.o2_frac,
         o2_is_ambient = EXCLUDED.o2_is_ambient,
         pressure_atm = EXCLUDED.pressure_atm,
         diluent = EXCLUDED.diluent,
         diluent_frac = EXCLUDED.diluent_frac,
         outcome = EXCLUDED.outcome,
+        outcome_source = EXCLUDED.outcome_source,
         notes = EXCLUDED.notes,
         raw = EXCLUDED.raw
 """)
@@ -110,12 +116,16 @@ def load_file(file_path: str, dry_run: bool, existing_psi_ids: set) -> Dict[str,
             "granularity": rec.get("granularity"),
             "flame_config": rec.get("flame_config"),
             "fuel": rec.get("fuel"),
+            "material": rec.get("material"),
+            "geometry": rec.get("geometry"),
+            "size_mm": rec.get("size_mm"),
             "o2_frac": rec.get("o2_frac"),
             "o2_is_ambient": rec.get("o2_is_ambient"),
             "pressure_atm": rec.get("pressure_atm"),
             "diluent": rec.get("diluent"),
             "diluent_frac": rec.get("diluent_frac"),
             "outcome": rec.get("outcome"),
+            "outcome_source": rec.get("outcome_source"),
             "notes": rec.get("notes"),
             "raw": json.dumps(rec.get("raw", {}), ensure_ascii=False)
         }
@@ -173,7 +183,9 @@ def main():
     files = [
         os.path.join(processed_dir, "PSI-69_FLEX_normalized.json"),
         os.path.join(processed_dir, "PSI-159_CFI-G_Normal_normalized.json"),
-        os.path.join(processed_dir, "PSI-159_CFI-G_Inverse_normalized.json")
+        os.path.join(processed_dir, "PSI-159_CFI-G_Inverse_normalized.json"),
+        os.path.join(processed_dir, "PSI-25_BASS-II_normalized.json"),
+        os.path.join(processed_dir, "PSI-26_BASS_normalized.json")
     ]
     
     total_report = []
