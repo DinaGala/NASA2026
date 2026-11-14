@@ -67,7 +67,7 @@ An **embedding** turns a text into a list of numbers, here 384, that act as coor
 ### 3. Storage and loading
 
 - **`chunks.parquet` is committed** (`data/processed/`, ~43 MB). It holds every chunk *with* its embedding, so nobody has to re-embed: `make load-chunks` empties `psi_dashboard.chunks` and reloads it, then rebuilds the two BM25 tables, in about 25 seconds and one transaction (a failure leaves the old rows). It checks that the row counts match. `make setup` runs it too.
-- **Rebuilding the parquet** (`.venv/bin/python scripts/make_chunks.py`) is a maintainer step, needed only when the documents, the chunking or the model change. It asks for confirmation; an accidental run is undone with `git checkout data/processed/chunks.parquet`.
+- **Rebuilding the parquet** (`.venv314/bin/python scripts/make_chunks.py`) is a maintainer step, needed only when the documents, the chunking or the model change. It asks for confirmation; an accidental run is undone with `git checkout data/processed/chunks.parquet`.
 - **Postgres with pgvector** holds the chunks next to the rest of the data, so one query can filter by study and rank by similarity.
 - **Words for the keyword side:** `chunks.text_search` holds each chunk's words, stemmed by Postgres's English dictionary ("flames" → `flame`, "large-scale" → `large-scal` plus `larg` and `scale`). Postgres maintains it from `doc_title` and `text`.
 - **BM25 tables**, rebuilt by `load_chunks.py` from `text_search` (see [Keywords: BM25](#keywords-bm25)):
@@ -199,4 +199,4 @@ Option B was first measured as a Python prototype on the same tokens, then moved
 | `make schema` | seconds | Create `chunks`, `chunk_terms`, `chunk_lengths`; run once before the first `make load-chunks` |
 | `make load-chunks` | ~25 s | Load the committed parquet into Postgres and rebuild the BM25 tables |
 | `make test` | ~20 s | Includes `tests/test_search.py` (skipped when the table is empty) |
-| `.venv/bin/python scripts/make_chunks.py` | 10–15 min | Rebuild the parquet; maintainers only, asks for confirmation |
+| `.venv314/bin/python scripts/make_chunks.py` | 10–15 min | Rebuild the parquet; maintainers only, asks for confirmation |

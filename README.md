@@ -55,12 +55,12 @@ python3.14 -m venv .venv314
 .venv314/bin/python -m pip install -r requirements.txt
 .venv314/bin/python -m pip install -e .
 docker compose up -d --wait postgres
-.venv/bin/python scripts/apply_schema.py
-.venv/bin/python scripts/import_psi_data.py
-PYTHONPATH=. .venv/bin/python scripts/parse_psi_data.py
-PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py --dry-run
-PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py
-.venv/bin/python scripts/load_chunks.py
+.venv314/bin/python scripts/apply_schema.py
+.venv314/bin/python scripts/import_psi_data.py
+PYTHONPATH=. .venv314/bin/python scripts/parse_psi_data.py
+PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py --dry-run
+PYTHONPATH=. .venv314/bin/python scripts/load_psi_data.py
+.venv314/bin/python scripts/load_chunks.py
 ```
 
 ### Rebuilding the embedded chunks (maintainers only)
@@ -68,7 +68,7 @@ PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py
 `data/processed/chunks.parquet` is committed: it holds every chunk with its embedding, and `make load-chunks` loads it in about 25 seconds. Rebuild it only when the documents in `psi_data/`, the chunking, or the embedding model change:
 
 ```bash
-.venv/bin/python scripts/make_chunks.py   # asks for confirmation; 10–15 min
+.venv314/bin/python scripts/make_chunks.py   # asks for confirmation; 10–15 min
 ```
 
 It re-embeds everything and overwrites the parquet. Commit the new file, then everyone runs `make load-chunks`. To undo an accidental run: `git checkout data/processed/chunks.parquet`.
