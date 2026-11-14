@@ -41,7 +41,7 @@ FLEX at Moon-like conditions (O2 ≥ 0.29, 0.70 atm): 17 tests, 0 extinctions (1
 - Case: inverse/Inverse, Yes/yes, Blue/blue
 - Lists in cells → arrays or ranges: "21; 26.5; 40", "0.5; 1.0; 1.5; 2.0; or 3.0", "1.5 - 5"
 - Excel autofill: CH5…CH14 → CH4, C2H5…C2H9 → C2H4, N3/N4 → N2, 3400% → 34
-- Duplicates / junk: CFI CSV rows 81–88; FLEX identifier 193F001 twice; FLEX row with pressure 0; SAFFIRE "pre-test flow visualisation" rows
+- Duplicates / junk: CFI CSV rows 81–88; FLEX identifier 193F001 appears twice but denotes two distinct rows (use `FLEX Test #` as the run key); FLEX row with pressure 0; SAFFIRE "pre-test flow visualisation" rows
 - Encoding: BOM in BASS-II header (read utf-8-sig), trailing spaces in headers
 - BASS-II material: 51 free-text variants → material (PMMA / SIBAL / Nomex / wax), geometry (rod / film / slab / sphere), thickness, width, colour
 - BASS-II "Air display" ("10, 5, 3, 0", "5 down to ext") → flow_start, flow_min, flow sequence

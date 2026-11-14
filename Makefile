@@ -1,5 +1,5 @@
-PYTHON ?= python3
-VENV := .venv
+PYTHON ?= python3.14
+VENV ?= .venv314
 VENV_PYTHON := $(VENV)/bin/python
 
 -include .env
