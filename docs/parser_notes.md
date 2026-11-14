@@ -1,6 +1,6 @@
 # PSI Data Parser - Implementation Notes
 
-This document describes the parser and normalization logic implemented for PSI-69 (FLEX) and PSI-159 (CFI-G) as part of Step 3 of the PSI flame-data plan.
+This document describes the parser and normalization logic for PSI-69 (FLEX), PSI-159 (CFI-G), PSI-25 (BASS-II), and PSI-26 (BASS).
 
 ## How to Run
 
@@ -14,25 +14,29 @@ Output files will be generated in `data/processed/`:
 - `PSI-69_FLEX_normalized.json`
 - `PSI-159_CFI-G_Normal_normalized.json`
 - `PSI-159_CFI-G_Inverse_normalized.json`
+- `PSI-25_BASS-II_normalized.json`
+- `PSI-26_BASS_normalized.json`
 - `parsing_report.json` (Summary stats and any recorded errors/flags)
 
 ## Normalization Logic
 
 ### Common Fields
 - **Source Provenance**: Every record includes `psi_id`, `source_file`, `source_row_number`, and `test_id`.
-- **Raw Data**: The original row from the CSV is preserved in the `raw` field of each record. Header normalization (trimming whitespace) is performed for field lookups but does not alter the original keys in the `raw` data.
+- **Raw Data**: The original source row is preserved in `raw`. Header whitespace is collapsed for lookup but original source keys and values are retained. `_source` stores file/sheet/row provenance; `_normalization` stores assumptions and quality flags.
 - **is_eligible**: A boolean flag indicating if the record is suitable for dashboard analysis. Records with critical quality issues (like zero pressure) are marked `is_eligible: false`.
 - **Quality Flags**: The `quality_flags` list contains labels for data issues (e.g., `invalid_pressure: zero`, `missing_pressure`, `multiple_diluents`).
 - **Pressure**: Converted to `atm`.
   - FLEX: `mmHg / 760`
   - CFI-G: `bar / 1.01325`
+  - BASS-II: `1.0 atm` assumption; explicitly marked `source: assumed` in `raw._normalization`.
+  - BASS: measured `pressure, atm` used directly.
   - Original value and unit are preserved in `pressure_source_value` and `pressure_source_unit`.
 - **Outcome**: Mapped to canonical values: `extinction`, `disruption`, `completion`, `ignited`, `no_ignition`, or `unknown`.
 
 ### FLEX (PSI-69)
 - **Identity**: `PSI-69:flex:<FLEX Test #>`. This ensures uniqueness even when `FLEX Identifier` is repeated.
 - **Encoding**: Reads as `utf-8-sig` (BOM support) or `cp1252` if UTF-8 fails.
-- **Header Normalization**: Trims leading/trailing whitespace (e.g., handles " FLEX Test #").
+- **Header Normalization**: Collapses repeated/internal whitespace and trims header edges for lookup (e.g., handles " FLEX Test #" and doubled spaces); original header keys remain in `raw`.
 - **Oxygen**: `O initial ambient composition; mole fraction` used directly as `o2_frac`.
 - **Diluent**: Extracts `CO` or `He` if present. Flags if both are non-zero.
 - **Data Quality**: 
@@ -65,7 +69,7 @@ Numeric measurements are extracted into a `measurements` list with `variable`, `
 - `initial_co2_frac`, `final_co2_frac` (fraction) - PSI-25
 - `initial_co_ppm`, `final_co_ppm` (ppm) - PSI-25
 - `co2_partial_pressure` (mmHg) - PSI-26
-- `sample_thickness`, `sample_width` (mm) - BASS material normalization
+- `sample_thickness`, `sample_width`, `sample_diameter` (mm) - BASS material normalization
 
 ## BASS-II (PSI-25) and BASS (PSI-26) Implementation details
 
@@ -73,18 +77,20 @@ Numeric measurements are extracted into a `measurements` list with `variable`, `
 - **Source**: `psi_data/PSI-25/Experimental table/PSI-25_Experimental table_BASS-II.csv`
 - **Identity**: `PSI-25:bassii:<Test #>`
 - **Pressure**: Assumed `1.0 atm` per audit specification (recorded in `raw._normalization`).
-- **Oxygen**: `Calibrated initial O2 % by vol` divided by 100.
-- **Outcomes**: Mostly `unknown`, but some extracted from flow display text (e.g., "ext").
+- **Oxygen**: `Calibrated initial O2 % by vol` divided by 100. Current output has all 129 values, range 0.136–0.222.
+- **Outcomes**: Only explicit terms from Air/Fan display fields are classified; no ignition is inferred from numeric flow sequences. Current counts: 105 unknown, 16 extinction, 7 blowoff, 1 ignited.
+- **CO readings**: Negative readings and non-numeric sentinels stay in the original row and are flagged; they are not stored as physical concentrations.
 
 ### PSI-26 BASS
 - **Source**: `psi_data/PSI-26/Science Documents/PSI-26_Science Documents_As Run_Test Matrix.xlsx`, sheet `as run matrix`.
 - **Identity**: `PSI-26:bass:<As run test no.>:<Test no.>`
-- **Discrepancy Reconciled**: The source sheet has 131 data rows. 121 rows have both identifiers and are imported. 10 rows are skipped as non-test entries (setup/stow/maintenance).
+- **Row filtering**: The sheet has 131 scanned data rows (including one blank row). 121 rows have both identifiers and are imported; nine non-test/incomplete rows and one blank row are skipped and counted separately.
 - **Oxygen**: `O2 % by volume` values are used directly as fractions (approx 0.159-0.227).
-- **Outcomes**: Extracted from observation text using keyword matching (`extinguish`, `ignited`, `blowoff`, etc.).
+- **Pressure**: The measured `pressure, atm` values are used directly. Source-to-output comparisons found no mismatches for O₂ or pressure among the 121 imported records.
+- **Outcomes**: Explicit no-ignition wording takes precedence over positive ignition wording; other outcomes use conservative keyword matching against observations. Current counts: 6 no_ignition, 42 ignited, 32 extinction, 1 blowoff, 40 unknown.
 
 ### Common BASS Logic
-- **Material/Geometry**: Normalized from `Fuel Sample Material` or `material` strings into `runs.material`, `runs.geometry`, and measurements (`sample_thickness`, `sample_width`). Unclear/combined dimensions are kept in `raw._normalization`.
+- **Material/Geometry**: Normalized from `Fuel Sample Material` or `material` strings into `runs.material`, `runs.geometry`, `runs.size_mm`, and typed measurements (`sample_thickness`, `sample_width`, `sample_diameter`). A bare size is never labeled as width; sphere/rod sizes become diameters, and ambiguous dimensions remain untyped in `raw._normalization`.
 - **Flow Display**: Air/Fan display strings are parsed into structured objects in `raw._normalization.flow_display`.
 
 ## Known Limitations / Flagged Issues
@@ -92,3 +98,4 @@ Numeric measurements are extracted into a `measurements` list with `variable`, `
 - **CFI-G "flash"**: Treated as `unknown` outcome for now, pending further definition.
 - **CFI-G "SE" / "FT"**: Preserved in `outcome_detail` but not mapped to a canonical outcome.
 - **Multiple Diluents**: FLEX parser flags records with more than one non-zero diluent (CO/He).
+- **BASS-II pressure**: The 1 atm value is an audit assumption, not measured pressure. The scenario API exposes pressure provenance so the dashboard can label it.

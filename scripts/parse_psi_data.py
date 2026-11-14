@@ -90,7 +90,8 @@ def run_parsers():
     print("\n--- Parsing Summary ---")
     for source, stats in all_stats.items():
         print(f"{source}:")
-        print(f"  Source rows: {stats['total_rows'] + stats['skipped_blank_rows'] + 1}") # Approx source rows
+        header_rows = stats.get("header_rows", 1)
+        print(f"  Physical rows including headers: {stats['total_rows'] + header_rows}")
         print(f"  Total rows processed: {stats['total_rows']}")
         print(f"  Parsed records: {stats['parsed_records']}")
         print(f"  Eligible records: {stats['eligible_records']}")

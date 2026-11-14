@@ -26,6 +26,7 @@ Outcome = Literal[
 ]
 FlameConfig = Literal["droplet", "gas_normal", "gas_inverse", "solid", "smoke"]
 AmbientFlameConfig = Literal["droplet", "gas_normal", "solid", "smoke"]
+PressureSource = Literal["measured", "assumed", "unknown"]
 VerdictStatus = Literal["tested", "sparse", "untested"]
 
 
@@ -51,6 +52,10 @@ class Run(BaseModel):
     label: str = Field(description="Fuel, or material for solid samples")
     o2_frac: float | None = Field(description="Oxygen mole fraction the run was done at")
     pressure_atm: float | None = Field(description="Pressure the run was done at, in atm")
+    pressure_source: PressureSource = Field(
+        default="unknown",
+        description="Whether pressure_atm was measured, assumed, or its provenance is unknown",
+    )
     outcome: Outcome | None = Field(description="How the run ended; null when not extracted yet")
     distance: float = Field(
         ge=0,
