@@ -2,7 +2,10 @@ PYTHON ?= python3
 VENV := .venv
 VENV_PYTHON := $(VENV)/bin/python
 
-.PHONY: setup install db-up schema import verify db-down
+-include .env
+export
+
+.PHONY: setup install db-up schema import fixtures api test verify db-down
 
 setup: install
 	docker compose up -d --wait postgres
@@ -13,6 +16,7 @@ install:
 	$(PYTHON) -m venv $(VENV)
 	$(VENV_PYTHON) -m pip install --upgrade pip
 	$(VENV_PYTHON) -m pip install -r requirements.txt
+	$(VENV_PYTHON) -m pip install -e .
 
 db-up:
 	docker-compose up -d --wait postgres
@@ -22,6 +26,15 @@ schema:
 
 import:
 	$(VENV_PYTHON) scripts/import_psi_data.py
+
+fixtures:
+	$(VENV_PYTHON) scripts/make_fixtures.py
+
+api:
+	$(VENV)/bin/uvicorn src.api.app:app --reload
+
+test:
+	$(VENV_PYTHON) -m unittest tests/test_*.py
 
 verify:
 	docker-compose exec postgres psql -U flame_user -d psi_flame -c "\\dt psi_dashboard.*"

@@ -1,0 +1,1214 @@
+{
+  "in_envelope": false,
+  "n_nearby": 0,
+  "closest": [
+    {
+      "run_id": "PSI-25-B1",
+      "psi_id": "PSI-25",
+      "label": "100 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B12",
+      "psi_id": "PSI-25",
+      "label": "300 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B2",
+      "psi_id": "PSI-25",
+      "label": "200 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B3",
+      "psi_id": "PSI-25",
+      "label": "100 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B4",
+      "psi_id": "PSI-25",
+      "label": "300 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    }
+  ],
+  "points": [
+    {
+      "run_id": "PSI-25-B1",
+      "psi_id": "PSI-25",
+      "label": "100 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B12",
+      "psi_id": "PSI-25",
+      "label": "300 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B2",
+      "psi_id": "PSI-25",
+      "label": "200 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B3",
+      "psi_id": "PSI-25",
+      "label": "100 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B4",
+      "psi_id": "PSI-25",
+      "label": "300 micron PMMA film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B5",
+      "psi_id": "PSI-25",
+      "label": "200 micron 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-B7",
+      "psi_id": "PSI-25",
+      "label": "400 micron film 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-F1",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M1",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 1 sided 2 cm",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M14",
+      "psi_id": "PSI-25",
+      "label": "2mm thick PMMA 1 sided 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M2",
+      "psi_id": "PSI-25",
+      "label": "3 mm thick PMMA 1 sided 2 cm wide",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M5",
+      "psi_id": "PSI-25",
+      "label": "3 mm thick PMMA 2 sided 2 cm thick",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-O1",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-O2",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.222,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.199
+    },
+    {
+      "run_id": "PSI-25-M4",
+      "psi_id": "PSI-25",
+      "label": "5 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.218,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.257
+    },
+    {
+      "run_id": "PSI-25-M6",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.218,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.257
+    },
+    {
+      "run_id": "PSI-25-F3",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.217,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.271
+    },
+    {
+      "run_id": "PSI-25-M12",
+      "psi_id": "PSI-25",
+      "label": "2 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.217,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.271
+    },
+    {
+      "run_id": "PSI-25-B10",
+      "psi_id": "PSI-25",
+      "label": "1 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B11",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B13",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.4 mm thick film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B15",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B6",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B8",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.2 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-B9",
+      "psi_id": "PSI-25",
+      "label": "2 cm 0.1 mm PMMA film",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-F2",
+      "psi_id": "PSI-25",
+      "label": "Nomex natural (nomex III)",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-M15",
+      "psi_id": "PSI-25",
+      "label": "2 cm 4 mm 1 sided PMMA slab",
+      "o2_frac": 0.21,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.375
+    },
+    {
+      "run_id": "PSI-25-P25",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.209,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.391
+    },
+    {
+      "run_id": "PSI-25-B21",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-M13",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-M3",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide 5 mm thick 1 sided PMMA",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-P22a",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-T25",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-T26",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.208,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.406
+    },
+    {
+      "run_id": "PSI-25-B22",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-P13a",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T27",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T28a",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T28b",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-T29",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.207,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.421
+    },
+    {
+      "run_id": "PSI-25-P13b",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.206,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.437
+    },
+    {
+      "run_id": "PSI-25-M10",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick 1 cm wide PMMA slab",
+      "o2_frac": 0.201,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.515
+    },
+    {
+      "run_id": "PSI-25-M11",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 5 mm thick",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-25-P18",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-25-P22b",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.2,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.53
+    },
+    {
+      "run_id": "PSI-25-P5",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.193,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.642
+    },
+    {
+      "run_id": "PSI-25-M16",
+      "psi_id": "PSI-25",
+      "label": "1 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.192,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.659
+    },
+    {
+      "run_id": "PSI-25-M8",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 2 mm thick",
+      "o2_frac": 0.191,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.675
+    },
+    {
+      "run_id": "PSI-25-M19",
+      "psi_id": "PSI-25",
+      "label": "4 mm thick 2 cm 2ide PMMA slab",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-P20",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-P24",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.19,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.691
+    },
+    {
+      "run_id": "PSI-25-M7",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 1 mm thick",
+      "o2_frac": 0.189,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.708
+    },
+    {
+      "run_id": "PSI-25-P6",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.189,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.708
+    },
+    {
+      "run_id": "PSI-25-M17",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide PMMA 2 mm thick",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T5",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T6",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.188,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.724
+    },
+    {
+      "run_id": "PSI-25-T15",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.187,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.74
+    },
+    {
+      "run_id": "PSI-25-T4",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.187,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.74
+    },
+    {
+      "run_id": "PSI-25-P4",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-T1",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-T2",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.185,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.774
+    },
+    {
+      "run_id": "PSI-25-P14",
+      "psi_id": "PSI-25",
+      "label": "1/4 blac rod",
+      "o2_frac": 0.184,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.79
+    },
+    {
+      "run_id": "PSI-25-P16",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-25-P23",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-25-T24",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL top side ign",
+      "o2_frac": 0.182,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.823
+    },
+    {
+      "run_id": "PSI-25-M20",
+      "psi_id": "PSI-25",
+      "label": "5 mm thick PMMA 2 cm wide",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-M9",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide PMMA 3 mm thick",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-O3a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-O3b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-P15",
+      "psi_id": "PSI-25",
+      "label": "1/4 black rod",
+      "o2_frac": 0.18,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.857
+    },
+    {
+      "run_id": "PSI-25-M18",
+      "psi_id": "PSI-25",
+      "label": "2 cm wide PMMA 3 mm thick",
+      "o2_frac": 0.179,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.874
+    },
+    {
+      "run_id": "PSI-25-P1",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.177,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.908
+    },
+    {
+      "run_id": "PSI-25-P3a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.177,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.908
+    },
+    {
+      "run_id": "PSI-25-P9",
+      "psi_id": "PSI-25",
+      "label": "0.5\" black rod",
+      "o2_frac": 0.176,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.925
+    },
+    {
+      "run_id": "PSI-25-T16",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.176,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.925
+    },
+    {
+      "run_id": "PSI-25-B17",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-P12",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-P19",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-T13",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.175,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.942
+    },
+    {
+      "run_id": "PSI-25-B18",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-B20",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-F4",
+      "psi_id": "PSI-25",
+      "label": "Japan Wax candle",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-P2",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-P3b",
+      "psi_id": "PSI-25",
+      "label": "1/4 clear rod",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-T18",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.174,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.959
+    },
+    {
+      "run_id": "PSI-25-B16",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-B19",
+      "psi_id": "PSI-25",
+      "label": "2 cm 100 micron thick PMMA",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-T7",
+      "psi_id": "PSI-25",
+      "label": "4 cm spherical section",
+      "o2_frac": 0.173,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.976
+    },
+    {
+      "run_id": "PSI-25-T19",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T20",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T21",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T23",
+      "psi_id": "PSI-25",
+      "label": "2 cm Sibal moved igniter",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-T3",
+      "psi_id": "PSI-25",
+      "label": "4 cm spherical section",
+      "o2_frac": 0.172,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 2.993
+    },
+    {
+      "run_id": "PSI-25-O15a",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-25-T11",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-25-T22",
+      "psi_id": "PSI-25",
+      "label": "1 cm SIBAL",
+      "o2_frac": 0.171,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.01
+    },
+    {
+      "run_id": "PSI-25-P10",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.17,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.027
+    },
+    {
+      "run_id": "PSI-25-T14",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.169,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.044
+    },
+    {
+      "run_id": "PSI-25-T17",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.169,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.044
+    },
+    {
+      "run_id": "PSI-25-P17",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.168,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.061
+    },
+    {
+      "run_id": "PSI-25-T12",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.168,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.061
+    },
+    {
+      "run_id": "PSI-25-O10",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O15b",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O6",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.167,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.079
+    },
+    {
+      "run_id": "PSI-25-O20",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.165,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.113
+    },
+    {
+      "run_id": "PSI-25-P8",
+      "psi_id": "PSI-25",
+      "label": "3/8\" black rod",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-T10",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-T9",
+      "psi_id": "PSI-25",
+      "label": "2 cm SIBAL",
+      "o2_frac": 0.164,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.131
+    },
+    {
+      "run_id": "PSI-25-O14",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-25-P21a",
+      "psi_id": "PSI-25",
+      "label": "1/4 black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-25-P21b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.163,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.148
+    },
+    {
+      "run_id": "PSI-25-O7",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.16,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.2
+    },
+    {
+      "run_id": "PSI-25-O13a",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.159,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.218
+    },
+    {
+      "run_id": "PSI-25-O21",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.159,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.218
+    },
+    {
+      "run_id": "PSI-25-O8a",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.157,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.253
+    },
+    {
+      "run_id": "PSI-25-O8b",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.155,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.288
+    },
+    {
+      "run_id": "PSI-25-O11",
+      "psi_id": "PSI-25",
+      "label": "1/4\" black rod",
+      "o2_frac": 0.154,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.306
+    },
+    {
+      "run_id": "PSI-25-O22",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear rod",
+      "o2_frac": 0.154,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.306
+    },
+    {
+      "run_id": "PSI-25-O19",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.153,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.324
+    },
+    {
+      "run_id": "PSI-25-O18",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.152,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.341
+    },
+    {
+      "run_id": "PSI-25-O17",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.151,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.359
+    },
+    {
+      "run_id": "PSI-25-O5a",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.151,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.359
+    },
+    {
+      "run_id": "PSI-25-B14",
+      "psi_id": "PSI-25",
+      "label": "1 cm wide 200 micron thick PMMA",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.377
+    },
+    {
+      "run_id": "PSI-25-O9",
+      "psi_id": "PSI-25",
+      "label": "1/4\" clear rod",
+      "o2_frac": 0.15,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.377
+    },
+    {
+      "run_id": "PSI-25-O4",
+      "psi_id": "PSI-25",
+      "label": "3/8\"clear rod",
+      "o2_frac": 0.148,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.412
+    },
+    {
+      "run_id": "PSI-25-O13b",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.146,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.448
+    },
+    {
+      "run_id": "PSI-25-O16",
+      "psi_id": "PSI-25",
+      "label": "3/8\"clear rod",
+      "o2_frac": 0.145,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.466
+    },
+    {
+      "run_id": "PSI-25-O5b",
+      "psi_id": "PSI-25",
+      "label": "1/2\" clear PMMA rod",
+      "o2_frac": 0.142,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.52
+    },
+    {
+      "run_id": "PSI-25-O12",
+      "psi_id": "PSI-25",
+      "label": "3/8\" clear rod",
+      "o2_frac": 0.136,
+      "pressure_atm": 1.0,
+      "outcome": null,
+      "distance": 3.628
+    }
+  ]
+}
