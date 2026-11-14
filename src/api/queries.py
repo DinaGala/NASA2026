@@ -8,9 +8,10 @@ from src.contracts import (
     InverseFlameResponse,
     InverseFlameRun,
 )
+from src.constants import O2_SCALE, PRESSURE_SCALE
 
 def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
-    # distance = sqrt(((run.o2_frac - query.o2_frac) / 0.05)^2 + ((run.pressure_atm - query.pressure_atm) / 0.2)^2)
+    # distance = sqrt(((run.o2_frac - query.o2_frac) / O2_SCALE)^2 + ((run.pressure_atm - query.pressure_atm) / PRESSURE_SCALE)^2)
     # We use a subquery or a CTE to calculate distance so we can filter and sort by it efficiently.
     
     # `text()` is for SQL snippets and doesn't support arithmetic operators.
@@ -18,8 +19,8 @@ def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
     o2_column = literal_column("o2_frac")
     pressure_column = literal_column("pressure_atm")
     distance_expr = func.sqrt(
-        func.pow((o2_column - query.o2_frac) / 0.05, 2)
-        + func.pow((pressure_column - query.pressure_atm) / 0.2, 2)
+        func.pow((o2_column - query.o2_frac) / O2_SCALE, 2)
+        + func.pow((pressure_column - query.pressure_atm) / PRESSURE_SCALE, 2)
     )
 
     sql = select(

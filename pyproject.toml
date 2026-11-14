@@ -7,8 +7,10 @@ requires-python = ">=3.14"
 dependencies = [
     "fastapi",
     "httpx",
+    "numpy",
     "openpyxl",
     "pandas",
+    "plotly",
     "psycopg[binary]",
     "pyarrow",
     "pydantic-ai-slim[anthropic]>=2.68",  # retries={"tools":..,"output":..} form
@@ -19,6 +21,7 @@ dependencies = [
     "requests>=2.34.2",
     "sentence-transformers",
     "sqlalchemy",
+    "streamlit",
     "uvicorn",
 ]
 

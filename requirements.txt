@@ -13,3 +13,6 @@ pyarrow
 python-docx
 python-pptx
 pydantic-ai-slim[anthropic]>=2.68
+streamlit
+plotly
+numpy
