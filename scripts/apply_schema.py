@@ -8,6 +8,21 @@ from src.database import engine
 SCHEMA_SQL = (
     "CREATE SCHEMA IF NOT EXISTS psi_dashboard",
     """
+    DO $$
+    BEGIN
+        IF to_regclass('psi_dashboard.runs') IS NULL
+           AND to_regclass('psi_dashboard.scenarios') IS NOT NULL THEN
+            ALTER TABLE psi_dashboard.scenarios RENAME TO runs;
+        ELSIF to_regclass('psi_dashboard.runs') IS NOT NULL
+              AND to_regclass('psi_dashboard.scenarios') IS NOT NULL THEN
+            RAISE EXCEPTION
+                'Both psi_dashboard.runs and psi_dashboard.scenarios exist; '
+                'merge or rename the data manually before applying the schema.';
+        END IF;
+    END
+    $$
+    """,
+    """
     CREATE TABLE IF NOT EXISTS psi_dashboard.investigations (
         psi_id TEXT PRIMARY KEY,
         acronym TEXT,
@@ -26,7 +41,7 @@ SCHEMA_SQL = (
     )
     """,
     """
-    CREATE TABLE IF NOT EXISTS psi_dashboard.scenarios (
+    CREATE TABLE IF NOT EXISTS psi_dashboard.runs (
         test_id TEXT PRIMARY KEY,
         psi_id TEXT NOT NULL REFERENCES psi_dashboard.investigations(psi_id),
         source_file TEXT,
@@ -63,7 +78,7 @@ SCHEMA_SQL = (
     """
     CREATE TABLE IF NOT EXISTS psi_dashboard.measurements (
         measurement_id BIGSERIAL PRIMARY KEY,
-        test_id TEXT NOT NULL REFERENCES psi_dashboard.scenarios(test_id),
+        test_id TEXT NOT NULL REFERENCES psi_dashboard.runs(test_id),
         variable TEXT NOT NULL,
         value DOUBLE PRECISION,
         unit TEXT
@@ -77,7 +92,7 @@ def main() -> None:
         for statement in SCHEMA_SQL:
             connection.execute(text(statement))
 
-    print("Schema applied successfully to psi_flame.psi_dashboard.")
+    print("Schema applied successfully to psi_flame.psi_dashboard (runs table).")
 
 
 if __name__ == "__main__":

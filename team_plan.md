@@ -36,11 +36,11 @@ The local `psi_data` directory contains investigation metadata for these 24 stud
 The source of truth for field definitions is [`data_audit.md`](data_audit.md). The PostgreSQL database is `psi_flame`, with tables in the `psi_dashboard` schema:
 
 - `investigations`: one metadata record per PSI study.
-- `scenarios`: planned experiment/test-level records; this is the agreed table name in place of `tests`.
-- `measurements`: numeric measurements associated with a scenario through `test_id`.
+- `runs`: experiment/test-level records, keyed by `test_id` and linked to an investigation by `psi_id`.
+- `measurements`: numeric measurements associated with a run through `test_id`.
 
-The schema setup creates all three tables. The current seed/import step populates only `investigations` from `psi_data/PSI-*/investigation.json`; scenario and measurement data remain empty for now. `raw` retains the original PSI metadata JSON. Re-running the investigation import upserts by `psi_id`.
+The schema setup creates all three tables. The current seed/import step populates only `investigations` from `psi_data/PSI-*/investigation.json`; run and measurement data remain empty for now. `raw` retains the original PSI metadata JSON. Re-running the investigation import upserts by `psi_id`.
 
 ## Current work boundary
 
-For this cleanup, only the database container/configuration, the three-table schema, and investigation metadata import are in scope. Scenario/measurement loaders, APIs, dashboards, publications, documents, chunks, embeddings, and time-series ingestion are later work and are not part of this milestone.
+For this cleanup, only the database container/configuration, the three-table schema, and investigation metadata import are in scope. Run/measurement loaders, APIs, dashboards, publications, documents, chunks, embeddings, and time-series ingestion are later work and are not part of this milestone.

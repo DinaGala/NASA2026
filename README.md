@@ -58,10 +58,10 @@ docker compose up -d --wait postgres
 The database is named `psi_flame`. Its tables live in the `psi_dashboard` schema and follow [`data_audit.md`](data_audit.md):
 
 - **`investigations`** — one PSI study per row, with acronym, title, pillar, fuel phase, hardware, objective, hypothesis, approach, impacts, DOI, dates, and original metadata in `raw` JSONB.
-- **`scenarios`** — experiment/test-level context, keyed by `test_id` and linked to its investigation by `psi_id`. This is the agreed name in place of `tests`.
-- **`measurements`** — numeric variable/value/unit rows linked to a scenario by `test_id`.
+- **`runs`** — experiment/test-level context, keyed by `test_id` and linked to its investigation by `psi_id`.
+- **`measurements`** — numeric variable/value/unit rows linked to a run by `test_id`.
 
-The schema setup creates all three tables. The importer currently populates only `investigations`, keyed by `psi_id`; `scenarios` and `measurements` remain empty for a later milestone. The investigation import is safe to rerun because it upserts existing records.
+The schema setup creates all three tables. The importer currently populates only `investigations`, keyed by `psi_id`; `runs` and `measurements` remain empty for a later milestone. The investigation import is safe to rerun because it upserts existing records. Reapplying the schema renames an existing `scenarios` table to `runs` and preserves its data and foreign-key relationships.
 
 When all local metadata files are present, the expected number of investigation rows is 24.
 
