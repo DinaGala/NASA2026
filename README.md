@@ -40,7 +40,7 @@ This creates `.venv`, installs Python dependencies from `requirements.txt`, star
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
-| `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`) |
+| `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
 | `make test` | Run the unit tests |
 | `make verify` | List tables, count investigations, and list study IDs |
 | `make db-down` | Stop the PostgreSQL container while preserving its data volume |
