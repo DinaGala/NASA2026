@@ -1,84 +1,84 @@
+"""Create the agreed first-stage PSI dashboard schema."""
+
 from sqlalchemy import text
+
 from src.database import engine
 
-def main():
-    with engine.connect() as connection:
-        # Create schema if it doesn't exist
-        connection.execute(text("CREATE SCHEMA IF NOT EXISTS psi_dashboard"))
-        
-        # Create investigations table
-        connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS psi_dashboard.investigations (
-                id SERIAL PRIMARY KEY,
-                psi_id TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                experiment_family TEXT,
-                source_url TEXT,
-                metadata_json JSONB
-            )
-        """))
-        
-        # Create source_files table
-        connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS psi_dashboard.source_files (
-                id SERIAL PRIMARY KEY,
-                investigation_id INTEGER REFERENCES psi_dashboard.investigations(id),
-                relative_path TEXT NOT NULL,
-                file_type TEXT,
-                imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                import_status TEXT,
-                notes TEXT,
-                UNIQUE(investigation_id, relative_path)
-            )
-        """))
 
-        # Create runs table
-        connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS psi_dashboard.runs (
-                id SERIAL PRIMARY KEY,
-                investigation_id INTEGER REFERENCES psi_dashboard.investigations(id),
-                source_run_id TEXT,
-                date TEXT,
-                gmt TEXT,
-                fuel TEXT,
-                geometry TEXT,
-                material_details TEXT,
-                flow_direction TEXT,
-                source_file TEXT,
-                UNIQUE(investigation_id, source_run_id, source_file)
-            )
-        """))
-        
-        # Create run_values table
-        connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS psi_dashboard.run_values (
-                id SERIAL PRIMARY KEY,
-                run_id INTEGER REFERENCES psi_dashboard.runs(id),
-                variable TEXT NOT NULL,
-                numeric_value DOUBLE PRECISION,
-                text_value TEXT,
-                unit TEXT,
-                phase TEXT,
-                source_column TEXT,
-                source_file TEXT
-            )
-        """))
-        
-        # Create design_ranges table
-        connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS psi_dashboard.design_ranges (
-                id SERIAL PRIMARY KEY,
-                investigation_id INTEGER REFERENCES psi_dashboard.investigations(id),
-                fuel TEXT,
-                parameter TEXT,
-                range_text TEXT,
-                unit TEXT,
-                source_file TEXT
-            )
-        """))
-        
-        connection.commit()
-        print("Schema applied successfully in 'psi_dashboard' schema.")
+SCHEMA_SQL = (
+    "CREATE SCHEMA IF NOT EXISTS psi_dashboard",
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.investigations (
+        psi_id TEXT PRIMARY KEY,
+        acronym TEXT,
+        title TEXT NOT NULL,
+        pillar TEXT,
+        fuel_phase TEXT,
+        hardware TEXT,
+        objective TEXT,
+        hypothesis TEXT,
+        approach TEXT,
+        impacts TEXT,
+        doi TEXT,
+        start_date DATE,
+        end_date DATE,
+        raw JSONB NOT NULL DEFAULT '{}'::jsonb
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.scenarios (
+        test_id TEXT PRIMARY KEY,
+        psi_id TEXT NOT NULL REFERENCES psi_dashboard.investigations(psi_id),
+        source_file TEXT,
+        run_label TEXT,
+        granularity TEXT CHECK (granularity IS NULL OR granularity IN ('test', 'range')),
+        flame_config TEXT CHECK (
+            flame_config IS NULL OR flame_config IN
+            ('droplet', 'gas_normal', 'gas_inverse', 'solid', 'smoke')
+        ),
+        fuel TEXT,
+        fuel_phase TEXT,
+        material TEXT,
+        geometry TEXT,
+        size_mm DOUBLE PRECISION,
+        o2_frac DOUBLE PRECISION CHECK (o2_frac IS NULL OR o2_frac BETWEEN 0 AND 1),
+        o2_is_ambient BOOLEAN,
+        pressure_atm DOUBLE PRECISION,
+        diluent TEXT,
+        diluent_frac DOUBLE PRECISION CHECK (
+            diluent_frac IS NULL OR diluent_frac BETWEEN 0 AND 1
+        ),
+        flow_cm_s DOUBLE PRECISION,
+        gravity TEXT,
+        outcome TEXT CHECK (
+            outcome IS NULL OR outcome IN
+            ('extinction', 'disruption', 'completion', 'ignited',
+             'no_ignition', 'blowoff', 'unknown')
+        ),
+        outcome_source TEXT,
+        notes TEXT,
+        raw JSONB NOT NULL DEFAULT '{}'::jsonb
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS psi_dashboard.measurements (
+        measurement_id BIGSERIAL PRIMARY KEY,
+        test_id TEXT NOT NULL REFERENCES psi_dashboard.scenarios(test_id),
+        variable TEXT NOT NULL,
+        value DOUBLE PRECISION,
+        unit TEXT
+    )
+    """,
+)
+
+
+def main() -> None:
+    with engine.begin() as connection:
+        for statement in SCHEMA_SQL:
+            connection.execute(text(statement))
+
+    print("Schema applied successfully to psi_flame.psi_dashboard.")
+
 
 if __name__ == "__main__":
     main()
