@@ -34,13 +34,17 @@ from src.contracts import Citation, Outcome, ScenarioQuery, ScenarioResponse, Ve
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "anthropic:claude-opus-5-5"
+# The cheapest model that passes every check (tuned on #9: $0.0013 per verdict). Code, not the
+# model, enforces the rules, so a stronger model is not needed.
+DEFAULT_MODEL = "anthropic:claude-haiku-5-5"
 QUESTION = (
     "What does NASA's microgravity evidence show about fire at these conditions, and how sure is it?"
 )
 TESTED_MIN_RUNS = 3
 PAPER_HITS = 5
-USAGE_LIMITS = UsageLimits(request_limit=8)
+# A verdict uses 6-15k tokens (9k on average, #9); the token cap, about twice the largest,
+# only cuts a runaway run (or an expensive model set by mistake), which then gets the fallback.
+USAGE_LIMITS = UsageLimits(request_limit=8, total_tokens_limit=30_000)
 
 
 def status_for(n_nearby: int) -> VerdictStatus:
