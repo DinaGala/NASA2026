@@ -74,10 +74,4 @@ brew install docker docker-compose colima
 colima start
 ```
 
-### Step 5 — Launch the services
-
-```bash
-docker-compose up -d
-```
-
 ```

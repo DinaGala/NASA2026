@@ -35,7 +35,7 @@ import requests
 BASE = "https://psi.nasa.gov/geode-py/ws"
 
 # Search hits that are not combustion / fire-safety related
-OFF_TOPIC = {"PSI-181", "PSI-108"}
+OFF_TOPIC = {}
 
 DOC_CATEGORIES = {
     "Experimental table",

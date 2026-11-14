@@ -50,7 +50,7 @@ FLEX at Moon-like conditions (O2 ≥ 0.29, 0.70 atm): 17 tests, 0 extinctions (1
 ## Proposed Postgres schema (6 tables)
 1. `investigations` (24): psi_id PK, acronym, title, pillar, fuel_phase, hardware, objective, hypothesis, approach, impacts, doi, start/end, raw jsonb
 2. `publications` (352): psi_id FK, title, authors, doi, status
-3. `tests` (~2,400): test_id PK, psi_id FK, source_file, run_label, granularity (test / range), flame_config (droplet / gas_normal / gas_inverse / solid / smoke), fuel, fuel_phase, material, geometry, size_mm, o2_frac, o2_is_ambient bool, pressure_atm, diluent, diluent_frac, flow_cm_s, gravity, outcome enum (extinction / disruption / completion / ignited / no_ignition / blowoff / unknown), outcome_source (column / llm), notes, raw jsonb
+3. `scenarios` (~2,400): test_id PK, psi_id FK, source_file, run_label, granularity (test / range), flame_config (droplet / gas_normal / gas_inverse / solid / smoke), fuel, fuel_phase, material, geometry, size_mm, o2_frac, o2_is_ambient bool, pressure_atm, diluent, diluent_frac, flow_cm_s, gravity, outcome enum (extinction / disruption / completion / ignited / no_ignition / blowoff / unknown), outcome_source (column / llm), notes, raw jsonb
 4. `measurements` (long, ~6k): test_id FK, variable, value, unit — Dext, k, burn_time, Tad, spread_rate, Rt/R0 …
 5. `documents` (~780): doc_id, psi_id, category, file_name, pages, has_text
 6. `chunks` (~25k): doc_id, psi_id, page, text, embedding vector(384)
