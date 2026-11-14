@@ -4,7 +4,7 @@ This project is building a dashboard around NASA Physical Sciences Informatics (
 
 ## Prerequisites
 
-- Python 3
+- Python 3.14 (installed as `python3.14`)
 - Docker Desktop, or Docker Engine with Docker Compose (for example, Colima on macOS)
 - The PSI investigation metadata under `psi_data/PSI-*/investigation.json`
 
@@ -26,16 +26,17 @@ Do not commit `.env`. Keep `POSTGRES_DB` set to `psi_flame`; an old `flame_db` v
 With Docker running and `.env` configured, run:
 
 ```bash
+source .venv314/bin/activate
 make setup
 ```
 
-This creates `.venv`, installs Python dependencies from `requirements.txt`, starts the PostgreSQL container, waits for it to become healthy, applies the schema, and imports investigation metadata.
+This creates `.venv314` with Python 3.14, installs Python dependencies from `requirements.txt`, starts the PostgreSQL container, waits for it to become healthy, applies the schema, and imports investigation metadata.
 
 ## Individual Make targets
 
 | Command | Action |
 |---|---|
-| `make install` | Create `.venv` and install Python dependencies |
+| `make install` | Create `.venv314` with Python 3.14 and install Python dependencies |
 | `make db-up` | Pull/start the PostgreSQL service and wait until healthy |
 | `make schema` | Create the database schema and tables |
 | `make import` | Upsert PSI investigations from `psi_data` |
@@ -48,13 +49,16 @@ This creates `.venv`, installs Python dependencies from `requirements.txt`, star
 Equivalent manual commands:
 
 ```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m pip install -e .
+python3.14 -m venv .venv314
+.venv314/bin/python -m pip install --upgrade pip
+.venv314/bin/python -m pip install -r requirements.txt
+.venv314/bin/python -m pip install -e .
 docker compose up -d --wait postgres
 .venv/bin/python scripts/apply_schema.py
 .venv/bin/python scripts/import_psi_data.py
+PYTHONPATH=. .venv/bin/python scripts/parse_psi_data.py
+PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py --dry-run
+PYTHONPATH=. .venv/bin/python scripts/load_psi_data.py
 ```
 
 ## Database schema and current data
@@ -65,7 +69,9 @@ The database is named `psi_flame`. Its tables live in the `psi_dashboard` schema
 - **`runs`** — experiment/test-level context, keyed by `test_id` and linked to its investigation by `psi_id`.
 - **`measurements`** — numeric variable/value/unit rows linked to a run by `test_id`.
 
-The schema setup creates all three tables. The importer currently populates only `investigations`, keyed by `psi_id`; `runs` and `measurements` remain empty for a later milestone. The investigation import is safe to rerun because it upserts existing records. Reapplying the schema renames an existing `scenarios` table to `runs` and preserves its data and foreign-key relationships.
+The schema setup creates all three tables. The importer populates `investigations` (keyed by `psi_id`), `runs` (keyed by `test_id`), and `measurements` (linked to `runs`). The import process is safe to rerun because it upserts existing records. Reapplying the schema renames an existing `scenarios` table to `runs` and preserves its data and foreign-key relationships.
+
+The initial source mappings for FLEX and CFI-G are documented in [`docs/source_mappings.md`](docs/source_mappings.md). They capture input encodings, source row filtering, field mappings, and unit rules before parser implementation.
 
 When all local metadata files are present, the expected number of investigation rows is 24.
 
