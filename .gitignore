@@ -13,3 +13,4 @@ data/processed/*
 !data/processed/chunks.parquet
 psi_data/
 *.egg-info/
+content/
