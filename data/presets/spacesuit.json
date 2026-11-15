@@ -1,0 +1,11 @@
+{
+  "status": "untested",
+  "text": "Untested: No NASA microgravity droplet runs sit near oxygen fraction 1 at 0.29 atm, so this evidence is missing for these conditions. The closest run is FLEX's Methanol droplet test at oxygen 0.34 and 0.7 atm, which ended in disruption. Earlier FLEX ground work reported that at high oxygen, droplets showed only diffusive extinction, not radiative extinction, but that does not describe these runs.",
+  "citations": [
+    {
+      "psi_id": "PSI-69",
+      "doc_title": "FLEX EIRD v4",
+      "page": 75
+    }
+  ]
+}

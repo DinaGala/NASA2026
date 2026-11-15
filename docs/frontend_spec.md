@@ -149,10 +149,10 @@ Runs with outcome `unknown` or `None` count toward the run total and the blank m
 
 ## 7. Open decisions (S2, to settle with the backend owner)
 
-1. **Rule for `in_envelope`:** the backend currently uses "1 or more runs nearby", while the status, the surface mask and the verdict all use "3 or more". Pick one, and make every place use it.
-2. **Acronyms for the tags:** add `acronym` to `Run`, or add `GET /investigations`.
+1. **Rule for `in_envelope`:** the backend currently uses "1 or more runs nearby", while the status, the surface mask and the verdict all use "3 or more". Pick one, and make every place use it. *#17: the frontend never reads `in_envelope`; it derives the status from `n_nearby`, so it already agrees with the verdict. To confirm with the backend owner.*
+2. ~~**Acronyms for the tags:**~~ *#17: `Run.acronym` (optional, null when the study has none), filled by `/scenario` from `investigations`. To confirm with the backend owner.*
 3. **Clickable citations:** add a `url` field to `Citation`, or keep plain text.
-4. **"No outcome":** use either `None` or `"unknown"` everywhere.
+4. **"No outcome":** use either `None` or `"unknown"` everywhere. *#17: still open; the frontend treats both the same (they count toward the mask, not the share).*
 5. ~~**Distance scales (0.05 O₂, 0.2 atm):**~~ settled in #16: `O2_SCALE` and `PRESSURE_SCALE` in `src/constants.py`, imported by `/scenario`, the fixtures script and the chart.
 
 ---

@@ -44,6 +44,7 @@ This creates `.venv314` with Python 3.14, installs Python dependencies from `req
 | `make fixtures` | Regenerate the API fixtures in `data/fixtures/` from the FLEX and BASS-II CSVs |
 | `make api` | Serve the fixture-backed API at http://127.0.0.1:8000 (docs at `/docs`; contracts guide in [`docs/api_contracts.md`](docs/api_contracts.md)) |
 | `make frontend` | Open the Streamlit dashboard (needs `make api` running; `API_URL` overrides `http://localhost:8000`); spec in [`docs/frontend_spec.md`](docs/frontend_spec.md) |
+| `make preset-verdicts` | Recompute the 4 preset verdicts into `data/presets/` through `/verdict` (real LLM, a few cents; needs `make api`). Rerun when the prompt or the data changes |
 | `make test` | Run the unit tests (no LLM calls) |
 | `make test-live` | Run the verdict agent against the real LLM (a few cents; needs `LLM_MODEL` and its API key in `.env`; how it works: [`docs/verdict_agent.md`](docs/verdict_agent.md)) |
 | `make verify` | List tables, count investigations, and list study IDs |

@@ -50,6 +50,7 @@ One test run on the ISS, i.e. one row of `psi_dashboard.runs`, cut down to what 
 {
   "run_id": "PSI-69-41",
   "psi_id": "PSI-69",
+  "acronym": "FLEX",
   "label": "Methanol",
   "o2_frac": 0.3,
   "pressure_atm": 0.703,
@@ -59,6 +60,7 @@ One test run on the ISS, i.e. one row of `psi_dashboard.runs`, cut down to what 
 }
 ```
 
+- `acronym` is the study's short name from `investigations` (e.g. `FLEX`), or null when it has none.
 - `label` is the fuel, or the material for solid samples (e.g. `"100 micron PMMA film 2 cm wide"`).
 - `pressure_source` is `measured`, `assumed`, or `unknown`. BASS-II uses an audit-specified 1 atm assumption; its scenario points and distances should be visibly labeled as assumed-pressure data.
 - `outcome` can be `null` when not extracted, or `unknown` when the source does not support a safe classification; original BASS observations remain in raw data.

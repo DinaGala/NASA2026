@@ -1,0 +1,11 @@
+{
+  "status": "tested",
+  "text": "Tested: 17 nearby runs in NASA's FLEX experiment, all with droplet flames, at about 30% oxygen and 0.7 atm. Of these, 15 ended in disruption, where the droplet broke apart, and 2 ran to completion, where the fuel burned away. The experiment's documents describe radiative extinction, where a droplet flame goes out suddenly, at low oxygen, but none of these nearby runs recorded that outcome. The evidence rests on 17 runs from one experiment, so confidence is moderate.",
+  "citations": [
+    {
+      "psi_id": "PSI-69",
+      "doc_title": "FLEX EIRD v4",
+      "page": 75
+    }
+  ]
+}

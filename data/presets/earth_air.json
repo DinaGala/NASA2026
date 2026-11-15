@@ -1,0 +1,16 @@
+{
+  "status": "tested",
+  "text": "Tested: 100 nearby runs, all droplet flames from NASA's FLEX experiment, with oxygen between 17% and 24% and pressure near 1 atm. Outcomes: 62 extinction (flame went out), 25 disruption (droplet broke apart), and 13 completion (fuel burned away). One FLEX methanol test at 21% oxygen and 1 atm describes flame extinction as the droplet shrinks to a smaller diameter. The evidence rests on 100 runs from one experiment and one flame type.",
+  "citations": [
+    {
+      "psi_id": "PSI-69",
+      "doc_title": "20130010979",
+      "page": 7
+    },
+    {
+      "psi_id": "PSI-69",
+      "doc_title": "20130010979",
+      "page": 9
+    }
+  ]
+}

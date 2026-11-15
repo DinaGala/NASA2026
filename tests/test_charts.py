@@ -51,6 +51,12 @@ class RiskSurfaceTests(unittest.TestCase):
         fig = risk_surface(points, MOON, "droplet")
         self.assertIn("TESTED", [a.text for a in fig.layout.annotations])
 
+    def test_a_scenario_off_the_chart_gets_an_edge_arrow_instead_of_a_crosshair(self):
+        spacesuit = ScenarioQuery(o2_frac=1.0, pressure_atm=0.29)
+        fig = risk_surface([run(0.30, 0.70, "disruption")] * 3, spacesuit, "droplet")
+        self.assertEqual(len(fig.layout.shapes), 0)
+        self.assertTrue(any(a.text.startswith("100% O₂ →") for a in fig.layout.annotations))
+
 
 if __name__ == "__main__":
     unittest.main()
