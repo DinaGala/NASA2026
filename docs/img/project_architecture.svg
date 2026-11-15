@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Flame in Freefall project architecture</title>
+  <desc id="desc">A system diagram showing normalized experiment records and research documents flowing into PostgreSQL, then through the API and evidence agent to a cited verdict in the dashboard.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#8CA3B8"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#62B5E5"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#F2B45E"/>
+    </marker>
+    <style>
+      .bg{fill:#101B2A}.panel{fill:#172638;stroke:#30445B;stroke-width:2}.data{fill:#162D40;stroke:#4A93B7;stroke-width:2}.paper{fill:#302A21;stroke:#C28A3C;stroke-width:2}.api{fill:#1B3040;stroke:#5A91B0;stroke-width:2}.agent{fill:#30271F;stroke:#D39A4D;stroke-width:2}.ui{fill:#1E3540;stroke:#69AFC2;stroke-width:2}.title{font:700 35px Inter,Arial,sans-serif;fill:#F4F1E8}.subtitle{font:400 17px Inter,Arial,sans-serif;fill:#B5C1CC}.heading{font:700 19px Inter,Arial,sans-serif;fill:#F5F2E9}.body{font:400 15px Inter,Arial,sans-serif;fill:#CFD7DE}.small{font:400 13px Inter,Arial,sans-serif;fill:#AAB8C5}.tag{font:700 12px Inter,Arial,sans-serif;letter-spacing:1px;fill:#9CCCE0}.tagAmber{font:700 12px Inter,Arial,sans-serif;letter-spacing:1px;fill:#F0C27B}.line{fill:none;stroke:#8CA3B8;stroke-width:3;marker-end:url(#arrow)}.lineBlue{fill:none;stroke:#62B5E5;stroke-width:3;marker-end:url(#arrowBlue)}.lineAmber{fill:none;stroke:#F2B45E;stroke-width:3;marker-end:url(#arrowAmber)}.divider{stroke:#3B5064;stroke-width:1}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="1000" rx="26"/>
+  <text class="title" x="64" y="72">Flame in Freefall</text>
+  <text class="subtitle" x="64" y="105">From source research to an evidence-aware, cited scenario verdict</text>
+
+  <text class="tag" x="64" y="158">1 · INGEST &amp; PREPARE EVIDENCE</text>
+  <rect class="data" x="64" y="180" width="320" height="180" rx="18"/>
+  <text class="heading" x="88" y="218">Experiment tables</text>
+  <text class="body" x="88" y="248">FLEX · CFI-G · BASS · BASS-II</text>
+  <text class="small" x="88" y="278">Source values, test conditions, outcomes</text>
+  <text class="small" x="88" y="301">and measured quantities</text>
+  <text class="small" x="88" y="335">CSV / workbook records</text>
+
+  <rect class="data" x="430" y="180" width="320" height="180" rx="18"/>
+  <text class="heading" x="454" y="218">Parse &amp; normalize</text>
+  <text class="body" x="454" y="248">Map fields · convert supported units</text>
+  <text class="small" x="454" y="278">Keep raw source and provenance</text>
+  <text class="small" x="454" y="301">Flag missing or uncertain values</text>
+  <text class="small" x="454" y="335">Shared run and measurement structure</text>
+
+  <rect class="paper" x="64" y="410" width="320" height="180" rx="18"/>
+  <text class="heading" x="88" y="448">Research papers &amp; reports</text>
+  <text class="body" x="88" y="478">PDF · PowerPoint · Word*</text>
+  <text class="small" x="88" y="508">Extract readable text and page context</text>
+  <text class="small" x="88" y="531">*Supported formats vary; image-only</text>
+  <text class="small" x="88" y="554">pages without text are not OCR'd</text>
+
+  <rect class="paper" x="430" y="410" width="320" height="180" rx="18"/>
+  <text class="heading" x="454" y="448">Chunk &amp; index</text>
+  <text class="body" x="454" y="478">About 180 words per passage</text>
+  <text class="small" x="454" y="508">384-value meaning embeddings</text>
+  <text class="small" x="454" y="531">Keyword index for exact terms</text>
+  <text class="small" x="454" y="554">Passages retain study and page links</text>
+
+  <rect class="panel" x="820" y="228" width="300" height="365" rx="20"/>
+  <text class="tag" x="846" y="264">SHARED EVIDENCE STORE</text>
+  <text class="heading" x="846" y="302">PostgreSQL + pgvector</text>
+  <line class="divider" x1="846" y1="324" x2="1094" y2="324"/>
+  <text class="body" x="846" y="358">investigations</text>
+  <text class="small" x="846" y="381">study metadata</text>
+  <text class="body" x="846" y="418">runs</text>
+  <text class="small" x="846" y="441">conditions, flame type, outcomes</text>
+  <text class="body" x="846" y="478">measurements</text>
+  <text class="small" x="846" y="501">values and units</text>
+  <text class="body" x="846" y="538">document chunks + embeddings</text>
+  <text class="small" x="846" y="561">text, page metadata, vectors, terms</text>
+
+  <rect class="api" x="1190" y="180" width="340" height="180" rx="18"/>
+  <text class="tag" x="1216" y="216">2 · SERVE THE SCENARIO</text>
+  <text class="heading" x="1216" y="252">FastAPI</text>
+  <text class="body" x="1216" y="282">/scenario · /inverse-flames</text>
+  <text class="small" x="1216" y="312">Query conditions and return nearby</text>
+  <text class="small" x="1216" y="335">runs, evidence counts and map points</text>
+
+  <rect class="agent" x="1190" y="410" width="340" height="260" rx="18"/>
+  <text class="tagAmber" x="1216" y="446">3 · FIND &amp; EXPLAIN EVIDENCE</text>
+  <text class="heading" x="1216" y="482">Evidence verdict agent</text>
+  <text class="body" x="1216" y="512">Run tool: nearby experiments + counts</text>
+  <text class="body" x="1216" y="540">Paper tool: cosine + BM25 search,</text>
+  <text class="body" x="1216" y="562">then passage reranking</text>
+  <text class="small" x="1216" y="594">Configured LLM writes cited summary</text>
+  <text class="small" x="1216" y="617">Code checks status, numbers, citations;</text>
+  <text class="small" x="1216" y="640">fallback uses run facts if needed</text>
+
+  <rect class="ui" x="820" y="730" width="710" height="150" rx="20"/>
+  <text class="tag" x="846" y="766">4 · EXPLORE RESULTS</text>
+  <text class="heading" x="846" y="804">Streamlit dashboard</text>
+  <text class="body" x="846" y="835">Atmosphere controls · evidence map · Tested / Sparse / Untested · cited verdict</text>
+  <text class="small" x="846" y="860">Low-evidence regions stay blank; status describes evidence coverage, not fire probability</text>
+
+  <path class="lineBlue" d="M384 270 H422"/>
+  <path class="lineBlue" d="M750 270 H804 V350 H812"/>
+  <path class="lineAmber" d="M384 500 H422"/>
+  <path class="lineAmber" d="M750 500 H790 V520 H812"/>
+  <path class="lineBlue" d="M1120 310 H1182"/>
+  <path class="line" d="M1120 505 H1178"/>
+  <path class="line" d="M1360 360 V402"/>
+  <path class="lineBlue" d="M1360 670 V722"/>
+  <path class="line" d="M1190 322 H1150 V690 H1110 V722"/>
+  <text class="small" x="1126" y="706">scenario data</text>
+  <text class="small" x="1380" y="704">verdict + citations</text>
+
+  <text class="small" x="64" y="944">Current analysis is evidence-limited. Parser support and archived research do not imply every study is loaded into the live scenario dashboard.</text>
+</svg>
