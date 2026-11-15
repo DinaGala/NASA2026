@@ -16,6 +16,10 @@ Flame in Freefall brings numerical results and research documents from NASA’s 
 - **Know the limits:** verdict status is set by a transparent run-count rule; citations and numeric claims are checked before an answer is returned.
 - **Build toward broader coverage:** the repository includes ingestion and normalization work for FLEX, CFI-G, BASS, and BASS-II. Additional investigations and smoke-detector time series remain future integration work.
 
+## Demo
+
+[Watch the Flame in Freefall demo](https://drive.google.com/drive/u/1/folders/1QUf-CHMA3PCYF_Y2vZT72bG5jpRofkG9) (opens the Google Drive folder).
+
 ## Why this matters
 
 Fire does not behave identically in every environment. Oxygen fraction, total pressure, fuel, geometry, ventilation, and gravity all affect combustion. In microgravity, buoyancy-driven convection is greatly reduced; heat and combustion products do not rise in the familiar Earth-bound way, and transport depends more on diffusion and forced ventilation. Those combined conditions mean Earth-based intuition alone is not enough to characterize spacecraft fire behavior.
