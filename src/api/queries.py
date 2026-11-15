@@ -33,6 +33,10 @@ def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
         text("pressure_atm"),
         text("outcome"),
         text("raw"),
+        text(
+            "(SELECT i.acronym FROM psi_dashboard.investigations i"
+            " WHERE i.psi_id = runs.psi_id) AS acronym"
+        ),
         distance_expr.label("distance")
     ).select_from(text("psi_dashboard.runs")).where(
         and_(
@@ -70,6 +74,7 @@ def get_scenario_data(engine: Engine, query: ScenarioQuery) -> ScenarioResponse:
             all_runs.append(Run(
                 run_id=row.test_id,
                 psi_id=row.psi_id,
+                acronym=row.acronym,
                 label=label,
                 o2_frac=row.o2_frac,
                 pressure_atm=row.pressure_atm,

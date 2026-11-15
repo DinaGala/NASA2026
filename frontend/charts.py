@@ -82,6 +82,23 @@ def _blank_corner(share: np.ndarray) -> tuple[float, float, str, str]:
     return O2_GRID[0], PRESSURE_GRID[-1], "left", "top"
 
 
+def _off_chart_marker(o2: float, pressure: float, status: str) -> dict:
+    """An arrow at the chart's edge pointing at a scenario outside it, e.g. "100% O₂ →"."""
+    x = float(np.clip(o2, O2_GRID[0], O2_GRID[-1]))
+    y = float(np.clip(pressure, PRESSURE_GRID[0] + 0.05, PRESSURE_GRID[-1] - 0.05))
+    if o2 > O2_GRID[-1]:
+        text, xanchor = f"{o2:.0%} O₂ →", "right"
+    elif o2 < O2_GRID[0]:
+        text, xanchor = f"← {o2:.0%} O₂", "left"
+    else:
+        arrow = "↑" if pressure > PRESSURE_GRID[-1] else "↓"
+        text, xanchor = f"{arrow} {pressure:.2f} atm", "center"
+    color = STATUS_COLOR[status]
+    return dict(x=x, y=y, xanchor=xanchor, yanchor="middle", showarrow=False,
+                text=f"{text}<br><span style='color:{color}'>{status}</span>",
+                font=dict(color=NEUTRAL, size=12), bgcolor="rgba(0,0,0,0.6)")
+
+
 def risk_surface(
     points: list[Run],
     scenario: ScenarioQuery,
@@ -143,28 +160,32 @@ def risk_surface(
         )
     )
 
-    # Crosshair: two dotted lines through the scenario, an open ring, and the status.
     status = evidence_status(sum(1 for r in points if r.distance <= 1)).upper()
-    crosshair = dict(color="rgba(237,232,222,0.6)", width=1, dash="dot")
-    fig.add_shape(type="line", xref="x", yref="paper", x0=scenario.o2_frac, x1=scenario.o2_frac,
-                  y0=0, y1=1, line=crosshair)
-    fig.add_shape(type="line", xref="paper", yref="y", x0=0, x1=1,
-                  y0=scenario.pressure_atm, y1=scenario.pressure_atm, line=crosshair)
-    fig.add_trace(
-        go.Scatter(
-            x=[scenario.o2_frac],
-            y=[scenario.pressure_atm],
-            mode="markers",
-            marker=dict(size=15, symbol="circle-open", color=NEUTRAL, line=dict(width=2)),
-            hoverinfo="skip",
-            showlegend=False,
+    o2, pressure = scenario.o2_frac, scenario.pressure_atm
+    on_chart = O2_GRID[0] <= o2 <= O2_GRID[-1] and PRESSURE_GRID[0] <= pressure <= PRESSURE_GRID[-1]
+    if on_chart:
+        # Crosshair: two dotted lines through the scenario, an open ring, and the status.
+        crosshair = dict(color="rgba(237,232,222,0.6)", width=1, dash="dot")
+        fig.add_shape(type="line", xref="x", yref="paper", x0=o2, x1=o2, y0=0, y1=1,
+                      line=crosshair)
+        fig.add_shape(type="line", xref="paper", yref="y", x0=0, x1=1, y0=pressure, y1=pressure,
+                      line=crosshair)
+        fig.add_trace(
+            go.Scatter(
+                x=[o2],
+                y=[pressure],
+                mode="markers",
+                marker=dict(size=15, symbol="circle-open", color=NEUTRAL, line=dict(width=2)),
+                hoverinfo="skip",
+                showlegend=False,
+            )
         )
-    )
-    annotations.append(
-        dict(x=scenario.o2_frac, y=scenario.pressure_atm, xshift=12, yshift=12,
-             xanchor="left", yanchor="bottom", text=status, showarrow=False,
-             font=dict(color=STATUS_COLOR[status], size=11))
-    )
+        annotations.append(
+            dict(x=o2, y=pressure, xshift=12, yshift=12, xanchor="left", yanchor="bottom",
+                 text=status, showarrow=False, font=dict(color=STATUS_COLOR[status], size=11))
+        )
+    else:
+        annotations.append(_off_chart_marker(o2, pressure, status))
 
     grid = "rgba(237,232,222,0.08)"
     fig.update_layout(

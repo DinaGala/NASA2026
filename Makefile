@@ -5,7 +5,7 @@ VENV_PYTHON := $(VENV)/bin/python
 -include .env
 export
 
-.PHONY: setup install db-up schema import load-chunks fixtures api frontend test test-live verify db-down
+.PHONY: setup install db-up schema import load-chunks fixtures api frontend preset-verdicts test test-live verify db-down
 
 setup: install
 	docker compose up -d --wait postgres
@@ -40,6 +40,10 @@ api:
 # Talks to the API only (API_URL, default http://localhost:8000): run `make api` first.
 frontend:
 	PYTHONPATH=. $(VENV)/bin/streamlit run frontend/app.py
+
+# Calls the real LLM once per preset (a few cents): needs `make api` running.
+preset-verdicts:
+	PYTHONPATH=. $(VENV_PYTHON) scripts/make_preset_verdicts.py
 
 test:
 	$(VENV_PYTHON) -m unittest tests/test_*.py

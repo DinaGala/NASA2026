@@ -1,0 +1,11 @@
+{
+  "status": "untested",
+  "text": "Untested: no NASA microgravity solid-fuel runs sit near oxygen fraction 0.3 at 0.69 atm. The closest is a BASS test labelled SIBAL, at oxygen fraction 0.227 and 0.99 atm, with an unknown outcome. BASS studied solid fuels on the ISS and varied oxygen below air levels, so these conditions remain unmeasured and no conclusion can be drawn.",
+  "citations": [
+    {
+      "psi_id": "PSI-26",
+      "doc_title": "BASS Overview of Recent ISS Results",
+      "page": 4
+    }
+  ]
+}

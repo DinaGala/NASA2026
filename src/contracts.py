@@ -49,6 +49,9 @@ class Run(BaseModel):
 
     run_id: str = Field(description="Unique run id, e.g. PSI-69-25 (study + test number)")
     psi_id: str = Field(description="Study the run belongs to, e.g. PSI-69 (FLEX)")
+    acronym: str | None = Field(
+        default=None, description="Short name of the study, e.g. FLEX; null when it has none"
+    )
     label: str = Field(description="Fuel, or material for solid samples")
     o2_frac: float | None = Field(description="Oxygen mole fraction the run was done at")
     pressure_atm: float | None = Field(description="Pressure the run was done at, in atm")
