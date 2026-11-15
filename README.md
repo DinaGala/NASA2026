@@ -28,9 +28,7 @@ The history of human spaceflight reinforces the need for careful evidence. The A
 
 The project connects two types of evidence: structured experiment records and the documents that explain the research.
 
-<!-- Architecture diagram slot: paste this Markdown here when ready:
 ![Flame in Freefall system architecture](docs/img/project_architecture.svg)
--->
 
 ### 1. Experiment data: make records comparable
 
