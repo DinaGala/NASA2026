@@ -1,6 +1,6 @@
 """Flame in Freefall: pick a cabin atmosphere, see what NASA's microgravity runs found near it.
 
-Two tabs (spec §2): Explore (sliders, live surface, verdict on a button) and Presets (four fixed
+Two tabs (spec §2): Explore (sliders, live surface, verdict on a button) and Presets (three fixed
 scenarios with precomputed verdicts). Each tab renders its own results, since Streamlit can't
 switch tabs from code. All data comes from the API (frontend/api.py).
 """
@@ -159,22 +159,21 @@ def preset_status(preset: Preset) -> str | None:
 def presets_tab() -> None:
     state = st.session_state
     state.setdefault("preset", "moon_habitat")
-    for row in (PRESETS[:2], PRESETS[2:]):
-        for column, preset in zip(st.columns(2), row):
-            with column.container(border=True):
-                st.image(str(preset.picture), width="stretch")
-                st.markdown(f"**{preset.name}**")
-                st.caption(f"O₂ {preset.o2_frac:.0%} · {preset.psi} psi ({preset.pressure_atm:.2f} atm)"
-                           f" · {FLAME_TYPES[preset.flame_config]} — {preset.role}")
-                badge, button = st.columns([2, 1], vertical_alignment="center")
-                status = preset_status(preset)
-                if status:
-                    with badge:
-                        st.badge(status, color=STATUS_COLOR[status])
-                selected = state.preset == preset.key
-                button.button("Selected" if selected else "Open", key=f"open_{preset.key}",
-                              type="primary" if selected else "secondary", width="stretch",
-                              on_click=lambda key=preset.key: state.update(preset=key))
+    for column, preset in zip(st.columns(len(PRESETS)), PRESETS):
+        with column.container(border=True):
+            st.image(str(preset.picture), width="stretch")
+            st.markdown(f"**{preset.name}**")
+            st.caption(f"O₂ {preset.o2_frac:.0%} · {preset.psi} psi ({preset.pressure_atm:.2f} atm)"
+                       f" · {FLAME_TYPES[preset.flame_config]} — {preset.role}")
+            badge, button = st.columns([2, 1], vertical_alignment="center")
+            status = preset_status(preset)
+            if status:
+                with badge:
+                    st.badge(status, color=STATUS_COLOR[status])
+            selected = state.preset == preset.key
+            button.button("Selected" if selected else "Open", key=f"open_{preset.key}",
+                          type="primary" if selected else "secondary", width="stretch",
+                          on_click=lambda key=preset.key: state.update(preset=key))
 
     preset = next(p for p in PRESETS if p.key == state.preset)
     st.divider()

@@ -11,8 +11,7 @@ class PresetTests(unittest.TestCase):
                 self.assertIsNotNone(load_verdict(preset), "run make preset-verdicts")
 
     def test_precomputed_statuses_match_the_demo(self):
-        expected = {"earth_air": "tested", "moon_habitat": "tested",
-                    "moon_fabric": "untested", "spacesuit": "untested"}
+        expected = {"earth_air": "tested", "moon_habitat": "tested", "spacesuit": "untested"}
         self.assertEqual({p.key: load_verdict(p).status for p in PRESETS}, expected)
 
     def test_preset_pressures_are_converted_from_psi(self):

@@ -1,4 +1,4 @@
-"""The four fixed scenarios of the Presets tab (spec §4) and their precomputed verdicts.
+"""The three fixed scenarios of the Presets tab (spec §4) and their precomputed verdicts.
 
 scripts/make_preset_verdicts.py writes data/presets/<key>.json once, so clicking a preset never
 calls the LLM. Regenerate the files whenever the prompt or the data changes.
@@ -36,16 +36,16 @@ class Preset:
 
     @property
     def picture(self) -> Path:
-        return ASSETS_DIR / f"{self.key}.svg"
+        """The photo when there is one, otherwise the SVG illustration."""
+        photo = ASSETS_DIR / f"{self.key}.jpg"
+        return photo if photo.exists() else ASSETS_DIR / f"{self.key}.svg"
 
 
 PRESETS = [
-    Preset("earth_air", "Earth air", 0.21, 14.7, "droplet",
+    Preset("earth_air", "Earth air conditions in space", 0.21, 14.7, "droplet",
            "The reference: most flames went out"),
     Preset("moon_habitat", "Moon habitat", 0.30, 10.2, "droplet",
            "The warning: 17 runs, none extinguished"),
-    Preset("moon_fabric", "Moon habitat · fabric", 0.30, 10.2, "solid",
-           "The gap: no solid tested there"),
     Preset("spacesuit", "Spacesuit", 1.00, 4.3, "droplet",
            "The extreme: beyond all the data"),
 ]

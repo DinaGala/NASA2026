@@ -103,13 +103,12 @@ Runs with outcome `unknown` or `None` count toward the run total and the blank m
 
 ## 4. Presets tab
 
-**These are fixed scenarios, with no controls.** A grid of 4 picture cards (2 × 2). Clicking a card selects it, and its full analysis appears **below the cards, in the same tab**.
+**These are fixed scenarios, with no controls.** One row of 3 picture cards. Clicking a card selects it, and its full analysis appears **below the cards, in the same tab**.
 
 | Preset | O₂ | Pressure | Flame type | Expected status | Role in the demo |
 |---|---|---|---|---|---|
-| Earth air | 21% | 14.7 psi (1.0 atm) | Droplet | Tested | The reference: most flames went out |
+| Earth air conditions in space | 21% | 14.7 psi (1.0 atm) | Droplet | Tested | The reference: most flames went out |
 | Moon habitat | 30% | 10.2 psi (0.69 atm) | Droplet | Tested | The warning: 17 runs, none extinguished |
-| Moon habitat · fabric | 30% | 10.2 psi (0.69 atm) | Solid | Untested | The gap: no solid tested there |
 | Spacesuit | 100% | 4.3 psi (0.29 atm) | Droplet | Untested | The extreme: beyond all the data |
 
 **Each card:** a picture (16:9), the name, the conditions on one line, and a status badge.
@@ -119,7 +118,7 @@ Runs with outcome `unknown` or `None` count toward the run total and the blank m
 **Precomputed verdicts:** `scripts/make_preset_verdicts.py` calls `/verdict` once for each preset and writes `data/presets/<key>.json`. The app reads those files, so preset clicks never wait on the LLM and cost nothing during the demo. Regenerate them whenever the prompt or the data changes.
 
 **Pictures:**
-- Use either simple illustrations (Earth from orbit, a lunar habitat dome, folded fabric with a small flame, a spacesuit helmet) or NASA public-domain photos.
+- Use either simple illustrations (Earth from orbit, a lunar habitat dome, a spacesuit helmet) or NASA public-domain photos.
 - **No NASA logo** anywhere in the app (challenge rule: don't imply NASA endorsement).
 - Check each image's credit line, and store the images in `frontend/assets/`.
 
@@ -177,7 +176,7 @@ data/presets/*.json
 - Moving a slider updates the metrics and the surface in under 1 second, with no LLM call.
 - "Get verdict" returns in under 10 seconds and shows the status, the text and at least 1 citation.
 - The 4 presets open instantly, each with its verdict already computed.
-- The Moon habitat preset shows Tested; Moon habitat · fabric and Spacesuit show Untested.
+- The Moon habitat preset shows Tested; Spacesuit shows Untested.
 - No NASA logo, no stars, and no surface drawn in areas with fewer than 3 runs.
 
 ## Out of scope
